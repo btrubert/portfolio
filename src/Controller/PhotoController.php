@@ -14,8 +14,11 @@ class PhotoController extends AbstractController
      */
     public function index()
     {
-        return $this->render('photo/index.html.twig', [
-            'controller_name' => 'PhotoController',
-        ]);
+        return $this->render(
+            'photo/index.html.twig',
+            [
+                'controller_name' => 'PhotoController',
+            ]
+        );
     }
 }
