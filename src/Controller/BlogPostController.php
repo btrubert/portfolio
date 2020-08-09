@@ -172,35 +172,38 @@ class BlogPostController extends AbstractController
 
     private function _getPost($id) :BlogPost
     {
-      //Get the DB manager
-      $entityManager = $this->getDoctrine()->getManager();
-      //Retrieve the blog post
-      $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
+      try
+      {
+        //Get the DB manager
+        $entityManager = $this->getDoctrine()->getManager();
+        //Retrieve the blog post
+        $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
 
-    }
-    catch (Exception $e){
-      echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
-      return NULL;
-    }
-      return $blogPost;
+      }
+      catch (Exception $e){
+        echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
+        return NULL;
+      }
+        return $blogPost;
     }
 
     private function _getListPosts($offset, $limit) :array
     {
-      $q = $this->createQueryBuilder('b')
-                ->setFirstResult( $offset )
-                ->setMaxResults( $limit )
-                ->orderBy('b.updated_content', 'DESC');
+      try
+      {
+        $q = $this->createQueryBuilder('b')
+                  ->setFirstResult( $offset )
+                  ->setMaxResults( $limit )
+                  ->orderBy('b.updated_content', 'DESC');
 
-       $query = $q->getQuery();
+        $query = $q->getQuery();
 
-       $listPosts = $query->execute();
-
-    }
-    catch (Exception $e){
-      echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
-      return NULL;
-    }
-      return $listPosts;
-    }
+        $listPosts = $query->execute();
+      }
+      catch (Exception $e){
+        echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
+        return NULL;
+      }
+        return $listPosts;
+      }
 }
