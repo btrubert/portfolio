@@ -30,20 +30,13 @@ class BlogPostController extends AbstractController
      */
     public function createPost()
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $blogPost = new BlogPost();
-        $blogPost->setAuthor("l'auteur");
-        $blogPost->setTitle("Mon Titre");
-        $blogPost->setContent("Le contenu");
-
-        $entityManager->persist($blogPost);
-        $entityManager->flush();
+        $params = [];
+        $blogPost = $this->_createPost($params);
 
         return new Response('Saved new product with id ' . $blogPost->getId());
     }
 
-    private function _createPost($post): bool
+    private function _createPost($post): BlogPost
     {
         try {
             //Get the DB manager
@@ -60,9 +53,9 @@ class BlogPostController extends AbstractController
             $entityManager->flush();
         } catch (Exception $e) {
             echo 'Caught exception while creating a new blog post : ',  $e->getMessage(), "\n";
-            return false;
+            return null;
         }
-        return true;
+        return $blogPost;
     }
 
     private function _updateAuthor($id, $authorName): bool
@@ -182,14 +175,7 @@ class BlogPostController extends AbstractController
     private function _getListPosts($offset, $limit): array
     {
         try {
-            $q = $this->createQueryBuilder('b')
-                ->setFirstResult($offset)
-                ->setMaxResults($limit)
-                ->orderBy('b.updated_content', 'DESC');
-
-            $query = $q->getQuery();
-
-            $listPosts = $query->execute();
+            $listPosts = $this->getDoctrine()->getRepository()->findManyFromOffset($offset, $limit);
         } catch (Exception $e) {
             echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
             return null;

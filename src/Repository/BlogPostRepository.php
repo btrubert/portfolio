@@ -47,4 +47,15 @@ class BlogPostRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findManyFromOffset($id, $offset, $limit=0): array
+    {
+        $q = $this->createQueryBuilder('b')
+            ->setFirstResult($offset);
+        if ($limit>0) {
+            $q->setMaxResults($limit);
+        }
+        $q->orderBy('b.updated_content', 'DESC');
+        return $q->getQuery()->execute();
+    }
 }
