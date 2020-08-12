@@ -48,14 +48,20 @@ class BlogPostRepository extends ServiceEntityRepository
     }
     */
 
-    public function findManyFromOffset($id, $offset, $limit=0): array
+    /**
+     * @param $offset id of the first item to fetch
+     * @param $limit number of items to retrive
+     * 
+     * @return BlogPost[] Returns an array of BlogPost objects
+     */
+    public function findManyFromOffset($offset, $limit = 0): array
     {
         $q = $this->createQueryBuilder('b')
             ->setFirstResult($offset);
-        if ($limit>0) {
+        if ($limit > 0) {
             $q->setMaxResults($limit);
         }
         $q->orderBy('b.updated_content', 'DESC');
-        return $q->getQuery()->execute();
+        return $q->getQuery()->getResult();
     }
 }

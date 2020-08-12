@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Photo;
 use App\Entity\Categorie;
+use ContainerJYuxPvv\getDoctrine_QueryDqlCommandService;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -26,17 +27,12 @@ class PhotoController extends AbstractController
     }
 
 
-    private function _getPhotos($catName, $privatePhotos = false): array
+    private function _getPhotos($catName, $privateAccess = false): array
     {
         try {
-            $q = $this->createQueryBuilder('c')
-                ->where('private=:private')
-                ->setParameter('private', $privatePhotos);
-
-            $query = $q->getQuery();
-
-            $categoriy = $query->execute();
-            $photos = $categoriy->getPhotos();
+            //TODO: privateAccess check authorized user
+    
+            $photos = $this->getDoctrine()->getRepository(Photo::class)->findByCategory($catName);
         } catch (Exception $e) {
             echo 'Caught exception while retrieving the photos from a category : ',  $e->getMessage(), "\n";
             return null;
@@ -47,10 +43,8 @@ class PhotoController extends AbstractController
     private function _getPhoto($id): Photo
     {
         try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
             //Retrieve the blog post
-            $photo = $entityManager->getRepository(BlogPost::class)->find($id);
+            $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
         } catch (Exception $e) {
             echo 'Caught exception while retrieving a photo : ',  $e->getMessage(), "\n";
             return null;
