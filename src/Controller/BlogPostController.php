@@ -174,7 +174,7 @@ class BlogPostController extends AbstractController
             $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
         } catch (Exception $e) {
             echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
-            return NULL;
+            return null;
         }
         return $blogPost;
     }

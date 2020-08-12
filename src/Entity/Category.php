@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CategorieRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=CategorieRepository::class)
+ * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
-class Categorie
+class Category
 {
     /**
      * @ORM\Id()
@@ -27,10 +27,10 @@ class Categorie
     /**
      * @ORM\Column(type="boolean")
      */
-    private $private;
+    private $public;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Photo::class, mappedBy="categories")
+     * @ORM\OneToMany(targetEntity=photo::class, mappedBy="category")
      */
     private $photos;
 
@@ -56,41 +56,44 @@ class Categorie
         return $this;
     }
 
-    public function getPrivate(): ?bool
+    public function getPublic(): ?bool
     {
-        return $this->private;
+        return $this->public;
     }
 
-    public function setPrivate(bool $private): self
+    public function setPublic(bool $public): self
     {
-        $this->private = $private;
+        $this->public = $public;
 
         return $this;
     }
 
     /**
-     * @return Collection|Photo[]
+     * @return Collection|photo[]
      */
     public function getPhotos(): Collection
     {
         return $this->photos;
     }
 
-    public function addPhoto(Photo $photo): self
+    public function addPhoto(photo $photo): self
     {
         if (!$this->photos->contains($photo)) {
             $this->photos[] = $photo;
-            $photo->addCategory($this);
+            $photo->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removePhoto(Photo $photo): self
+    public function removePhoto(photo $photo): self
     {
         if ($this->photos->contains($photo)) {
             $this->photos->removeElement($photo);
-            $photo->removeCategory($this);
+            // set the owning side to null (unless already changed)
+            if ($photo->getCategory() === $this) {
+                $photo->setCategory(null);
+            }
         }
 
         return $this;

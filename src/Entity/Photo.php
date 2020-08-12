@@ -47,24 +47,14 @@ class Photo
     private $exifs = [];
 
     /**
-     * @ORM\ManyToMany(targetEntity=categorie::class, inversedBy="photos")
-     */
-    private $categories;
-
-    /**
-     * @ORM\Column(type="blob")
-     */
-    private $thumbnail;
-
-    /**
      * @ORM\Column(type="json", nullable=true)
      */
     private $tags = [];
 
-    public function __construct()
-    {
-        $this->categories = new ArrayCollection();
-    }
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="photos")
+     */
+    private $category;
 
     public function getId(): ?int
     {
@@ -124,44 +114,6 @@ class Photo
         return $this;
     }
 
-    /**
-     * @return Collection|categorie[]
-     */
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(categorie $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(categorie $category): self
-    {
-        if ($this->categories->contains($category)) {
-            $this->categories->removeElement($category);
-        }
-
-        return $this;
-    }
-
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    public function setThumbnail($thumbnail): self
-    {
-        $this->thumbnail = $thumbnail;
-
-        return $this;
-    }
-
     public function getTags(): ?array
     {
         return $this->tags;
@@ -170,6 +122,18 @@ class Photo
     public function setTags(?array $tags): self
     {
         $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
