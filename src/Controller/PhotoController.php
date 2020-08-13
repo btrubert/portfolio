@@ -5,11 +5,10 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Photo;
-use App\Entity\Categorie;
-use ContainerJYuxPvv\getDoctrine_QueryDqlCommandService;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use App\Form\Type\PhotoType;
 
 class PhotoController extends AbstractController
 {
@@ -31,7 +30,7 @@ class PhotoController extends AbstractController
     {
         try {
             //TODO: privateAccess check authorized user
-    
+
             $photos = $this->getDoctrine()->getRepository(Photo::class)->findByCategory($catName);
         } catch (Exception $e) {
             echo 'Caught exception while retrieving the photos from a category : ',  $e->getMessage(), "\n";
@@ -111,13 +110,13 @@ class PhotoController extends AbstractController
 
         $exifs = [];
 
-        $exifs['shutter'] = isset($values['ExposureTime'])? _getFloatValue($values['ExposureTime']).'s' : "n/a";
-        $exifs['aperture'] = isset($values['FNumber'])? 'f/'._getFloatValue($values['FNumber']) : "n/a";
-        $exifs['iso'] = isset($values['ISOSpeedRatings'])? $values['ISOSpeedRatings'] : 'n/a';
-        $exifs['focal'] = isset($values['FocalLength'])? _getFloatValue($values['FocalLength']).'mm' : "n/a";
-        $exifs['brand'] = isset($values['Make'])? $values['Make'] : 'n/a';
-        $exifs['model'] = isset($values['Model'])? $values['Model'] : 'n/a';
-        $exifs['date'] = isset($values['DateTimeOriginal'])? $values['DateTimeOriginal'] : 'n/a';
+        $exifs['shutter'] = isset($values['ExposureTime']) ? _getFloatValue($values['ExposureTime']) . 's' : "n/a";
+        $exifs['aperture'] = isset($values['FNumber']) ? 'f/' . _getFloatValue($values['FNumber']) : "n/a";
+        $exifs['iso'] = isset($values['ISOSpeedRatings']) ? $values['ISOSpeedRatings'] : 'n/a';
+        $exifs['focal'] = isset($values['FocalLength']) ? _getFloatValue($values['FocalLength']) . 'mm' : "n/a";
+        $exifs['brand'] = isset($values['Make']) ? $values['Make'] : 'n/a';
+        $exifs['model'] = isset($values['Model']) ? $values['Model'] : 'n/a';
+        $exifs['date'] = isset($values['DateTimeOriginal']) ? $values['DateTimeOriginal'] : 'n/a';
 
         return $exifs;
     }
@@ -129,8 +128,7 @@ class PhotoController extends AbstractController
         } else {
             $numbers = explode("/", $s);
 
-            return $numbers[0]<$numbers[1]? '1/'.$numbers[1]/$numbers[0]: ''.$numbers[0]/$numbers[1];
+            return $numbers[0] < $numbers[1] ? '1/' . $numbers[1] / $numbers[0] : '' . $numbers[0] / $numbers[1];
         }
     }
-
 }

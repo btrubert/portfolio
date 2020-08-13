@@ -47,7 +47,7 @@ class BlogPost
 
     /**
      * @ORM\Column(name="updated_content", type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="change", field={"title", "content", "author"})
+     * @Gedmo\Timestampable(on="change", field={"content"})
      */
     private $updated_content;
 

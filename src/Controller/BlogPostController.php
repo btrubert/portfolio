@@ -6,34 +6,89 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\BlogPost;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use App\Form\BlogPostType;
+use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @Route("/blog")
+ */
 class BlogPostController extends AbstractController
 {
     /**
-     * @Route("/blog/post", name="blog_post")
+     * @Route("/", name="list_post")
      */
     public function index()
     {
+        $posts = $this->_getListPosts();
         return $this->render(
             'blog_post/index.html.twig',
             [
                 'controller_name' => 'BlogPostController',
+                'posts' => $posts,
             ]
         );
     }
 
     /**
-     * @Route("/blog/post/new", name="new_blog_post")
+     * @Route("/new", name="new_post")
      */
-    public function createPost()
+    public function new(Request $request)
     {
-        $params = [];
-        $blogPost = $this->_createPost($params);
+        $blogPost = new BlogPost();
+        $blogPost->setTitle('Write a blog post');
+        $blogPost->setContent("LoremIpsum");
 
-        return new Response('Saved new product with id ' . $blogPost->getId());
+        $form = $this->createForm(BlogPostType::class, $blogPost);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $blogPost = $form->getData();
+
+            $this->_createPost($blogPost);
+
+            return $this->redirectToRoute('list_post');
+        }
+
+        return $this->render('blog_post/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/edit/{id}", name="edit_post")
+     */
+    public function edit(Request $request, $id)
+    {
+        $blogPost = $this->_getPost($id);
+
+        $form = $this->createForm(BlogPostType::class, $blogPost);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $newPost = $form->getData();
+            $this->_updatePost($id, $newPost);
+
+            return $this->redirectToRoute('list_post');
+        }
+
+        return $this->render('blog_post/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/delete/{id}, name="delete_post")
+     */
+    public function delete($id)
+    {
+        $this->_deletePost($id);
+        return $this->redirectToRoute('list_post');
     }
 
     private function _createPost($post): BlogPost
@@ -42,23 +97,17 @@ class BlogPostController extends AbstractController
             //Get the DB manager
             $entityManager = $this->getDoctrine()->getManager();
 
-            //Insert the field of the new post
-            $blogPost = new BlogPost();
-            $blogPost->setAuthor($post['name']);
-            $blogPost->setTitle($post['title']);
-            $blogPost->setContent($post['content']);
-
             //Commit the new entry to the DB
-            $entityManager->persist($blogPost);
+            $entityManager->persist($post);
             $entityManager->flush();
         } catch (Exception $e) {
             echo 'Caught exception while creating a new blog post : ',  $e->getMessage(), "\n";
             return null;
         }
-        return $blogPost;
+        return $post;
     }
 
-    private function _updateAuthor($id, $authorName): bool
+    private function _updatePost($id, $newPost): bool
     {
         try {
             //Get the DB manager
@@ -72,62 +121,16 @@ class BlogPostController extends AbstractController
             }
 
             //Update the author field of the post
-            $blogPost->setAuthor($authorName);
-
-            //Commit the updated entry to the DB
-            $entityManager->flush();
-        } catch (Exception $e) {
-            echo 'Caught exception while updating the author name : ',  $e->getMessage(), "\n";
-            return false;
-        }
-        return true;
-    }
-
-    private function _updateTitle($id, $title): bool
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-            //Retrieve the blog post
-            $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
-
-            if (!$blogPost) //if the blog post could not be retrieved
-            {
-                return false;
-            }
-
+            $blogPost->setAuthor($newPost->getAuthor());
             //Update the title field of the post
-            $blogPost->setTitle($title);
+            $blogPost->setAuthor($newPost->getTitle());
+            //Update the content field of the post
+            $blogPost->setAuthor($newPost->getContent());
 
             //Commit the updated entry to the DB
             $entityManager->flush();
         } catch (Exception $e) {
-            echo 'Caught exception while updating the title : ',  $e->getMessage(), "\n";
-            return false;
-        }
-        return true;
-    }
-
-    private function _updateContent($id, $content): bool
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-            //Retrieve the blog post
-            $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
-
-            if (!$blogPost) //if the blog post could not be retrieved
-            {
-                return false;
-            }
-
-            //Update the content field of the  post
-            $blogPost->setContent($content);
-
-            //Commit the updated entry to the DB
-            $entityManager->flush();
-        } catch (Exception $e) {
-            echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
+            echo 'Caught exception while updating a post : ',  $e->getMessage(), "\n";
             return false;
         }
         return true;
@@ -166,18 +169,18 @@ class BlogPostController extends AbstractController
             //Retrieve the blog post
             $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
         } catch (Exception $e) {
-            echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
+            echo 'Caught exception while fetching a post : ',  $e->getMessage(), "\n";
             return null;
         }
         return $blogPost;
     }
 
-    private function _getListPosts($offset, $limit): array
+    private function _getListPosts($offset = 0, $limit = 0): array
     {
         try {
-            $listPosts = $this->getDoctrine()->getRepository()->findManyFromOffset($offset, $limit);
+            $listPosts = $this->getDoctrine()->getRepository(BlogPost::class)->findManyFromOffset($offset, $limit);
         } catch (Exception $e) {
-            echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
+            echo 'Caught exception while fetching a list of posts : ',  $e->getMessage(), "\n";
             return null;
         }
         return $listPosts;
