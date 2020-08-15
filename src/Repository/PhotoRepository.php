@@ -53,11 +53,12 @@ class PhotoRepository extends ServiceEntityRepository
      * 
      * @return Photo[] Returns an array of Photo objects
      */
-    public function findByCategory($category)
+    public function findByCategoryName($catName)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.category=:cat')
-            ->setParameter('cat', $category)
+        return $this->createQueryBuilder('p')
+            ->join('p.category', 'c', 'WITH', 'p.category=c.id')
+            ->andWhere('c.name=:cat')
+            ->setParameter('cat', $catName)
             ->getQuery()
             ->getResult();
     }

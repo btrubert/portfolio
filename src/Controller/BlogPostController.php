@@ -53,7 +53,7 @@ class BlogPostController extends AbstractController
             return $this->redirectToRoute('list_post');
         }
 
-        return $this->render('blog_post/new.html.twig', [
+        return $this->render('category/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -83,7 +83,7 @@ class BlogPostController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}, name="delete_post")
+     * @Route("/delete/{id}", name="delete_post")
      */
     public function delete($id)
     {
@@ -123,9 +123,9 @@ class BlogPostController extends AbstractController
             //Update the author field of the post
             $blogPost->setAuthor($newPost->getAuthor());
             //Update the title field of the post
-            $blogPost->setAuthor($newPost->getTitle());
+            $blogPost->setTitle($newPost->getTitle());
             //Update the content field of the post
-            $blogPost->setAuthor($newPost->getContent());
+            $blogPost->setContent($newPost->getContent());
 
             //Commit the updated entry to the DB
             $entityManager->flush();
@@ -144,8 +144,7 @@ class BlogPostController extends AbstractController
             //Retrieve the blog post
             $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
 
-            if (!$blogPost) //if the blog post could not be retrieved
-            {
+            if (!$blogPost) {
                 return false;
             }
 

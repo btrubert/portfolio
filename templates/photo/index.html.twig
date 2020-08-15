@@ -17,4 +17,10 @@
         <li>Your template at <code><a href="{{ 'C:/Users/benja/Documents/website_project/portfolio/templates/photo/index.html.twig'|file_link(0) }}">templates/photo/index.html.twig</a></code></li>
     </ul>
 </div>
+
+<h1>{{category}}</h1>
+{% for photo in photos %}
+<div><img src="{{ asset('build/images/'~photo.path) }}" height="100"/></div>
+{% endfor %}
+
 {% endblock %}

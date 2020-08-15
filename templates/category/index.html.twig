@@ -17,4 +17,11 @@
         <li>Your template at <code><a href="{{ 'C:/Users/benja/Documents/website_project/portfolio/templates/category/index.html.twig'|file_link(0) }}">templates/category/index.html.twig</a></code></li>
     </ul>
 </div>
+
+<div>
+{% for category in categories %}
+<a href="{{ path('photos_by_cat', {cat: category.name}) }}"> {{category.name}}</a><br/>
+{% endfor %}
+</div>
+
 {% endblock %}

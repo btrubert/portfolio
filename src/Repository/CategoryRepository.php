@@ -47,4 +47,23 @@ class CategoryRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findFromName($name): ?Category
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.name = :val')
+            ->setParameter('val', $name)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    public function findPublic()
+    {
+        return $this->createQueryBuilder('c')
+        ->andWhere('c.public = true')
+        ->getQuery()
+        ->getResult()
+        ;
+    }
 }

@@ -30,7 +30,7 @@ class Category
     private $public;
 
     /**
-     * @ORM\OneToMany(targetEntity=photo::class, mappedBy="category")
+     * @ORM\OneToMany(targetEntity=Photo::class, mappedBy="category")
      */
     private $photos;
 
@@ -69,14 +69,14 @@ class Category
     }
 
     /**
-     * @return Collection|photo[]
+     * @return Collection|Photo[]
      */
     public function getPhotos(): Collection
     {
         return $this->photos;
     }
 
-    public function addPhoto(photo $photo): self
+    public function addPhoto(Photo $photo): self
     {
         if (!$this->photos->contains($photo)) {
             $this->photos[] = $photo;
@@ -86,7 +86,7 @@ class Category
         return $this;
     }
 
-    public function removePhoto(photo $photo): self
+    public function removePhoto(Photo $photo): self
     {
         if ($this->photos->contains($photo)) {
             $this->photos->removeElement($photo);
