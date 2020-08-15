@@ -24,7 +24,10 @@ class PhotoType extends AbstractType
                 'required' => false,
                 'mapped' => false,
             ])
-            ->add('tags', CollectionType::class)
+            ->add('tags', CollectionType::class, [
+                'entry_type' => TextType::class,
+                'allow_add' => true,
+            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',

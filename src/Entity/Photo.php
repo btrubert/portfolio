@@ -41,7 +41,7 @@ class Photo
     private $path;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="json")
      */
     private $exifs = [];
 

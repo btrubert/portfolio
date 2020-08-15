@@ -20,7 +20,7 @@
 
 <h1>{{category}}</h1>
 {% for photo in photos %}
-<div><img src="{{ asset('build/images/'~photo.path) }}" height="100"/></div>
+<div><a href="{{ path('display_photo', {id: photo.id, cat: category}) }}"><img src="{{ asset('build/images/'~photo.path) }}" height="100"/></a></div>
 {% endfor %}
 
 {% endblock %}

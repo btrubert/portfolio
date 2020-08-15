@@ -33,7 +33,6 @@ class PhotoController extends AbstractController
                 'controller_name' => 'PhotoController',
                 'photos' => $photos,
                 'category' => $cat,
-                'img_base_dir' => $img_dir
             ]
         );
     }
@@ -46,6 +45,7 @@ class PhotoController extends AbstractController
         $photo = new Photo();
         $photo->setTitle('New photo');
         $photo->setDescription("A short description");
+        $photo->setTags(["tag1", "tag2"]);
 
 
         $form = $this->createForm(PhotoType::class, $photo);
@@ -69,6 +69,44 @@ class PhotoController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/category/{cat}/{id}", name="display_photo")
+     */
+    public function displayPhoto($cat, $id)
+    {
+        $photo = $this->_getPhoto($id);
+        $img_dir = $this->getParameter('img_base_dir');
+        return $this->render(
+            'photo/photo.html.twig',
+            [
+                'photo' => $photo
+            ]
+        );
+    }
+
+    /**
+     * @Route("/photo/edit/{id}", name="edit_photo")
+     */
+    public function editPhoto(Request $request, $id)
+    {
+        $photo = $this->_getPhoto($id);
+
+        $form = $this->createForm(PhotoType::class, $photo);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // $form->getData() holds the submitted values
+            // but, the original `$task` variable has also been updated
+            $newPhoto = $form->getData();
+            $this->_editPhotos($id, $newPhoto);
+
+            return $this->redirectToRoute('categories');
+        }
+
+        return $this->render('photo/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
     private function _getPhotos($catName, $privateAccess = false)
     {
@@ -98,14 +136,21 @@ class PhotoController extends AbstractController
         return $photo;
     }
 
-    private function _editPhotos($id, $exifs, $tags)
+    private function _editPhotos($id, $newPhoto)
     {
         try {
             //Get the DB manager
             $entityManager = $this->getDoctrine()->getManager();
+            
             //Retrieve the blog post
-            $photo = $entityManager->getRepository(BlogPost::class)->find($id);
-            $photo->setExifs($exifs)->setTags($tags);
+            $photo = $entityManager->getRepository(Photo::class)->find($id);
+            $photo->setTags($newPhoto->getTags());
+            $photo->setTitle($newPhoto->getTitle());
+            $photo->setDescription($newPhoto->getDescription());
+            $photo->setCategory($newPhoto->getCategory());
+
+            //Commit the updated entry to the DB
+            $entityManager->flush();
         } catch (Exception $e) {
             echo 'Caught exception while updating a photo : ',  $e->getMessage(), "\n";
             return false;
@@ -123,9 +168,10 @@ class PhotoController extends AbstractController
             $photo = new Photo();
             $photo->setTitle($newPhoto->getTitle());
             $photo->setDescription($newPhoto->getDescription());
-            $photo->setExifs($this->_extractExifs($filePath));
+            $photo->setExifs($this->_extractExifs($this->getParameter('img_base_dir').$filePath));
             $photo->setCategory($newPhoto->getCategory());
             $photo->getCategory()->addPhoto($photo);
+            $photo->setTags($newPhoto->getTags());
             $photo->setPath($filePath);
 
             //Commit the new entry to the DB
