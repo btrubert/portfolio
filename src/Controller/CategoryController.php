@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\CategoryType;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/category")

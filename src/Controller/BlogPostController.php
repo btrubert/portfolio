@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use App\Form\BlogPostType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/blog")

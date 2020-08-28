@@ -13,6 +13,7 @@ use App\Controller\CategoryController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Service\FileUploader;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/portfolio")
