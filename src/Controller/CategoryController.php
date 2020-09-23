@@ -18,14 +18,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CategoryController extends AbstractController
 {
     /**
-     * @Route("/", name="categories")
+     * @Route("/list", name="categories")
      */
-    public function index()
+    public function index(SerializerInterface $serializer)
     {
         $categories = $this->_getCategories();
         return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
-            'categories' => $categories,
+            'props' => $serializer->serialize($categories, 'json'),
         ]);
     }
 
@@ -78,7 +77,7 @@ class CategoryController extends AbstractController
     }
 
 
-    private function _getCategories(): array
+    public function _getCategories(): array
     {
         try {
             $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();

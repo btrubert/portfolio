@@ -24,8 +24,7 @@ const PostsApp = ({ initialProps, appContext }) => {
                 />
             )
         }
-        /> < /
-        div >
+        /> </div >
     );
 };
 

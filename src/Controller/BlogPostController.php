@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class BlogPostController extends AbstractController
 {
     /**
-     * @Route("/", name="list_post")
+     * @Route("/list", name="list_post")
      */
     public function index()
     {

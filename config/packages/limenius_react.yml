@@ -19,7 +19,7 @@
             # Location of the server bundle, that contains React and React on Rails.
             # null will default to `%kernel.root_dir%/Resources/webpack/server-bundle.js`
             # Only used with mode `phpexecjs`
-            server_bundle_path: "%kernel.root_dir%/var/webpack/server-bundle.js"
+            server_bundle_path: "%kernel.root_dir%/node_modules/webpack/server-bundle.js"
 
             # Only used with mode `external`
             # Location of the socket to communicate with a dummy node.js server.

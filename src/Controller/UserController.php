@@ -7,10 +7,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Utilisateur;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ * @Route("/user")
+ */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user", name="user")
+     * @Route("/", name="user")
      */
     public function index()
     {

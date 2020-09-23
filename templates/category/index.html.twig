@@ -1,27 +1,7 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
+{% set categories = react_component_array('PhotosApp', {'props': props}) %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/benja/Documents/website_project/portfolio/src/Controller/CategoryController.php'|file_link(0) }}">src/Controller/CategoryController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/benja/Documents/website_project/portfolio/templates/category/index.html.twig'|file_link(0) }}">templates/category/index.html.twig</a></code></li>
-    </ul>
-</div>
-
-<div>
-{% for category in categories %}
-<a href="{{ path('photos_by_cat', {cat: category.name}) }}"> {{category.name}}</a><br/>
-{% endfor %}
-</div>
-
+{{ categories.componentHtml | raw }}
 {% endblock %}
