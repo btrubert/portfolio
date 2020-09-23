@@ -2,29 +2,29 @@ import React from "react";
 import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
 
-// Simple example of a React "smart" component
-export default class Categories extends React.Component {
+export default class Blog extends React.Component {
     constructor(props, context) {
         super(props, context);
-        if (this.props.categories) {
+        if (this.props.photos) {
             this.state = {
-                categories: this.props.categories,
+                photos: this.props.photos,
                 loading: false
             };
         } else {
             this.state = {
-                categories: null,
-                loading: true
+                photos: null,
+                loading: true,
+                cat: this.props.match.params.cat
             };
         }
     }
 
     componentDidMount() {
         if (this.state.loading) {
-            fetch("/api/categories").then(response => {
+            fetch("/api/category/" + this.state.cat).then(response => {
                 return response.json();
             }).then(data => {
-                this.setState({categories: data, loading: false});
+                this.setState({photos: data, loading: false});
             });
         }
     }
@@ -35,7 +35,7 @@ export default class Categories extends React.Component {
         } else {
             return (
                 <div> {
-                    this.state.categories.map(c => <Link to={"/category/"+c.name}>{c.name}</Link>)
+                this.state.photos.map(p => <Image src={"/build/images/"+p.path} roundedCircle />)
                 } </div>
             );
         }

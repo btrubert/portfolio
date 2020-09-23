@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import '../css/app.css';
-import Menu from './Commons/components/Menu';
-import Home from './Commons/components/Home';
-import Categories from './Portfolio/containers/Categories';
-import Blog from './Blog/containers/Posts';
-import Contact from './Commons/components/Contact';
-import Photos from './Portfolio/containers/Photos';
+import Menu from './Commons/Menu';
+import Contact from './Commons/Contact';
+import Home from './Commons/Home';
+import Categories from './Portfolio/Categories';
+import Blog from './Blog/Posts';
+import Photos from './Portfolio/Photos';
 
 class App extends React.Component {
     constructor(props) {
