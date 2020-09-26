@@ -46,8 +46,6 @@ class PhotoController extends AbstractController
         $photo = new Photo();
         $photo->setTitle('New photo');
         $photo->setDescription("A short description");
-        $photo->setTags(["tag1", "tag2"]);
-
 
         $form = $this->createForm(PhotoType::class, $photo);
 
@@ -145,7 +143,6 @@ class PhotoController extends AbstractController
             
             //Retrieve the blog post
             $photo = $entityManager->getRepository(Photo::class)->find($id);
-            $photo->setTags($newPhoto->getTags());
             $photo->setTitle($newPhoto->getTitle());
             $photo->setDescription($newPhoto->getDescription());
             $photo->setCategory($newPhoto->getCategory());
@@ -172,7 +169,6 @@ class PhotoController extends AbstractController
             $photo->setExifs($this->_extractExifs($this->getParameter('img_base_dir').$filePath));
             $photo->setCategory($newPhoto->getCategory());
             $photo->getCategory()->addPhoto($photo);
-            $photo->setTags($newPhoto->getTags());
             $photo->setPath($filePath);
 
             //Commit the new entry to the DB

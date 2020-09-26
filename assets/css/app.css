@@ -1,3 +1,12 @@
-body {
-    background-color: lightgray;
+.category-cards {
+    top: 45%;
+}
+
+.modal-75w {
+    width: 75%;
+    max-width: none;
+}
+
+.carousel-item {
+    text-align: center;
 }

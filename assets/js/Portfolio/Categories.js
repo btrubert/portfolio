@@ -1,10 +1,13 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
+import {Container, Row, Col, Image} from 'react-bootstrap/';
+import Card from 'react-bootstrap/Card'
+import Spinner from 'react-bootstrap/Spinner';
 
 export default class Categories extends React.Component {
-    constructor(props, context) {
-        super(props, context);
+    constructor(props) {
+        super(props);
         if (this.props.categories) {
             this.state = {
                 categories: this.props.categories,
@@ -30,12 +33,28 @@ export default class Categories extends React.Component {
 
     render() {
         if (this.state.loading) {
-            return <div>Loading...</div>;
+            return <Spinner animation="border" role="status" variant="success">
+                <span className="sr-only">Loading...</span>
+            </Spinner>;
         } else {
             return (
-                <div> {
-                    this.state.categories.map(c => <Link to={"/category/"+c.name}>{c.name}</Link>)
-                } </div>
+                <Container>
+                    <Row>
+                        {
+                        this.state.categories.map(c => <Col sm={12} md={6} lg={4}>
+                            <Link to={
+                                "/category/" + c.name
+                            }>
+                                <Card className="bg-dark text-white">
+                                    <Card.Img src="/build/images/5f6b054a2662a.jpeg" alt="Card image" />
+                                    <Card.ImgOverlay className="category-cards">
+                                        <Card.Text className="text-center" as="h3">{c.name}</Card.Text>
+                                    </Card.ImgOverlay>
+                                </Card>
+                            </Link>
+                        </Col>)
+                    } </Row>
+                </Container>
             );
         }
     }

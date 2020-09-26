@@ -46,11 +46,6 @@ class Photo
     private $exifs = [];
 
     /**
-     * @ORM\Column(type="array", nullable=true)
-     */
-    private $tags = [];
-
-    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="photos")
      */
     private $category;
@@ -109,18 +104,6 @@ class Photo
     public function setExifs(array $exifs): self
     {
         $this->exifs = $exifs;
-
-        return $this;
-    }
-
-    public function getTags(): ?array
-    {
-        return $this->tags;
-    }
-
-    public function setTags(?array $tags): self
-    {
-        $this->tags = $tags;
 
         return $this;
     }
