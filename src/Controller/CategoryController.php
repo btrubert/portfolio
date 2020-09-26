@@ -56,7 +56,7 @@ class CategoryController extends AbstractController
         ]);
     }
 
-    private function _createCategory($newCategory)
+    public function _createCategory($newCategory)
     {
         try {
             //Get the DB manager

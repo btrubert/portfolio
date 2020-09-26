@@ -42,10 +42,10 @@ export default class Photos extends React.Component {
                 return (<>
                         <Container>
                             <Row> {
-                                this.state.photos.map((p, index) => <Col sm={12}
+                                this.state.photos.map((p, index) => <Col className="gallery" sm={12}
                                     md={6}
                                     lg={4}>
-                                    <Image src={"/build/images/" + p.path} fluid onClick={() => this.setModalShow(true, index)} />
+                                    <Image className="gallery-photo" loading="lazy" src={"/build/images/" + p.path} onClick={() => this.setModalShow(true, index)} />
                                 </Col>)
                             } </Row>
                         </Container>

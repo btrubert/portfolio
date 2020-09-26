@@ -26,11 +26,17 @@ class ApiController extends AbstractController
         $serializer = $this->get('serializer');
         $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
 
-        $normalizer = new ObjectNormalizer();
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                // value returned in the cat object refering $this
+                return $object->getId();
+            },
+        ];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
         $encoder = new JsonEncoder();
 
         $serializer = new Serializer([$normalizer], [$encoder]);
-        $scategories = $serializer->serialize($categories, 'json', [AbstractNormalizer::IGNORED_ATTRIBUTES => ['photos']]);
+        $scategories = $serializer->serialize($categories, 'json');
         
         return new JsonResponse(json_decode($scategories));
     }

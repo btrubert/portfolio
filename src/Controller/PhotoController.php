@@ -107,7 +107,7 @@ class PhotoController extends AbstractController
         ]);
     }
 
-    private function _getPhotos($catName, $privateAccess = false)
+    public function _getPhotos($catName, $privateAccess = false)
     {
         try {
             //TODO: privateAccess check authorized user
@@ -123,7 +123,7 @@ class PhotoController extends AbstractController
         }
     }
 
-    private function _getPhoto($id): Photo
+    public function _getPhoto($id): Photo
     {
         try {
             //Retrieve the blog post
@@ -135,12 +135,12 @@ class PhotoController extends AbstractController
         return $photo;
     }
 
-    private function _editPhotos($id, $newPhoto)
+    public function _editPhotos($id, $newPhoto)
     {
         try {
             //Get the DB manager
             $entityManager = $this->getDoctrine()->getManager();
-            
+
             //Retrieve the blog post
             $photo = $entityManager->getRepository(Photo::class)->find($id);
             $photo->setTitle($newPhoto->getTitle());
@@ -156,7 +156,7 @@ class PhotoController extends AbstractController
         return true;
     }
 
-    private function _addPhoto($newPhoto, $filePath)
+    public function _addPhoto($newPhoto, $filePath)
     {
         try {
             //Get the DB manager
@@ -166,11 +166,12 @@ class PhotoController extends AbstractController
             $photo = new Photo();
             $photo->setTitle($newPhoto->getTitle());
             $photo->setDescription($newPhoto->getDescription());
-            $photo->setExifs($this->_extractExifs($this->getParameter('img_base_dir').$filePath));
+            $photo->setExifs($this->_extractExifs($this->getParameter('img_base_dir') . $filePath));
             $photo->setCategory($newPhoto->getCategory());
             $photo->getCategory()->addPhoto($photo);
             $photo->setPath($filePath);
 
+            $this->_saveLowerRes($filePath);
             //Commit the new entry to the DB
             $entityManager->persist($photo);
             $entityManager->flush();
@@ -181,7 +182,28 @@ class PhotoController extends AbstractController
         return true;
     }
 
-    private function _extractExifs($path): array
+    public function _saveLowerRes($fileName)
+    {
+        try {
+            list($width, $height) = getimagesize($this->getParameter('img_base_dir').$fileName);
+            $ratio = $width / $height;
+            $new_width = 1024 * $ratio;
+            $new_height = 1024;
+
+            // Resample
+            $image_low = imagecreatetruecolor($new_width, $new_height);
+            $image = imagecreatefromjpeg($this->getParameter('img_base_dir').$fileName);
+            imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+
+            imagejpeg($image_low, $this->getParameter('img_base_dir').'img/'.$fileName);
+        } catch (Exception $e) {
+            echo 'Caught exception while saving the low res photo : ',  $e->getMessage(), "\n";
+            return false;
+        }
+        return true;
+    }
+
+    public function _extractExifs($path): array
     {
         // Attempt to read the exif headers
         $values = exif_read_data($path);
@@ -205,7 +227,7 @@ class PhotoController extends AbstractController
         return $exifs;
     }
 
-    private function _getFloatValue($s): string
+    public function _getFloatValue($s): string
     {
         if (!strpos($s, '/')) {
             return $s;

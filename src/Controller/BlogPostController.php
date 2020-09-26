@@ -92,7 +92,7 @@ class BlogPostController extends AbstractController
         return $this->redirectToRoute('list_post');
     }
 
-    private function _createPost($post): BlogPost
+    public function _createPost($post): BlogPost
     {
         try {
             //Get the DB manager
@@ -108,7 +108,7 @@ class BlogPostController extends AbstractController
         return $post;
     }
 
-    private function _updatePost($id, $newPost): bool
+    public function _updatePost($id, $newPost): bool
     {
         try {
             //Get the DB manager
@@ -137,7 +137,7 @@ class BlogPostController extends AbstractController
         return true;
     }
 
-    private function _deletePost($id): bool
+    public function _deletePost($id): bool
     {
         try {
             //Get the DB manager
@@ -161,7 +161,7 @@ class BlogPostController extends AbstractController
         return true;
     }
 
-    private function _getPost($id): BlogPost
+    public function _getPost($id): BlogPost
     {
         try {
             //Get the DB manager
@@ -175,7 +175,7 @@ class BlogPostController extends AbstractController
         return $blogPost;
     }
 
-    private function _getListPosts($offset = 0, $limit = 0): array
+    public function _getListPosts($offset = 0, $limit = 0): array
     {
         try {
             $listPosts = $this->getDoctrine()->getRepository(BlogPost::class)->findManyFromOffset($offset, $limit);

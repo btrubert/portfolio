@@ -41,13 +41,13 @@ export default class Categories extends React.Component {
                 <Container>
                     <Row>
                         {
-                        this.state.categories.map(c => <Col sm={12} md={6} lg={4}>
+                        this.state.categories.map(c => <Col className="category-cards" sm={12} md={6} lg={4}>
                             <Link to={
                                 "/category/" + c.name
                             }>
-                                <Card className="bg-dark text-white">
-                                    <Card.Img src="/build/images/5f6b054a2662a.jpeg" alt="Card image" />
-                                    <Card.ImgOverlay className="category-cards">
+                                <Card className="text-white category-card">
+                                    <Card.Img src={"/build/images/" +c.photos[0].path} alt="Card image" className="category-card-img" />
+                                    <Card.ImgOverlay className="category-card-text">
                                         <Card.Text className="text-center" as="h3">{c.name}</Card.Text>
                                     </Card.ImgOverlay>
                                 </Card>

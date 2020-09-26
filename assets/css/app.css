@@ -1,12 +1,43 @@
 .category-cards {
+    padding: 1em;
+    width: 23em;
+    height: 23em;
+}
+
+.category-card {
+    width: 21em;
+    height: 21em;
+    padding: 1em;
+}
+
+.category-card-img {
+    width: 19em;
+    height: 19em;
+    object-fit:cover;
+}
+
+.category-card-text {
     top: 45%;
 }
 
+
+.gallery {
+    padding: 1em;
+    width: 23em;
+    height: 23em;
+}
+
+.gallery-photo {
+    width: 21em;
+    height: 21em;
+    object-fit:cover;
+}
+
 .modal-75w {
-    width: 75%;
-    max-width: none;
+    max-width: 75%;
 }
 
 .carousel-item {
     text-align: center;
 }
+

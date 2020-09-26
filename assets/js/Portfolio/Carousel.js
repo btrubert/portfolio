@@ -22,7 +22,7 @@ export default function Photo(props) {
              <Carousel defaultActiveIndex={props.index} interval={null} indicators={false} onSlid={handleSlide} wrap={true}>
               {props.photos.map(p =>
                 <Carousel.Item>
-    <Image src={"/build/images/" + p.path} fluid />
+    <Image className="carousel-photo" src={"/build/images/" + p.path} fluid />
     </Carousel.Item>
               )}
              </Carousel>

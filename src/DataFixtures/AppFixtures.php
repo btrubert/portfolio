@@ -47,7 +47,7 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function _saveFile($file)
+    public function _saveFile($file)
     {
         $fileName = uniqid() . '.' . $file->getExtension();
         list($width, $height) = getimagesize($file->getPathname());
@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
         return $fileName;
     }
 
-    private function _extractExifs($path): array
+    public function _extractExifs($path): array
     {
         // Attempt to read the exif headers
         $values = exif_read_data($path);
@@ -94,7 +94,7 @@ class AppFixtures extends Fixture
         return $exifs;
     }
 
-    private function _getFloatValue($s): string
+    public function _getFloatValue($s): string
     {
         if (!strpos($s, '/')) {
             return $s;
