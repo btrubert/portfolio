@@ -2,7 +2,7 @@ import React from "react";
 import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
 import {Container, Row, Col, Image} from 'react-bootstrap/';
-import Card from 'react-bootstrap/Card'
+import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
 
 export default class Categories extends React.Component {
@@ -43,10 +43,10 @@ export default class Categories extends React.Component {
                         {
                         this.state.categories.map(c => <Col className="category-cards" sm={12} md={6} lg={4}>
                             <Link to={
-                                "/category/" + c.name
+                                "/gallery/" + c.name
                             }>
                                 <Card className="text-white category-card">
-                                    <Card.Img src={"/build/images/" +c.photos[0].path} alt="Card image" className="category-card-img" />
+                                    <Card.Img src={"/build/uploads/img/" +c.photos[0].path} alt="Card image" className="category-card-img" />
                                     <Card.ImgOverlay className="category-card-text">
                                         <Card.Text className="text-center" as="h3">{c.name}</Card.Text>
                                     </Card.ImgOverlay>

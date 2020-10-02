@@ -21,7 +21,7 @@ export default class Photos extends React.Component {
 
         componentDidMount() {
             if (this.state.loading) {
-                fetch("/api/category/" + this.state.cat).then(response => {
+                fetch("/api/gallery/" + this.state.cat).then(response => {
                     return response.json();
                 }).then(data => {
                     this.setState({photos: data, loading: false});
@@ -45,7 +45,7 @@ export default class Photos extends React.Component {
                                 this.state.photos.map((p, index) => <Col className="gallery" sm={12}
                                     md={6}
                                     lg={4}>
-                                    <Image className="gallery-photo" loading="lazy" src={"/build/images/" + p.path} onClick={() => this.setModalShow(true, index)} />
+                                    <Image className="gallery-photo" loading="lazy" src={"/build/uploads/img/" + p.path} onClick={() => this.setModalShow(true, index)} />
                                 </Col>)
                             } </Row>
                         </Container>

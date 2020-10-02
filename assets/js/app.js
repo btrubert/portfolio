@@ -8,6 +8,7 @@ import Home from './Commons/Home';
 import Categories from './Portfolio/Categories';
 import Blog from './Blog/Posts';
 import Photos from './Portfolio/Photos';
+import Post from './Blog/Post';
 
 class App extends React.Component {
     constructor(props) {
@@ -19,11 +20,12 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <Menu/>
-                <Switch>
-                    <Route path="/portfolio" component={Categories} />
+                <Switch> 
+                    <Route path="/gallery/:cat" component={Photos} />
+                    <Route path="/gallery" component={Categories} />
+                    <Route path="/blog/post/:id" component={Post} />
                     <Route path="/blog" component={Blog} />
                     <Route path="/contact" component={Contact} />
-                    <Route path="/category/:cat" component={Photos} />
                     <Route path="/" component={Home} />
                 </Switch>
             </BrowserRouter>

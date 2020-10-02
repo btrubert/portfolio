@@ -15,28 +15,11 @@ use App\Entity\Category;
 use App\Service\FileUploader;
 use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- * @Route("/portfolio")
- */
+
 class PhotoController extends AbstractController
 {
-    /**
-     * @Route("/category/{cat}", name="photos_by_cat")
-     */
-    public function index($cat)
-    {
 
-        $photos = $this->_getPhotos($cat);
-        $img_dir = $this->getParameter('img_base_dir');
-        return $this->render(
-            'photo/index.html.twig',
-            [
-                'controller_name' => 'PhotoController',
-                'photos' => $photos,
-                'category' => $cat,
-            ]
-        );
-    }
+    
 
     /**
      * @Route("/new", name="new_photo")
@@ -57,8 +40,8 @@ class PhotoController extends AbstractController
 
             $file = $form->get('path')->getData();
 
-            $photoFileName = $fileUploader->upload($file);
-            $this->_addPhoto($metadata, $photoFileName);
+            [$photoFileName, $exifs] = $fileUploader->upload($file);
+            $this->_addPhoto($metadata, $photoFileName, $exifs);
 
             return $this->redirectToRoute('photos_by_cat', ["cat" => $photo->getCategory()->getName()]);
         }
@@ -68,20 +51,6 @@ class PhotoController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/category/{cat}/{id}", name="display_photo")
-     */
-    public function displayPhoto($cat, $id)
-    {
-        $photo = $this->_getPhoto($id);
-        $img_dir = $this->getParameter('img_base_dir');
-        return $this->render(
-            'photo/photo.html.twig',
-            [
-                'photo' => $photo
-            ]
-        );
-    }
 
     /**
      * @Route("/photo/edit/{id}", name="edit_photo")
@@ -156,7 +125,7 @@ class PhotoController extends AbstractController
         return true;
     }
 
-    public function _addPhoto($newPhoto, $filePath)
+    public function _addPhoto($newPhoto, $filePath, $exifs)
     {
         try {
             //Get the DB manager
@@ -166,12 +135,11 @@ class PhotoController extends AbstractController
             $photo = new Photo();
             $photo->setTitle($newPhoto->getTitle());
             $photo->setDescription($newPhoto->getDescription());
-            $photo->setExifs($this->_extractExifs($this->getParameter('img_base_dir') . $filePath));
+            $photo->setExifs($exifs);
             $photo->setCategory($newPhoto->getCategory());
             $photo->getCategory()->addPhoto($photo);
             $photo->setPath($filePath);
-
-            $this->_saveLowerRes($filePath);
+            
             //Commit the new entry to the DB
             $entityManager->persist($photo);
             $entityManager->flush();
@@ -182,59 +150,4 @@ class PhotoController extends AbstractController
         return true;
     }
 
-    public function _saveLowerRes($fileName)
-    {
-        try {
-            list($width, $height) = getimagesize($this->getParameter('img_base_dir').$fileName);
-            $ratio = $width / $height;
-            $new_width = 1024 * $ratio;
-            $new_height = 1024;
-
-            // Resample
-            $image_low = imagecreatetruecolor($new_width, $new_height);
-            $image = imagecreatefromjpeg($this->getParameter('img_base_dir').$fileName);
-            imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-            imagejpeg($image_low, $this->getParameter('img_base_dir').'img/'.$fileName);
-        } catch (Exception $e) {
-            echo 'Caught exception while saving the low res photo : ',  $e->getMessage(), "\n";
-            return false;
-        }
-        return true;
-    }
-
-    public function _extractExifs($path): array
-    {
-        // Attempt to read the exif headers
-        $values = exif_read_data($path);
-
-
-        if (!$values) {
-            echo 'Error: Unable to read exif headers';
-            return [];
-        }
-
-        $exifs = [];
-
-        $exifs['shutter'] = isset($values['ExposureTime']) ? $this->_getFloatValue($values['ExposureTime']) . 's' : "n/a";
-        $exifs['aperture'] = isset($values['FNumber']) ? 'f/' . $this->_getFloatValue($values['FNumber']) : "n/a";
-        $exifs['iso'] = isset($values['ISOSpeedRatings']) ? $values['ISOSpeedRatings'] : 'n/a';
-        $exifs['focal'] = isset($values['FocalLength']) ? $this->_getFloatValue($values['FocalLength']) . 'mm' : "n/a";
-        $exifs['brand'] = isset($values['Make']) ? $values['Make'] : 'n/a';
-        $exifs['model'] = isset($values['Model']) ? $values['Model'] : 'n/a';
-        $exifs['date'] = isset($values['DateTimeOriginal']) ? $values['DateTimeOriginal'] : 'n/a';
-
-        return $exifs;
-    }
-
-    public function _getFloatValue($s): string
-    {
-        if (!strpos($s, '/')) {
-            return $s;
-        } else {
-            $numbers = explode("/", $s);
-
-            return $numbers[0] < $numbers[1] ? '1/' . $numbers[1] / $numbers[0] : '' . $numbers[0] / $numbers[1];
-        }
-    }
 }

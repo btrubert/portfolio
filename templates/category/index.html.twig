@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set categories = react_component_array('PhotosApp', {'props': props}) %}
+{% set categories = react_component_array('GalleryApp', {'props': {'categories': props}}) %}
 
 {% block body %}
 {{ categories.componentHtml | raw }}

@@ -24,7 +24,7 @@ class ApiController extends AbstractController
     public function categories()
     {
         $serializer = $this->get('serializer');
-        $categories = $this->getDoctrine()->getRepository(Category::class)->findAll();
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
 
         $defaultContext = [
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
@@ -42,7 +42,7 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/category/{catName}", name="api_photos")
+     * @Route("/gallery/{catName}", name="api_photos")
      */
     public function photos($catName)
     {

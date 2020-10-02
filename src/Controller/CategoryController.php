@@ -10,25 +10,13 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Form\CategoryType;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
-/**
- * @Route("/category")
- */
 class CategoryController extends AbstractController
 {
-    /**
-     * @Route("/list", name="categories")
-     */
-    public function index(SerializerInterface $serializer)
-    {
-        $categories = $this->_getCategories();
-        return $this->render('category/index.html.twig', [
-            'props' => $serializer->serialize($categories, 'json'),
-        ]);
-    }
-
-
     /**
      * @Route("/new", name="new_category")
      */
