@@ -1,5 +1,5 @@
 import React from "react";
-import {Navbar, Nav} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 
 
@@ -19,6 +19,10 @@ const Menu = () => (
                     to="/blog">Blog</Nav.Link>
                 <Nav.Link as={Link}
                     to="/contact">Contact</Nav.Link>
+                <NavDropdown as={NavItem} title="Add a new ..." id="nav-dropdown">
+                    <NavDropdown.Item as={Link} eventKey="create_cat" to="/new/category">Category</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} eventKey="create_photo" to="/new/photo">Photo</NavDropdown.Item>
+                </NavDropdown>
             </Nav>
         </Navbar.Collapse>
     </Navbar>

@@ -21,7 +21,7 @@ class FileUploader
         try {
             $file->move($this->getTargetDirectory(), $fileName);
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
-            $this->_saveLowerRes($this->getTargetDirectory().$fileName);
+            $this->_saveLowerRes($fileName);
         } catch (FileException $e) {
             echo 'Caught exception while uploading a photo : ',  $e->getMessage(), "\n";
             return "";

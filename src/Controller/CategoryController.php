@@ -9,39 +9,46 @@ use Exception;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Form\CategoryType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Limenius\Liform\Liform;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class CategoryController extends AbstractController
 {
     /**
-     * @Route("/new", name="new_category")
+     * @Route("/category/new", name="new_category")
      */
     public function newCategory(Request $request)
     {
         $category = new Category();
-        $category->setName('new_category');
+        $category->setName('Name of the new category ...');
         $category->setPublic(false);
 
-        $form = $this->createForm(CategoryType::class, $category);
-        $form->handleRequest($request);
+        $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
 
+        $data = json_decode($request->getContent(), true);
+        $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $category = $form->getData();
+            // $em = $this->getDoctrine()->getManager();
+            // $category = $form->getData();
+            // $em->persist($category);
+            // $em->flush();
 
-            $this->_createCategory($category);
-
-            return $this->redirectToRoute('categories');
+            $response = new JSONResponse("ok", 201);
+            return $response;
         }
 
-        return $this->render('category/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+
+        $serializer = $this->get('serializer');
+        //$initialValues = $serializer->normalize($form);
+
+        return new JsonResponse(["formData"=>'']);
     }
 
     public function _createCategory($newCategory)

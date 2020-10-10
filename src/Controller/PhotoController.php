@@ -15,14 +15,13 @@ use App\Entity\Category;
 use App\Service\FileUploader;
 use Symfony\Component\Serializer\SerializerInterface;
 
-
 class PhotoController extends AbstractController
 {
 
     
 
     /**
-     * @Route("/new", name="new_photo")
+     * @Route("/photo/new", name="new_photo")
      */
     public function new(Request $request, FileUploader $fileUploader)
     {
@@ -31,11 +30,8 @@ class PhotoController extends AbstractController
         $photo->setDescription("A short description");
 
         $form = $this->createForm(PhotoType::class, $photo);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
             $metadata = $form->getData();
 
             $file = $form->get('path')->getData();

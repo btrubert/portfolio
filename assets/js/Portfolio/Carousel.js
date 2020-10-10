@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image';
 import {Container, Row, Col} from 'react-bootstrap/';
-import Fade from 'react-bootstrap/Fade';
+import Collapse from 'react-bootstrap/Collapse';
 
 
 export default function Photo(props) {
@@ -47,7 +47,7 @@ export default function Photo(props) {
                             }
                             fluid/>
                         <Carousel.Caption>
-                            <Fade in={open}>
+                            <Collapse in={open}>
                                 <Container className="exifs-info" id="collapse-exifs">
                                     <Row>
                                         <Col>
@@ -72,7 +72,7 @@ export default function Photo(props) {
                                         } </Col>
                                     </Row>
                                 </Container>
-                            </Fade>
+                            </Collapse>
                             <Button variant="outline-success"
                                 onClick={
                                     () => {

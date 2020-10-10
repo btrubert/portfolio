@@ -126,6 +126,12 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.4"
     },
+    "limenius/liform": {
+        "version": "v0.17.0"
+    },
+    "limenius/liform-bundle": {
+        "version": "v0.17.0"
+    },
     "limenius/react-bundle": {
         "version": "v5.0.3"
     },
@@ -221,6 +227,9 @@
         "files": [
             "./bin/console"
         ]
+    },
+    "symfony/contracts": {
+        "version": "v1.1.0"
     },
     "symfony/css-selector": {
         "version": "v5.1.3"

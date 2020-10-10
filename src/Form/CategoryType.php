@@ -20,9 +20,7 @@ class CategoryType extends AbstractType
             ->add('public', CheckboxType::class, [
                 'label'    => 'Show this category publicly?',
                 'required' => false,
-            ])
-            ->add('save', SubmitType::class);
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
