@@ -4,24 +4,17 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Utilisateur;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-/**
- * @Route("/user")
- */
 class UserController extends AbstractController
 {
     /**
-     * @Route("/", name="user")
+     * @Route("/login", name="login")
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->render(
-            'user/index.html.twig',
-            [
-                'controller_name' => 'UserController',
-            ]
-        );
+        return $this->redirectToRoute("index");
+        return $this->redirectToRoute("user_profile");
     }
 }

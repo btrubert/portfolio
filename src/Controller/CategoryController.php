@@ -6,80 +6,99 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Category;
 use Exception;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Form\CategoryType;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Limenius\Liform\Liform;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class CategoryController extends AbstractController
 {
     /**
-     * @Route("/category/new", name="new_category")
+     * @Route("/api/new/category/", methods={"POST"}, name="new_category")
      */
     public function newCategory(Request $request)
     {
         $category = new Category();
-        $category->setName('Name of the new category ...');
-        $category->setPublic(false);
 
         $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
 
         $data = json_decode($request->getContent(), true);
         $form->submit($data);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $em = $this->getDoctrine()->getManager();
-            // $category = $form->getData();
-            // $em->persist($category);
-            // $em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $category = $form->getData();
+            $em->persist($category);
+            $em->flush();
 
             $response = new JSONResponse("ok", 201);
             return $response;
         }
 
+        return new JsonResponse('error', 400);
+    }
 
+    /**
+     * @Route("/api/edit/category/{:id}", methods={"PUT"}, name="edit_category")
+     */
+    public function editCategory(Request $request)
+    {
+        // $category = new Category();
+
+        // $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
+
+        // $data = json_decode($request->getContent(), true);
+        // $form->submit($data);
+        // if ($form->isSubmitted() && $form->isValid()) {
+        //     $em = $this->getDoctrine()->getManager();
+        //     $category = $form->getData();
+        //     $em->persist($category);
+        //     $em->flush();
+
+        //     $response = new JSONResponse("ok", 201);
+        //     return $response;
+        // }
+
+        return new JsonResponse('error', 400);
+    }
+
+    /**
+     * @Route("/api/delete/category/{:id}", methods={"DELETE"}, name="delete_category")
+     */
+    public function deleteCategory(Request $request)
+    {
+        $submittedToken = $request->request->get('token');
+
+        // 'delete-item' is the same value used in the template to generate the token
+        if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
+            // ... do something, like deleting an object
+        }
+
+        return new JsonResponse('error', 400);
+    }
+
+    /**
+     * @Route("/api/categories", name="api_categories")
+     */
+    public function categories()
+    {
         $serializer = $this->get('serializer');
-        //$initialValues = $serializer->normalize($form);
+        $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
 
-        return new JsonResponse(["formData"=>'']);
-    }
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                // value returned in the cat object refering $this
+                return $object->getId();
+            },
+        ];
+        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
+        $encoder = new JsonEncoder();
 
-    public function _createCategory($newCategory)
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
+        $serializer = new Serializer([$normalizer], [$encoder]);
+        $scategories = $serializer->serialize($categories, 'json');
 
-            $category = new Category();
-            $category->setName($newCategory->getName());
-            $category->setPublic($newCategory->getPublic());
-
-            //Commit the new entry to the DB
-            $entityManager->persist($category);
-            $entityManager->flush();
-        } catch (Exception $e) {
-            echo 'Caught exception while creating a new category : ',  $e->getMessage(), "\n";
-            return null;
-        }
-        return $category;
-    }
-
-
-    public function _getCategories(): array
-    {
-        try {
-            $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
-        } catch (Exception $e) {
-            echo 'Caught exception while getting the photos categories : ',  $e->getMessage(), "\n";
-            return [];
-        }
-        return $categories;
+        return new JsonResponse(json_decode($scategories));
     }
 }

@@ -18,28 +18,6 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
  */
 class ApiController extends AbstractController
 {
-    /**
-     * @Route("/categories", name="api_categories")
-     */
-    public function categories()
-    {
-        $serializer = $this->get('serializer');
-        $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
-
-        $defaultContext = [
-            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
-                // value returned in the cat object refering $this
-                return $object->getId();
-            },
-        ];
-        $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
-        $encoder = new JsonEncoder();
-
-        $serializer = new Serializer([$normalizer], [$encoder]);
-        $scategories = $serializer->serialize($categories, 'json');
-        
-        return new JsonResponse(json_decode($scategories));
-    }
 
     /**
      * @Route("/gallery/{catName}", name="api_photos")
