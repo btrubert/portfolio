@@ -39,7 +39,7 @@ export default class Photos extends React.Component {
                     <span className="sr-only">Loading...</span>
                 </Spinner>;
             } else {
-                return (<>
+                return (<Container className="main-content">
                             <Row> {
                                 this.state.photos.map((p, index) => <Col className="gallery" sm={12}
                                     md={6}
@@ -48,7 +48,7 @@ export default class Photos extends React.Component {
                                 </Col>)
                             } </Row>
                         <Photo photos={this.state.photos} index={this.state.index} onHide={(i) => this.setModalShow(false, i)} show={this.state.show}/>
-                        </>
+                        </Container>
                 );
             }
         }

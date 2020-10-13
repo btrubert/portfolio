@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Jumbotron, Container} from 'react-bootstrap';
 
 class Home extends React.Component {
     constructor(props) {
@@ -19,8 +19,14 @@ class Home extends React.Component {
     // }
 
     render() {
-        return (
+        return (<>
+            <Jumbotron fluid className="baniere">
+            <p>Une baniere</p>
+            </Jumbotron>
+            <Container className="main-content">
             <h1>Welcome !</h1>
+            </Container>
+            </>
             );
     }
 }

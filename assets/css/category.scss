@@ -8,7 +8,7 @@
     height: 19rem;
     background-color: transparent;
     border: none;
-    margin-top: 1em;
+    margin-top: 2em;
 }
 
 .category-card-img {
@@ -18,5 +18,10 @@
 }
 
 .category-card-text {
-    top: 45%;
+    background-color: rgba(0,0,0,.6);
+}
+
+.category-card-text:hover {
+    background-color: transparent;
+    color: transparent;
 }

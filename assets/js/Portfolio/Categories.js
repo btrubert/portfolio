@@ -4,21 +4,17 @@ import {Link} from 'react-router-dom';
 import {Container, Row, Col, Image} from 'react-bootstrap/';
 import Card from 'react-bootstrap/Card';
 import Spinner from 'react-bootstrap/Spinner';
+import Carousel from 'react-bootstrap/Carousel';
+
 
 export default class Categories extends React.Component {
     constructor(props) {
         super(props);
-        if (this.props.categories) {
-            this.state = {
-                categories: this.props.categories,
-                loading: false
-            };
-        } else {
-            this.state = {
-                categories: null,
-                loading: true
-            };
-        }
+        this.state = {
+            categories: null,
+            loading: true,
+            play: []
+        };
     }
 
     componentDidMount() {
@@ -26,9 +22,25 @@ export default class Categories extends React.Component {
             fetch("/api/categories").then(response => {
                 return response.json();
             }).then(data => {
-                this.setState({categories: data, loading: false});
+                this.setState({
+                    categories: data,
+                    loading: false,
+                    play: Array(data.length).fill(null)
+                });
             });
         }
+    }
+
+    handlePlay(index) {
+        const play = this.state.play.slice();
+        play[index] = 500;
+        this.setState({play: play});
+    }
+
+    handleStop(index) {
+        const play = this.state.play.slice();
+        play[index] = null;
+        this.setState({play: play});
     }
 
     render() {
@@ -38,21 +50,56 @@ export default class Categories extends React.Component {
             </Spinner>;
         } else {
             return (
-                    <Row >
-                        {
-                        this.state.categories.map(c => <Col className="category-cards" sm={12} md={6} lg={4}>
+                <Container className="main-content">
+                    <Row> {
+                        this.state.categories.map((c, index) => <Col className="category-cards"
+                            sm={12}
+                            md={6}
+                            lg={4}>
                             <Link to={
-                                "/gallery/" + c.name
+                                    "/gallery/" + c.name
+                                }
+                                onMouseOver={
+                                    () => this.handlePlay(index)
+                                }
+                                onMouseOut={
+                                    () => this.handleStop(index)
+                                }
+                                onTouchStart={
+                                    () => this.handlePlay(index)
+                                }
+                                onTouchEnd={
+                                    () => this.handleStop(index)
                             }>
                                 <Card className="text-white category-card">
-                                    <Card.Img src={"/build/uploads/img/" +c.photos[0].path} alt="Card image" className="category-card-img" />
+                                    <Carousel indicators={false}
+                                        wrap={true}
+                                        interval={
+                                            this.state.play[index]
+                                        }
+                                        controls={false}
+                                        pause={false}>
+                                        {
+                                        c.photos.map(p => <Carousel.Item>
+                                            <Card.Img src={
+                                                    "/build/uploads/img/" + p.path
+                                                }
+                                                alt="Card image"
+                                                className="category-card-img"/>
+                                        </Carousel.Item>)
+                                    } </Carousel>
+
                                     <Card.ImgOverlay className="category-card-text">
-                                        <Card.Text className="text-center" as="h3">{c.name}</Card.Text>
+                                        <Card.Text className="text-center" as="h3">
+                                            {
+                                            c.name
+                                        }</Card.Text>
                                     </Card.ImgOverlay>
                                 </Card>
                             </Link>
                         </Col>)
                     } </Row>
+                </Container>
             );
         }
     }

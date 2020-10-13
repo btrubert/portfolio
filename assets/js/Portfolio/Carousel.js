@@ -51,23 +51,23 @@ export default function Photo(props) {
                                 <Container className="exifs-info" id="collapse-exifs">
                                     <Row>
                                         <Col>
-                                            Camera: {
+                                            {
                                             currentPhoto.exifs.model
                                         } </Col>
                                         <Col>
-                                            Focal: {
+                                            {
                                             currentPhoto.exifs.focal
                                         } </Col>
                                         <Col>
-                                            Iso: {
+                                            {
                                             currentPhoto.exifs.iso
-                                        } </Col>
+                                        }</Col>
                                         <Col>
-                                            Shutter speed: {
+                                            {
                                             currentPhoto.exifs.shutter
                                         } </Col>
                                         <Col>
-                                            Aperture: {
+                                            {
                                             currentPhoto.exifs.aperture
                                         } </Col>
                                     </Row>

@@ -23,7 +23,6 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <Menu/>
-                <Container className="main-content">
                     <Switch>
                         <Route path="/profile"
                             component={Profile}/>
@@ -40,7 +39,6 @@ class App extends React.Component {
                         <Route path="/"
                             component={Home}/>
                     </Switch>
-                </Container>
             </BrowserRouter>
         );
     }
