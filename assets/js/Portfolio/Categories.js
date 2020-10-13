@@ -38,8 +38,7 @@ export default class Categories extends React.Component {
             </Spinner>;
         } else {
             return (
-                <Container>
-                    <Row>
+                    <Row >
                         {
                         this.state.categories.map(c => <Col className="category-cards" sm={12} md={6} lg={4}>
                             <Link to={
@@ -54,7 +53,6 @@ export default class Categories extends React.Component {
                             </Link>
                         </Col>)
                     } </Row>
-                </Container>
             );
         }
     }

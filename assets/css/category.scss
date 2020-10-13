@@ -1,18 +1,19 @@
 .category-cards {
-    padding: 1em;
-    width: 23em;
-    height: 23em;
+    text-align: -moz-center;
+    text-align: -webkit-center;
 }
 
 .category-card {
-    width: 21em;
-    height: 21em;
-    padding: 1em;
+    width: 19rem;
+    height: 19rem;
+    background-color: transparent;
+    border: none;
+    margin-top: 1em;
 }
 
 .category-card-img {
-    width: 19em;
-    height: 19em;
+    width: 19rem;
+    height: 19rem;
     object-fit:cover;
 }
 

@@ -37,7 +37,7 @@ export default function Photo(props) {
                     interval={null}
                     indicators={false}
                     fade={true}
-                    onSlid={handleSlide}
+                    onSlide={handleSlide}
                     wrap={true}>
                     {
                     props.photos.map(p => <Carousel.Item>

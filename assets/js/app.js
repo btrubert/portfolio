@@ -10,7 +10,8 @@ import Blog from './Blog/Posts';
 import Photos from './Portfolio/Photos';
 import Post from './Blog/Post';
 import Profile from './User/Profile';
-import { CookiesProvider } from 'react-cookie';
+import {CookiesProvider} from 'react-cookie';
+import {Container, Row, Col} from 'react-bootstrap';
 
 class App extends React.Component {
     constructor(props) {
@@ -22,15 +23,24 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <Menu/>
-                <Switch>
-                    <Route path="/profile" component={Profile} />
-                    <Route path="/gallery/:cat" component={Photos} />
-                    <Route path="/gallery" component={Categories} />
-                    <Route path="/blog/post/:id" component={Post} />
-                    <Route path="/blog" component={Blog} />
-                    <Route path="/contact" component={Contact} />
-                    <Route path="/" component={Home} />
-                </Switch>
+                <Container className="main-content">
+                    <Switch>
+                        <Route path="/profile"
+                            component={Profile}/>
+                        <Route path="/gallery/:cat"
+                            component={Photos}/>
+                        <Route path="/gallery"
+                            component={Categories}/>
+                        <Route path="/blog/post/:id"
+                            component={Post}/>
+                        <Route path="/blog"
+                            component={Blog}/>
+                        <Route path="/contact"
+                            component={Contact}/>
+                        <Route path="/"
+                            component={Home}/>
+                    </Switch>
+                </Container>
             </BrowserRouter>
         );
     }
@@ -39,7 +49,7 @@ class App extends React.Component {
 
 ReactDOM.render (
     <CookiesProvider>
-    <App/>
+        <App/>
     </CookiesProvider>,
     document.getElementById('root')
 );
