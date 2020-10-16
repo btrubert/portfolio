@@ -1,59 +1,66 @@
-.modal-header {
-    border: none;
-}
-
-.modal-footer {
-    border: none;
-}
-
 .modal-carousel {
     max-width: max-content;
     width: auto;
-}
 
-.modal-content {
-    background-color: transparent;
-    border: none;
-}
 
-.carousel-item {
-    text-align: center;
-}
+    & .modal-header {
+        border: none;
+    }
 
-.carousel-caption {
-    position: relative;
-    text-align: center;
-    left: 0;
-    bottom: 0;
-    right: 0;
-}
+    & .modal-footer {
+        border: none;
+    }
 
-.exifs-info {
-    padding-bottom: 0.5em;
-}
+    & .modal-content {
+        background-color: transparent;
+        border: none;
+    }
 
-.carousel-control-next {
-    opacity: 0;
-    transition: none;
-}
+    & .carousel-item {
+        text-align: center;
+    }
 
-.carousel-control-next:focus {
-    opacity: 0;
-}
+    & .carousel-caption {
+        position: relative;
+        text-align: center;
+        left: 0;
+        bottom: 0;
+        right: 0;
+    }
 
-.carousel-control-next:focus:hover {
-    opacity: 0.9;
-}
+    .exifs-info {
+        padding-bottom: 0.5em;
+    }
 
-.carousel-control-prev {
-    opacity: 0;
-    transition: none;
-}
+    & .carousel-control-next {
+        opacity: 0;
+        transition: none;
 
-.carousel-control-prev:focus {
-    opacity: 0;
-}
+        &:hover {
+            opacity: 0.9;
+        }
 
-.carousel-control-prev:focus:hover {
-    opacity: 0.9;
+        &:focus {
+            opacity: 0;
+        }
+
+        &:focus:hover {
+            opacity: 0.9;
+        }
+    }
+    & .carousel-control-prev {
+        opacity: 0;
+        transition: none;
+
+        &:hover {
+            opacity: 0.9;
+        }
+
+        &:focus {
+            opacity: 0;
+        }
+        &:focus:hover {
+            opacity: 0.9;
+        }
+    }
 }

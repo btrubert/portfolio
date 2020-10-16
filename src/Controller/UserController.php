@@ -10,11 +10,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/login", name="login")
+     * @Route("/profile", name="user_profile")
      */
     public function index(Request $request)
     {
-        return $this->redirectToRoute("index");
-        return $this->redirectToRoute("user_profile");
+        return;
     }
 }

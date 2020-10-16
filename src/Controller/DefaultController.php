@@ -9,7 +9,7 @@ use App\Entity\Category;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/{reactRouting}", name="index", defaults={"reactRouting": null})
+     * @Route("/", name="index")
      */
     public function index()
     {

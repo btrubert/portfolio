@@ -9,6 +9,7 @@ import Collapse from 'react-bootstrap/Collapse';
 
 export default function Photo(props) {
     const [currentPhoto, setCurrentPhoto] = useState(props.photos[props.index]);
+    // Exifs caption options
     const [open, setOpen] = useState(false);
     const [show, setShow] = useState("Show");
 

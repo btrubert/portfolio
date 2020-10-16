@@ -29,8 +29,8 @@ export default class Photos extends React.Component {
             }
         }
 
-        setModalShow(b, i){
-            this.setState({show: b, index: i})
+        setModalShow(show, index){
+            this.setState({show: show, index: index})
         }
 
         render() {

@@ -12,14 +12,13 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PasswordUpgradeBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 
-class CredentialsAuthenticator extends AbstractAuthenticator
+class CustomLoginFormAuthenticator extends AbstractAuthenticator
 {
+    public const LOGIN_ROUTE = 'login';
+
     private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -34,31 +33,30 @@ class CredentialsAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return self::LOGIN_ROUTE === $request->attributes->get('_route')
+            && $request->isMethod('POST');
     }
 
     public function authenticate(Request $request): PassportInterface
     {
-        $password = $request->request->get('password');
-        $username = $request->request->get('username');
-        $csrfToken = $request->request->get('csrf_token');
-
-        if (null === $password || null === $username || null === $csrfToken) {
-            throw new CustomUserMessageAuthenticationException('Username or password not provided');
+        $data = json_decode($request->getContent(), true);
+        $credentials = [
+            'username' => $data['username'],
+            'password' => $data['password'],
+        ];
+        if (null === $credentials['username'] || null === $credentials['password']) {
+            // The token header was empty, authentication fails with HTTP Status
+            // Code 401 "Unauthorized"
+            throw new CustomUserMessageAuthenticationException('Missing credentials');
         }
 
         $user = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['apiToken' => $username])
-        ;
+            ->findOneBy(['username' => $credentials['username']]);
         if (null === $user) {
             throw new UsernameNotFoundException();
         }
 
-        return new Passport($user, new PasswordCredentials($password), [
-            // $this->userRepository must implement PasswordUpgraderInterface
-            new PasswordUpgradeBadge($password, $this->userRepository),
-            new CsrfTokenBadge('login', $csrfToken),
-        ]);
+        return new SelfValidatingPassport($user);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -71,7 +69,7 @@ class CredentialsAuthenticator extends AbstractAuthenticator
     {
         $data = [
             // you may want to customize or obfuscate the message first
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData(), $request->request->get('username'))
 
             // or to translate this message
             // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())

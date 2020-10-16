@@ -2,7 +2,6 @@ import React from "react";
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/';
 
-
 export default class Login extends React.Component {
     constructor(props) {
         super(props);
@@ -10,7 +9,7 @@ export default class Login extends React.Component {
             username: "",
             password: "",
             rememberMe: false,
-            validated: false
+            validated: false,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,21 +30,21 @@ export default class Login extends React.Component {
         if (form.checkValidity() === true) {
             form.disabled
             this.setState({validated: true});
-            fetch("/api/new/category/", {
+            fetch("/login", {
                 method: 'POST',
                 headers: {
                     Accept: "application/json",
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(
-                    {'name': this.state.name, 'public': this.state.isPublic}
+                    {'username': this.state.username, 'password': this.state.password, 'rememberme': this.state.rememberMe}
                 )
             }).then(response => console.log(response));
         }
     }
 
     render() {
-        return (
+        return ( 
             <Form validated={
                     this.state.validated
                 }
@@ -54,7 +53,7 @@ export default class Login extends React.Component {
             }>
                 <Form.Row>
                     <Form.Group controlId="validationCustomUsername">
-                        <Form.Control required name="username" type="text" placeholder="username"
+                        <Form.Control required name="username" type="text" placeholder="username" autocomplete="username"
                             value={
                                 this.state.name
                             }
@@ -65,7 +64,7 @@ export default class Login extends React.Component {
                 </Form.Row>
                 <Form.Row>
                     <Form.Group controlId="validationCustomPassword">
-                        <Form.Control required name="password" type="password" placeholder="password"
+                        <Form.Control required name="password" type="password" placeholder="password" autocomplete="current-password"
                             value={
                                 this.state.password
                             }
