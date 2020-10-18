@@ -14,6 +14,6 @@ class UserController extends AbstractController
      */
     public function index(Request $request)
     {
-        return;
+        return $this->redirectToRoute('index');
     }
 }

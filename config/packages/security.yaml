@@ -32,6 +32,7 @@ security:
                 path:     /
                 secure: true
                 samesite: strict
+                httponly: false
                 token_provider: 'Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider'
 
 

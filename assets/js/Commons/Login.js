@@ -8,7 +8,7 @@ export default class Login extends React.Component {
         this.state = {
             username: "",
             password: "",
-            rememberMe: false,
+            _remember_me: false,
             validated: false,
         };
         this.handleChange = this.handleChange.bind(this);
@@ -17,7 +17,6 @@ export default class Login extends React.Component {
 
     handleChange(event) {
         const target = event.currentTarget;
-        console.log(target);
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         this.setState({[name]: value});
@@ -26,20 +25,19 @@ export default class Login extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         const form = event.currentTarget;;
-        console.log(form);
         if (form.checkValidity() === true) {
-            form.disabled
+            form.submit();
             this.setState({validated: true});
-            fetch("/login", {
-                method: 'POST',
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(
-                    {'username': this.state.username, 'password': this.state.password, 'rememberme': this.state.rememberMe}
-                )
-            }).then(response => console.log(response));
+            // fetch("/login", {
+            //     method: 'POST',
+            //     headers: {
+            //         Accept: "application/json",
+            //         "Content-Type": "application/json",
+            //     },
+            //     body: JSON.stringify(
+            //         {'username': this.state.username, 'password': this.state.password, '_remember_me': this.state.rememberMe}
+            //     )
+            // }).then(response => console.log(response));
         }
     }
 
@@ -50,10 +48,12 @@ export default class Login extends React.Component {
                 }
                 onSubmit={
                     this.handleSubmit
-            }>
+            }
+            action="/login"
+            method="POST">
                 <Form.Row>
                     <Form.Group controlId="validationCustomUsername">
-                        <Form.Control required name="username" type="text" placeholder="username" autocomplete="username"
+                        <Form.Control required name="username" type="text" placeholder="username" autoComplete="username"
                             value={
                                 this.state.name
                             }
@@ -64,7 +64,7 @@ export default class Login extends React.Component {
                 </Form.Row>
                 <Form.Row>
                     <Form.Group controlId="validationCustomPassword">
-                        <Form.Control required name="password" type="password" placeholder="password" autocomplete="current-password"
+                        <Form.Control required name="password" type="password" placeholder="password" autoComplete="current-password"
                             value={
                                 this.state.password
                             }
@@ -75,9 +75,9 @@ export default class Login extends React.Component {
                 </Form.Row>
                 <Form.Row>
                     <Col xs="12">
-                        <Form.Check type="checkbox" name="rememberMe" label="Remember me"
+                        <Form.Check type="checkbox" name="_remember_me" label="Remember me"
                             checked={
-                                this.state.rememberMe
+                                this.state._remember_me
                             }
                             onChange={
                                 this.handleChange

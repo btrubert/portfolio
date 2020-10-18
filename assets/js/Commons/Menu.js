@@ -1,17 +1,14 @@
 import React, {useState} from "react";
 import {Navbar, Nav, NavDropdown, NavItem} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
-import {useCookies} from "react-cookie";
 import {Container, Row, Col} from 'react-bootstrap';
 import {Modal} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
 import Login from './Login';
 
 
-export default function Menu() {
-    const [cookies, setCookie, removeCookie] = useCookies(["remember"]);
+export default function Menu(props) {
     const [showLogin, setShowLogin] = useState(false);
-
     const handleShow = () => setShowLogin(true);
     const handleClose = () => setShowLogin(false);
 
@@ -34,14 +31,14 @@ export default function Menu() {
                             to="/contact">Contact</Nav.Link>
                     </Nav>
                     <Nav>
-                        <NavDropdown as={NavItem}
-                            title="Login"
+                        <NavDropdown
+                            title={props.user?  "Signed in as: "+props.user : "Login"}
                             id="nav-dropdown"
                             alignRight>{
-                                cookies.rememberme ?
-                                <NavDropdown.Item eventKey="4"><Button onClick={removeCookie("rememberme", {path: "/"})}>Logout</Button></NavDropdown.Item>
+                                props.user ?
+                                <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
                                 :
-                                <NavDropdown.Item eventKey="4"><Button onClick={handleShow}>Login</Button></NavDropdown.Item>
+                                <NavDropdown.Item eventKey="4" onClick={handleShow}>Login</NavDropdown.Item>
                             }
                         </NavDropdown>
                     </Nav>
