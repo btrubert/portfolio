@@ -10,6 +10,7 @@ import Blog from './Blog/Posts';
 import Photos from './Portfolio/Photos';
 import Post from './Blog/Post';
 import Profile from './User/Profile';
+import Dashboard from './User/Dashboard';
 import {CookiesProvider} from 'react-cookie';
 import {Container, Row, Col} from 'react-bootstrap';
 import loader from 'sass-loader';
@@ -19,15 +20,16 @@ class App extends React.Component {
         super(props);
         this.state = {
             user: null,
+            admin: false,
             loading: true
         };
     }
 
     componentDidMount() {
-        fetch("/login").then(response => {
+        fetch("/signedin").then(response => {
             return response.json();
         }).then(data => {
-            this.setState({user: data.currentUser, loading: false})
+            this.setState({user: data.user, admin: data.admin, loading: false})
         });
     }
 
@@ -39,10 +41,17 @@ class App extends React.Component {
                 <BrowserRouter>
                     <Menu user={
                         this.state.user
-                    }/>
+                    }   admin={
+                        this.state.admin}/>
                     <Switch>
-                        <Route path="/profile"
-                            component={Profile}/>
+                        {
+                            this.state.admin?
+                            <Route path="/dashboard"
+                            component={() => <Dashboard user={this.state.user} />}/>
+                            :
+                            <Route path="/profile"
+                            component={() => <Profile user={this.state.user} />}/>
+                        }
                         <Route path="/gallery/:cat"
                             component={Photos}/>
                         <Route path="/gallery"

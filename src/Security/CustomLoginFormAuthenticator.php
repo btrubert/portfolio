@@ -71,7 +71,14 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // on success, let the request continue
-        return new RedirectResponse("profile");
+        $username = $request->request->get('username');
+        $user = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['username' => $username]);
+        if (in_array("ROLE_ADMIN", $user->getRoles())) {
+            return new RedirectResponse("dashboard");
+        } else {
+            return new RedirectResponse("profile");
+        }
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

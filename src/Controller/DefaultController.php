@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Category;
 
+
 class DefaultController extends AbstractController
 {
     /**
@@ -38,5 +39,21 @@ class DefaultController extends AbstractController
         } else {
             return $this->redirectToRoute('blog');
         }
+    }
+
+    /**
+     * @Route("/profile", name="user_profile")
+     */
+    public function profile()
+    {
+        return $this->render('default/index.html.twig');
+    }
+
+    /**
+     * @Route("/admin/dashboard", name="dashboard")
+     */
+    public function dashboard()
+    {
+        return $this->render('default/index.html.twig');
     }
 }

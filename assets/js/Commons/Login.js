@@ -9,7 +9,7 @@ export default class Login extends React.Component {
             username: "",
             password: "",
             _remember_me: false,
-            validated: false,
+            validated: false
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,66 +28,58 @@ export default class Login extends React.Component {
         if (form.checkValidity() === true) {
             form.submit();
             this.setState({validated: true});
-            // fetch("/login", {
-            //     method: 'POST',
-            //     headers: {
-            //         Accept: "application/json",
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify(
-            //         {'username': this.state.username, 'password': this.state.password, '_remember_me': this.state.rememberMe}
-            //     )
-            // }).then(response => console.log(response));
         }
     }
 
     render() {
-        return ( 
-            <Form validated={
-                    this.state.validated
-                }
-                onSubmit={
-                    this.handleSubmit
-            }
-            action="/login"
-            method="POST">
-                <Form.Row>
-                    <Form.Group controlId="validationCustomUsername">
-                        <Form.Control required name="username" type="text" placeholder="username" autoComplete="username"
-                            value={
-                                this.state.name
-                            }
-                            onChange={
-                                this.handleChange
-                            }/>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationCustomPassword">
-                        <Form.Control required name="password" type="password" placeholder="password" autoComplete="current-password"
-                            value={
-                                this.state.password
-                            }
-                            onChange={
-                                this.handleChange
-                            }/>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Col xs="12">
-                        <Form.Check type="checkbox" name="_remember_me" label="Remember me"
-                            checked={
-                                this.state._remember_me
-                            }
-                            onChange={
-                                this.handleChange
-                            }/>
-                    </Col>
-                    <Col>
-                        <Button type="submit">Login</Button>
-                    </Col>
-                </Form.Row>
-            </Form>
+        return (
+            <Container>
+                <Form validated={
+                        this.state.validated
+                    }
+                    onSubmit={
+                        this.handleSubmit
+                    }
+                    action="/login"
+                    method="POST">
+                    <Form.Row>
+                        <Form.Group controlId="validationCustomUsername">
+                            <Form.Control required name="username" type="text" placeholder="username" autoComplete="username"
+                                value={
+                                    this.state.name
+                                }
+                                onChange={
+                                    this.handleChange
+                                }/>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group controlId="validationCustomPassword">
+                            <Form.Control required name="password" type="password" placeholder="password" autoComplete="current-password"
+                                value={
+                                    this.state.password
+                                }
+                                onChange={
+                                    this.handleChange
+                                }/>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Col xs="12">
+                            <Form.Check type="checkbox" name="_remember_me" label="Remember me"
+                                checked={
+                                    this.state._remember_me
+                                }
+                                onChange={
+                                    this.handleChange
+                                }/>
+                        </Col>
+                        <Col>
+                            <Button type="submit">Login</Button>
+                        </Col>
+                    </Form.Row>
+                </Form>
+            </Container>
         );
     }
 }
