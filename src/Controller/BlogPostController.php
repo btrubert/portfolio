@@ -12,25 +12,22 @@ use App\Form\BlogPostType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- * @Route("/blog")
- */
+
 class BlogPostController extends AbstractController
 {
+
     /**
-     * @Route("/list", name="list_post")
+     * @Route("/blog/{post}", name="blog", defaults={"post": null})
      */
-    public function index()
+    public function blog($post)
     {
-        $posts = $this->_getListPosts();
-        return $this->render(
-            'blog_post/index.html.twig',
-            [
-                'controller_name' => 'BlogPostController',
-                'posts' => $posts,
-            ]
-        );
+        if (!$post || ($post && $this->getDoctrine()->getRepository(Category::class)->findFromId($post))) {
+            return $this->render('default/index.html.twig');
+        } else {
+            return $this->redirectToRoute('blog');
+        }
     }
+
 
     /**
      * @Route("/new", name="new_post")

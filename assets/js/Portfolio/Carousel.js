@@ -42,7 +42,7 @@ export default function Photo(props) {
                     wrap={true}>
                     {
                     props.photos.map(p => <Carousel.Item>
-                        <Image className="carousel-photo"
+                        <Image loading="lazy" className="carousel-photo"
                             src={
                                 "/build/uploads/img/" + p.path
                             }
@@ -52,7 +52,7 @@ export default function Photo(props) {
                                 <Container className="exifs-info" id="collapse-exifs">
                                     <Row>
                                         <Col>
-                                            {
+                                            {(currentPhoto.exifs.brand=="FUJIFILM"? currentPhoto.exifs.brand+" ": "") +
                                             currentPhoto.exifs.model
                                         } </Col>
                                         <Col>

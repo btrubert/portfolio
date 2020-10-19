@@ -75,9 +75,9 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['username' => $username]);
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return new RedirectResponse("dashboard");
+            return new RedirectResponse("/admin/dashboard");
         } else {
-            return new RedirectResponse("profile");
+            return new RedirectResponse("/profile");
         }
     }
 

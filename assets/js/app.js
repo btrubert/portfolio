@@ -11,9 +11,7 @@ import Photos from './Portfolio/Photos';
 import Post from './Blog/Post';
 import Profile from './User/Profile';
 import Dashboard from './User/Dashboard';
-import {CookiesProvider} from 'react-cookie';
 import {Container, Row, Col} from 'react-bootstrap';
-import loader from 'sass-loader';
 
 class App extends React.Component {
     constructor(props) {
@@ -26,7 +24,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        fetch("/signedin").then(response => {
+        fetch("/api/profile_info").then(response => {
             return response.json();
         }).then(data => {
             this.setState({user: data.user, admin: data.admin, loading: false})
@@ -46,7 +44,7 @@ class App extends React.Component {
                     <Switch>
                         {
                             this.state.admin?
-                            <Route path="/dashboard"
+                            <Route path="/admin/dashboard"
                             component={() => <Dashboard user={this.state.user} />}/>
                             :
                             <Route path="/profile"
@@ -73,8 +71,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render (
-    <CookiesProvider>
-        <App/>
-    </CookiesProvider>,
+        <App/>,
     document.getElementById('root')
 );

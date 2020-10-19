@@ -18,7 +18,19 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PhotoController extends AbstractController
 {
 
-    
+    /**
+     * @Route("/gallery/{category}", name="gallery", defaults={"category": null})
+     */
+    public function gallery($category)
+    {
+        if (!$category || ($category && $this->getDoctrine()->getRepository(Category::class)->findFromName($category))) {
+            return $this->render('default/index.html.twig');
+        } else {
+            return $this->redirectToRoute('gallery');
+        }
+    }
+
+
 
     /**
      * @Route("/photo/new", name="new_photo")
@@ -135,7 +147,7 @@ class PhotoController extends AbstractController
             $photo->setCategory($newPhoto->getCategory());
             $photo->getCategory()->addPhoto($photo);
             $photo->setPath($filePath);
-            
+
             //Commit the new entry to the DB
             $entityManager->persist($photo);
             $entityManager->flush();
@@ -145,5 +157,4 @@ class PhotoController extends AbstractController
         }
         return true;
     }
-
 }
