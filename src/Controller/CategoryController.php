@@ -7,9 +7,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Category;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Form\CategoryType;
-
 use App\Service\ObjectEncoder;
 
 class CategoryController extends AbstractController
@@ -56,35 +56,36 @@ class CategoryController extends AbstractController
             $em->persist($category);
             $em->flush();
 
-            $response = new JSONResponse("ok", 201);
+            $response = new JSONResponse("ok", Response::HTTP_CREATED);
             return $response;
         }
 
-        return new JsonResponse('error', 400);
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
-     * @Route("/admin/dashboard/category/edit/{:id}", methods={"PUT"}, name="edit_category")
+     * @Route("/admin/dashboard/category/edit/{id}", methods={"PUT"}, name="edit_category")
      */
-    public function editCategory(Request $request)
+    public function editCategory(Request $request, $id)
     {
-        // $category = new Category();
+        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
 
-        // $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
+        if ($category) {
+            $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
 
-        // $data = json_decode($request->getContent(), true);
-        // $form->submit($data);
-        // if ($form->isSubmitted() && $form->isValid()) {
-        //     $em = $this->getDoctrine()->getManager();
-        //     $category = $form->getData();
-        //     $em->persist($category);
-        //     $em->flush();
+            $data = json_decode($request->getContent(), true);
+            $form->submit($data);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $category = $form->getData();
+                $em->persist($category);
+                $em->flush();
 
-        //     $response = new JSONResponse("ok", 201);
-        //     return $response;
-        // }
-
-        return new JsonResponse('error', 400);
+                $response = new JSONResponse("ok", Response::HTTP_OK);
+                return $response;
+            }
+        }
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -99,6 +100,6 @@ class CategoryController extends AbstractController
             // ... do something, like deleting an object
         }
 
-        return new JsonResponse('error', 400);
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 }

@@ -7,8 +7,11 @@ export default class CategoryForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: props.category? props.category.name: "",
-            isPublic: props.category? props.category.public: false,
+            name: props.category ? props.category.name : "",
+            isPublic: props.category ? props.category.public : false,
+            edit: props.edit,
+            id: props.category ? props.category.id : null,
+            user: null,
             validated: false
         };
         this.handleChange = this.handleChange.bind(this);
@@ -17,7 +20,6 @@ export default class CategoryForm extends React.Component {
 
     handleChange(event) {
         const target = event.currentTarget;
-        console.log(target);
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         this.setState({[name]: value});
@@ -25,21 +27,22 @@ export default class CategoryForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const form = event.currentTarget;;
-        console.log(form);
+        const form = event.currentTarget;
         if (form.checkValidity() === true) {
             form.disabled
             this.setState({validated: true});
-            fetch("/admin/category/new", {
-                method: 'POST',
+            fetch("/admin/dashboard/category/" + (
+            this.state.edit ? "edit/" + this.state.id : "new"
+        ), {
+                method: (this.state.edit ? 'PUT' : 'POST'),
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(
-                    {'name': this.state.name, 'public': this.state.isPublic}
+                    {'name': this.state.name, 'public': this.state.isPublic, 'user': this.state.user}
                 )
-            }).then(response => console.log(response));
+            });
         }
     }
 
@@ -75,6 +78,7 @@ export default class CategoryForm extends React.Component {
                             this.handleChange
                         }/>
                 </Form.Row>
+                <Form.Row> {/* TODO add user */} </Form.Row>
                 <Button type="submit">Save Category</Button>
             </Form>
         );

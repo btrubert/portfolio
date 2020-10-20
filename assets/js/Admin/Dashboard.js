@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
 import {Navbar, Nav} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
@@ -33,12 +33,20 @@ export default class Dashboard extends React.Component {
     }
 
     handleClose() {
-        this.setState({showForm: false, currentItem: null});
+        this.setState({showForm: false, currentItem: null, edit: false});
     }
 
     handleEdit(item) {
-        this.setState({currentItem: item});
+        this.setState({currentItem: item, edit: true});
         this.handleShow("Edit");
+    }
+
+    handleDelete(item) {
+        fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id, {
+            method: 'DELETE',
+        }).then(response => {
+            return response.json();
+        })
     }
 
     handleClick(tab) {
@@ -54,10 +62,14 @@ export default class Dashboard extends React.Component {
                 asc: true
             }));
             switch (this.state.activeTab) {
-                case "photos": this.setState({activeForm: "Photo"});
-                case "categories": this.setState({activeForm: "Category"});
-                case "posts": this.setState({activeForm: "Post"});
-                case "users": this.setState({activeForm: "User"});
+                case "photos":
+                    this.setState({activeForm: "Photo"});
+                case "categories":
+                    this.setState({activeForm: "Category"});
+                case "posts":
+                    this.setState({activeForm: "Post"});
+                case "users":
+                    this.setState({activeForm: "User"});
             }
         }
     }
@@ -76,21 +88,27 @@ export default class Dashboard extends React.Component {
 
     getTab() {
         const editClicked = (item) => this.handleEdit(item);
+        const deleteClicked = (item) => this.handleDelete(item);
         switch (this.state.activeTab) {
             case "photos":
                 return <PhotosList photos={
                         this.state.data
                     }
-                    editClicked={editClicked}/>;
+                    editClicked={editClicked} deleteClicked={deleteClicked}/>;
             case "posts":
-                return <PostsList/>;
+                return <PostsLis posts={
+                    this.state.data
+                }
+                editClicked={editClicked} deleteClicked={deleteClicked}t/>;
             case "categories":
                 return <CategoriesList categories={
                         this.state.data
                     }
-                    editClicked={editClicked}/>
+                    editClicked={editClicked} deleteClicked={deleteClicked}/>
             case "users":
-                return <UsersList editClicked={editClicked}/>
+                return <UsersList users={
+                    this.state.data
+                } editClicked={editClicked} deleteClicked={deleteClicked}/>
             default:
                 return <Spinner animation="border" role="status" variant="success">
                     <span className="sr-only">Loading...</span>
@@ -102,20 +120,32 @@ export default class Dashboard extends React.Component {
         switch (this.state.activeTab) {
             case "photos":
                 return <PhotoForm photo={
-                    this.state.currentItem
-                }/>;
+                        this.state.currentItem
+                    }
+                    edit={
+                        this.state.edit
+                    }/>;
             case "posts":
                 return <PostsForm post={
-                    this.state.currentItem
-                }/>;
+                        this.state.currentItem
+                    }
+                    edit={
+                        this.state.edit
+                    }/>;
             case "categories":
                 return <CategoryForm category={
-                    this.state.currentItem
-                }/>
+                        this.state.currentItem
+                    }
+                    edit={
+                        this.state.edit
+                    }/>
             case "users":
                 return <UsersForm user={
-                    this.state.currentItem
-                }/>
+                        this.state.currentItem
+                    }
+                    edit={
+                        this.state.edit
+                    }/>
             default:
                 return <></>;
         }

@@ -87,7 +87,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/photo/new", name="new_photo")
+     * @Route("/admin/dashboard/photo/new", name="new_photo")
      */
     public function new(Request $request, FileUploader $fileUploader)
     {
@@ -115,7 +115,7 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/admin/photo/edit/{id}", name="edit_photo")
+     * @Route("/admin/dashboard/photo/edit/{id}", name="edit_photo")
      */
     public function editPhoto(Request $request, $id)
     {
@@ -139,7 +139,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/photo/delete/{id}", name="delete_photo")
+     * @Route("/admin/dashboard/photo/delete/{id}", name="delete_photo")
      */
     public function deletePhoto(Request $request, $id)
     {

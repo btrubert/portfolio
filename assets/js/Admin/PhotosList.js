@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Image from 'react-bootstrap/Image';
 import {Container, Row, Col} from 'react-bootstrap/';
 import Table from 'react-bootstrap/Table';
@@ -30,7 +30,7 @@ export default function PhotosList(props) {
                             key={p.id}
                             placement="top"
                             overlay={
-                                <Popover id={`popover-positioned-${p.id}`}>
+                                <Popover id={p.id}>
                                 <Popover.Content>
                                 <Image loading="lazy" src={"/img/" + p.path} fluid/>
                                 </Popover.Content>
@@ -40,7 +40,21 @@ export default function PhotosList(props) {
                             <Button variant="success">preview</Button>
                         </OverlayTrigger>
                             </th>
-                        <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(p)}>Edit</Button> Delete</th>
+                        <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(p)}>Edit</Button>
+                        <OverlayTrigger trigger={"click"}
+                            key={'d'+p.id}
+                            placement="top"
+                            overlay={
+                                <Popover id={'d'+p.id}>
+                                <Popover.Content>
+                                    <Button className="mr-2" variant="warning" onClick={() => props.deleteClicked(p)}>Confirm</Button>
+                                </Popover.Content>
+                                </Popover>
+                            }
+                            >
+                            <Button  variant="outline-danger">Delete</Button>
+                        </OverlayTrigger>
+                        </th>
                     </tr>)
                 }</tbody>
             </Table>

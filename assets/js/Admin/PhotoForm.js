@@ -76,7 +76,7 @@ export default class PhotoForm extends React.Component {
                             this.handleChange
                         }/>
                 </Form.Row>
-                <Button type="submit">Save Category</Button>
+                <Button type="submit">Save Photo</Button>
             </Form>
         );
     }
