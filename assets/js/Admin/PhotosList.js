@@ -20,7 +20,7 @@ export default function PhotosList(props) {
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>{
+                <tbody>{props.photos &&
                     props.photos.map(p => <tr>
                         <th>{p.title}</th>
                         <th>{p.category.name}</th>
@@ -40,7 +40,7 @@ export default function PhotosList(props) {
                             <Button variant="success">preview</Button>
                         </OverlayTrigger>
                             </th>
-                        <th>Edit Delete</th>
+                        <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(p)}>Edit</Button> Delete</th>
                     </tr>)
                 }</tbody>
             </Table>

@@ -17,7 +17,7 @@ body {
     width: 100vw;
 }
 
-.login-form {
+.custom-form {
     color: black;
 }
 
@@ -31,3 +31,6 @@ body {
 /* Caroussel */
 
 @import "caroussel";
+
+/* Admin */
+@import"admin";

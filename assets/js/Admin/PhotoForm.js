@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/';
 
 
-export default class New extends React.Component {
+export default class PhotoForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {

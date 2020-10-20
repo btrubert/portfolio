@@ -40,7 +40,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/new/category/", methods={"POST"}, name="new_category")
+     * @Route("/admin/dashboard/category/new", methods={"POST"}, name="new_category")
      */
     public function newCategory(Request $request)
     {
@@ -64,7 +64,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/edit/category/{:id}", methods={"PUT"}, name="edit_category")
+     * @Route("/admin/dashboard/category/edit/{:id}", methods={"PUT"}, name="edit_category")
      */
     public function editCategory(Request $request)
     {
@@ -88,7 +88,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/delete/category/{:id}", methods={"DELETE"}, name="delete_category")
+     * @Route("/admin/dashboard/category/delete/{:id}", methods={"DELETE"}, name="delete_category")
      */
     public function deleteCategory(Request $request)
     {

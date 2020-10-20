@@ -54,7 +54,7 @@ export default function Menu(props) {
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Modal size="sm" className="login-form"
+            <Modal size="sm" className="custom-form"
                 show={showLogin}
                 onHide={handleClose}>
                 <Modal.Body>

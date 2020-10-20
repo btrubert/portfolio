@@ -2,6 +2,7 @@ import React from "react";
 import Image from 'react-bootstrap/Image';
 import {Container, Row, Col} from 'react-bootstrap/';
 import Table from 'react-bootstrap/Table';
+import {Button} from 'react-bootstrap';
 
 export default function CategoriesList(props) {
 
@@ -15,7 +16,7 @@ export default function CategoriesList(props) {
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>{
+            <tbody>{props.categories &&
                 props.categories.map(c => (
                     <tr>
                         <th>{
@@ -30,7 +31,7 @@ export default function CategoriesList(props) {
                         <th>{
                             c.photos.length
                         }</th>
-                        <th>Edit Delete</th>
+                        <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(c)}>Edit</Button> Delete</th>
                     </tr>
                 ))
             }</tbody>

@@ -6,7 +6,11 @@ import {Switch, Route, Link} from 'react-router-dom';
 import PhotosList from './PhotosList';
 import PostsList from './PostsList';
 import UsersList from './UsersList';
-import CategoriesList from './CategoriesList'
+import CategoriesList from './CategoriesList';
+import PhotoForm from './PhotoForm';
+import CategoryForm from './CategoryForm';
+import {Modal} from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default class Dashboard extends React.Component {
     constructor(props) {
@@ -16,8 +20,25 @@ export default class Dashboard extends React.Component {
             loading: true,
             filterBy: "id",
             asc: true,
-            data: null
+            data: null,
+            showForm: false,
+            activeForm: "Category",
+            formType: "",
+            currentItem: null
         };
+    }
+
+    handleShow(type) {
+        this.setState({showForm: true, formType: type});
+    }
+
+    handleClose() {
+        this.setState({showForm: false, currentItem: null});
+    }
+
+    handleEdit(item) {
+        this.setState({currentItem: item});
+        this.handleShow("Edit");
     }
 
     handleClick(tab) {
@@ -32,6 +53,12 @@ export default class Dashboard extends React.Component {
                 filterBy: "id",
                 asc: true
             }));
+            switch (this.state.activeTab) {
+                case "photos": this.setState({activeForm: "Photo"});
+                case "categories": this.setState({activeForm: "Category"});
+                case "posts": this.setState({activeForm: "Post"});
+                case "users": this.setState({activeForm: "User"});
+            }
         }
     }
 
@@ -48,25 +75,51 @@ export default class Dashboard extends React.Component {
     }
 
     getTab() {
-        if (!this.state.loading) {
-            switch (this.state.activeTab) {
-                case "photos":
-                    return <PhotosList photos={
+        const editClicked = (item) => this.handleEdit(item);
+        switch (this.state.activeTab) {
+            case "photos":
+                return <PhotosList photos={
                         this.state.data
-                    }/>;
-                case "posts":
-                    return <PostsList/>;
-                case "categories":
-                    return <CategoriesList categories={
+                    }
+                    editClicked={editClicked}/>;
+            case "posts":
+                return <PostsList/>;
+            case "categories":
+                return <CategoriesList categories={
                         this.state.data
-                    }/>
-                case "users":
-                    return <UsersList/>
-                default:
-                    return <></>;
-            }
+                    }
+                    editClicked={editClicked}/>
+            case "users":
+                return <UsersList editClicked={editClicked}/>
+            default:
+                return <Spinner animation="border" role="status" variant="success">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>;
         }
-        return <></>
+    }
+
+    getForm() {
+        switch (this.state.activeTab) {
+            case "photos":
+                return <PhotoForm photo={
+                    this.state.currentItem
+                }/>;
+            case "posts":
+                return <PostsForm post={
+                    this.state.currentItem
+                }/>;
+            case "categories":
+                return <CategoryForm category={
+                    this.state.currentItem
+                }/>
+            case "users":
+                return <UsersForm user={
+                    this.state.currentItem
+                }/>
+            default:
+                return <></>;
+        }
+
     }
 
     render() {
@@ -96,7 +149,10 @@ export default class Dashboard extends React.Component {
                                 }>Posts</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="users">Users</Nav.Link>
+                                <Nav.Link eventKey="users"
+                                    onSelect={
+                                        () => this.handleClick("users")
+                                }>Users</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
@@ -108,7 +164,10 @@ export default class Dashboard extends React.Component {
                             }>Refresh</Button>
                         </Nav.Item>
                         <Nav.Item>
-                            <Button variant="outline-info">New</Button>
+                            <Button variant="outline-info"
+                                onClick={
+                                    () => this.handleShow("New")
+                            }>New</Button>
                         </Nav.Item>
                     </Nav>
                 </Navbar>
@@ -116,6 +175,21 @@ export default class Dashboard extends React.Component {
                     {
                     this.getTab()
                 }</Container>
+                <Modal className="custom-form" size="sm"
+                    show={
+                        this.state.showForm
+                    }
+                    onHide={
+                        this.handleClose.bind(this)
+                }>
+                    <Modal.Header closeButton>
+                        {
+                        this.state.formType + " " + this.state.activeForm
+                    } </Modal.Header>
+                    <Modal.Body> {
+                        this.getForm()
+                    } </Modal.Body>
+                </Modal>
             </Container>
         );
     }
