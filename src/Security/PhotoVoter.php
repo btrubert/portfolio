@@ -19,7 +19,6 @@ class PhotoVoter extends Voter
             return false;
         }
 
-        // only vote on `Post` objects
         if (!$subject instanceof Photo) {
             return false;
         }
@@ -52,7 +51,7 @@ class PhotoVoter extends Voter
 
     private function canView(Photo $photo, User $user)
     {
-        return !$photo->isPrivate() || $user === $photo->getCategory()->getUser();
+        return $user === $photo->getCategory()->getUser() || $user->isAdmin();
     }
 
     private function canHighRes(Photo $photo, User $user)

@@ -44,7 +44,7 @@ export default class Photos extends React.Component {
                                 this.state.photos.map((p, index) => <Col className="gallery" sm={12}
                                     md={6}
                                     lg={4}>
-                                    <Image className="gallery-photo" loading="lazy" src={"/build/uploads/img/" + p.path} onClick={() => this.setModalShow(true, index)} />
+                                    <Image className="gallery-photo" loading="lazy" src={"/img/" + p.path} onClick={() => this.setModalShow(true, index)} />
                                 </Col>)
                             } </Row>
                         <Photo photos={this.state.photos} index={this.state.index} onHide={(i) => this.setModalShow(false, i)} show={this.state.show}/>

@@ -5,47 +5,86 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Photo;
 use Exception;
 use App\Form\PhotoType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Service\FileUploader;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use App\Service\ObjectEncoder;
 
 class PhotoController extends AbstractController
 {
 
     /**
-     * @Route("/gallery/{category}", name="gallery", defaults={"category": null})
+     * @Route("/gallery/{name}", name="gallery", defaults={"name": null})
      */
-    public function gallery($category)
+    public function gallery($name)
     {
-        if (!$category || ($category && $this->getDoctrine()->getRepository(Category::class)->findFromName($category))) {
+        if (!$name) {
             return $this->render('default/index.html.twig');
-        } else {
-            return $this->redirectToRoute('gallery');
         }
-    }
 
+        $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($name);
+        if ($this->isGranted("access", $category)) {
+            return $this->render('default/index.html.twig');
+        }
+
+        return $this->redirectToRoute('gallery');
+    }
 
     /**
-     * @Route("/api/img/{id}", name="")
+     * @Route("/api/gallery/{catName}", name="api_photos")
      */
-    public function show($id)
+    public function photos($catName, ObjectEncoder $objectEncoder)
     {
-        $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
+        $serializer = $this->get('serializer');
+        $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($catName);
+        $photos = $category->getPhotos();
 
-        if (null === $photo) {
-            return new Response(Response::HTTP_NOT_FOUND);
-        }
-
-        if ($this->denyAccessUnlessGranted('view', $photo)) {
-            return $photo;
-        }
-        return new Response(Response::HTTP_FORBIDDEN);
+        $sphotos = $objectEncoder->encodeObjectToJson($photos);
+        return new JsonResponse(json_decode($sphotos));
     }
 
+    
 
+    /**
+     * @Route("/img/{path}", name="show_img")
+     */
+    public function show($path)
+    {
+        $photo = $this->getDoctrine()->getRepository(Photo::class)->findOneBy(["path" => $path]);
+
+        if (null === $photo) {
+            return new Response("File not found.", Response::HTTP_NOT_FOUND);
+        }
+
+        if ($photo->getCategory()->getPublic() || $this->isGranted('view', $photo)) {
+            $response = new Response();
+            $path = $this->getParameter("img_base_dir") . 'img/' . $photo->getPath();
+            $response->headers->set("Content-type", mime_content_type($path));
+            $response->headers->set('Content-Length', filesize($path));
+            $response->setContent(readfile($path));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new Response("You must log in to access this pictures.", Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * @Route("/admin/dashboard/photos", name="photos_list")
+     */
+    public function listPhotos(ObjectEncoder $objectEncoder)
+    {
+        $photos = $this->getDoctrine()->getRepository(Photo::class)->findAll();
+        $sphotos = $objectEncoder->encodeObjectToJson($photos);
+        return new JsonResponse(json_decode($sphotos));
+    }
 
     /**
      * @Route("/admin/photo/new", name="new_photo")
@@ -106,6 +145,4 @@ class PhotoController extends AbstractController
     {
         return null;
     }
-
-
 }

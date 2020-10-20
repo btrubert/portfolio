@@ -83,9 +83,9 @@ export default class Categories extends React.Component {
                                         {
                                         c.photos.map(p => <Carousel.Item>
                                             <Card.Img loading="lazy" src={
-                                                    "/build/uploads/img/" + p.path
+                                                    "/img/" + p.path
                                                 }
-                                                alt="Card image"
+                                                alt="Card category's images"
                                                 className="category-card-img"/>
                                         </Carousel.Item>)
                                     } </Carousel>

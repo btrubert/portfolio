@@ -44,7 +44,7 @@ export default function Photo(props) {
                     props.photos.map(p => <Carousel.Item>
                         <Image loading="lazy" className="carousel-photo"
                             src={
-                                "/build/uploads/img/" + p.path
+                                "/img/" + p.path
                             }
                             fluid/>
                         <Carousel.Caption>

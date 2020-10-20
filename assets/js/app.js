@@ -60,7 +60,7 @@ class App extends React.Component {
                             component={Blog}/>
                         <Route path="/contact"
                             component={Contact}/>
-                        <Route path="/"
+                        <Route exact path="/"
                             component={Home}/>
                     </Switch>
                 </BrowserRouter>

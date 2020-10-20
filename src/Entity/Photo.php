@@ -127,7 +127,7 @@ class Photo
 
     public function isPrivate(): bool
     {
-        return null !== $this->getCategory()->getUser();
+        return  !$this->getCategory()->getPublic();
     }
 
     public function getDownload(): ?bool
