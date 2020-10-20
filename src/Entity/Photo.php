@@ -50,6 +50,11 @@ class Photo
      */
     private $category;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $download;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,6 +121,23 @@ class Photo
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function isPrivate(): bool
+    {
+        return null !== $this->getCategory()->getUser();
+    }
+
+    public function getDownload(): ?bool
+    {
+        return $this->download;
+    }
+
+    public function setDownload(bool $download): self
+    {
+        $this->download = $download;
 
         return $this;
     }

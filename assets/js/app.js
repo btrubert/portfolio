@@ -10,7 +10,7 @@ import Blog from './Blog/Posts';
 import Photos from './Portfolio/Photos';
 import Post from './Blog/Post';
 import Profile from './User/Profile';
-import Dashboard from './User/Dashboard';
+import Dashboard from './Admin/Dashboard';
 import {Container, Row, Col} from 'react-bootstrap';
 
 class App extends React.Component {

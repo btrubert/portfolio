@@ -56,9 +56,10 @@ export default class Categories extends React.Component {
                             sm={12}
                             md={6}
                             lg={4}>
-                            <Link to={
-                                    "/gallery/" + c.name
-                                }
+                            <Link to={{
+                                pathname: "/gallery/" + c.name,
+                                state: {photos: c.photos}
+                            }}
                                 onMouseOver={
                                     () => this.handlePlay(index)
                                 }

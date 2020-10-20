@@ -16,7 +16,7 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-        $fileName = uniqid().'.'.$file->guessExtension();
+        $fileName = uniqid("IMG_", true).'.'.$file->guessExtension();
 
         try {
             $file->move($this->getTargetDirectory(), $fileName);
@@ -35,9 +35,9 @@ class FileUploader
      */
     public function addLocal($file)
     {
-        $fileName = uniqid().'.jpg';
+        $fileName = uniqid("IMG_", true).'.jpg';
         try {
-            copy($file,$this->getTargetDirectory().$fileName);
+            copy($file, $this->getTargetDirectory().$fileName);
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
             $this->_saveLowerRes($fileName);
         } catch (FileException $e) {

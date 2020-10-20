@@ -35,6 +35,11 @@ class Category
      */
     private $photos;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="categories")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -96,6 +101,18 @@ class Category
                 $photo->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

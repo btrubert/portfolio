@@ -27,10 +27,10 @@ export default function Menu(props) {
                             <Nav.Link eventKey="1"
                                 as={Link}
                                 to="/gallery">Gallery</Nav.Link>
-                            <Nav.Link eventKey="2"
+                            <Nav.Link eventKey="2" disabled
                                 as={Link}
                                 to="/blog">Blog</Nav.Link>
-                            <Nav.Link eventKey="3"
+                            <Nav.Link eventKey="3" disabled
                                 as={Link}
                                 to="/contact">Contact</Nav.Link>
                         </Nav>
@@ -43,7 +43,7 @@ export default function Menu(props) {
                                 {
                                 props.user ? <>
                                     {props.admin?
-                                    <NavDropdown.Item as={Link} eventKey="4" to="/dashboard">Dashboard</NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} eventKey="4" to="/admin/dashboard">Dashboard</NavDropdown.Item>
                                       :  <NavDropdown.Item as={Link} eventKey="4" to="/profile">Profile</NavDropdown.Item>
                                     }
                                     <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>

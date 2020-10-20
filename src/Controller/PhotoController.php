@@ -4,16 +4,13 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Photo;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use App\Form\PhotoType;
-use App\Controller\CategoryController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Service\FileUploader;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class PhotoController extends AbstractController
 {
@@ -31,9 +28,27 @@ class PhotoController extends AbstractController
     }
 
 
+    /**
+     * @Route("/api/img/{id}", name="")
+     */
+    public function show($id)
+    {
+        $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
+
+        if (null === $photo) {
+            return new Response(Response::HTTP_NOT_FOUND);
+        }
+
+        if ($this->denyAccessUnlessGranted('view', $photo)) {
+            return $photo;
+        }
+        return new Response(Response::HTTP_FORBIDDEN);
+    }
+
+
 
     /**
-     * @Route("/photo/new", name="new_photo")
+     * @Route("/admin/photo/new", name="new_photo")
      */
     public function new(Request $request, FileUploader $fileUploader)
     {
@@ -61,7 +76,7 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/photo/edit/{id}", name="edit_photo")
+     * @Route("/admin/photo/edit/{id}", name="edit_photo")
      */
     public function editPhoto(Request $request, $id)
     {
@@ -84,77 +99,13 @@ class PhotoController extends AbstractController
         ]);
     }
 
-    public function _getPhotos($catName, $privateAccess = false)
+    /**
+     * @Route("/admin/photo/delete/{id}", name="delete_photo")
+     */
+    public function deletePhoto(Request $request, $id)
     {
-        try {
-            //TODO: privateAccess check authorized user
-
-            $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($catName);
-            if ($category) {
-                return $category->getPhotos();
-            }
-            return null;
-        } catch (Exception $e) {
-            echo 'Caught exception while retrieving the photos from a category : ',  $e->getMessage(), "\n";
-            return [];
-        }
+        return null;
     }
 
-    public function _getPhoto($id): Photo
-    {
-        try {
-            //Retrieve the blog post
-            $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
-        } catch (Exception $e) {
-            echo 'Caught exception while retrieving a photo : ',  $e->getMessage(), "\n";
-            return null;
-        }
-        return $photo;
-    }
 
-    public function _editPhotos($id, $newPhoto)
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-
-            //Retrieve the blog post
-            $photo = $entityManager->getRepository(Photo::class)->find($id);
-            $photo->setTitle($newPhoto->getTitle());
-            $photo->setDescription($newPhoto->getDescription());
-            $photo->setCategory($newPhoto->getCategory());
-
-            //Commit the updated entry to the DB
-            $entityManager->flush();
-        } catch (Exception $e) {
-            echo 'Caught exception while updating a photo : ',  $e->getMessage(), "\n";
-            return false;
-        }
-        return true;
-    }
-
-    public function _addPhoto($newPhoto, $filePath, $exifs)
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-
-            //Insert the field of the new post
-            $photo = new Photo();
-            $photo->setTitle($newPhoto->getTitle());
-            $photo->setDescription($newPhoto->getDescription());
-            $photo->setExifs($exifs);
-            $photo->setCategory($newPhoto->getCategory());
-            $photo->getCategory()->addPhoto($photo);
-            $photo->setPath($filePath);
-
-            //Commit the new entry to the DB
-            $entityManager->persist($photo);
-            $entityManager->flush();
-        } catch (Exception $e) {
-            echo 'Caught exception while adding a new photo : ',  $e->getMessage(), "\n";
-            return false;
-        }
-        return true;
-    }
 }
