@@ -34,13 +34,14 @@ export default function CategoriesList(props) {
                             c.photos.length
                         }</th>
                         <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(c)}>Edit</Button>
-                        <OverlayTrigger trigger={"click"}
+                        <OverlayTrigger trigger={"focus"}
                             key={'d'+c.id}
                             placement="top"
                             overlay={
                                 <Popover id={'d'+c.id}>
                                 <Popover.Content>
-                                    <Button className="mr-2" variant="warning" onClick={() => props.deleteClicked(c)}>Confirm</Button>
+                                    <Button className="mr-2" variant="success" onClick={() => props.deleteClicked(c)}>Confirm</Button>
+                                    <Button variant="warning">Cancel</Button>
                                 </Popover.Content>
                                 </Popover>
                             }

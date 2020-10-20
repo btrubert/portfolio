@@ -17,7 +17,6 @@ export default class Dashboard extends React.Component {
         super(props);
         this.state = {
             activeTab: "categories",
-            loading: true,
             filterBy: "id",
             asc: true,
             data: null,
@@ -46,17 +45,15 @@ export default class Dashboard extends React.Component {
             method: 'DELETE',
         }).then(response => {
             return response.json();
-        })
+        }).then(data => this.setState({data: data}));
     }
 
     handleClick(tab) {
         if (tab != this.state.activeTab) {
-            this.setState({loading: true});
             fetch("/admin/dashboard/" + tab).then(response => {
                 return response.json();
             }).then(data => this.setState({
                 data: data,
-                loading: false,
                 activeTab: tab,
                 filterBy: "id",
                 asc: true
@@ -77,13 +74,13 @@ export default class Dashboard extends React.Component {
     handleRefresh() {
         fetch("/admin/dashboard/" + this.state.activeTab).then(response => {
             return response.json();
-        }).then(data => this.setState({data: data, loading: false}));
+        }).then(data => this.setState({data: data}));
     }
 
     componentDidMount() {
         fetch("/admin/dashboard/categories").then(response => {
             return response.json();
-        }).then(data => this.setState({data: data, loading: false}));
+        }).then(data => this.setState({data: data}));
     }
 
     getTab() {
