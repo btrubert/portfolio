@@ -7,10 +7,12 @@ export default class PhotoForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: "",
-            description: "",
-            category: "",
-            validated: false
+            title: props.photo ? props.photo.title : "",
+            description: props.photo ? props.photo.description : "",
+            category: props.photo ? props.photo.category.id : "-1",
+            validated: false,
+            edit: props.edit,
+            id: props.photo ? props.photo.id : null,
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,14 +32,15 @@ export default class PhotoForm extends React.Component {
         const form = event.currentTarget;;
         console.log(form);
         if (form.checkValidity() === true) {
-            form.disabled
-            this.setState({validated: true});
+            // this.setState({validated: true});
             let formData = new FormData(form);
-            formData.append('path', this.fileInput.current.files[0]);
-            fetch("/admin/dashboard/photos/new", {
+            // formData.append('path', this.fileInput.current.files[0]);
+            fetch("/admin/dashboard/photos/" + (
+                this.state.edit ? "edit/" + this.state.id : "new"
+            ), {
                 method: 'POST',
                 headers: {
-                    enctype: "multipart/form-data",
+                    enctype: "multipart/form-data"
                 },
                 body: formData
             });
@@ -83,8 +86,12 @@ export default class PhotoForm extends React.Component {
                     <Form.Group controlId="validationCustomFile">
                         <Form.Label>File</Form.Label>
                         <Form.Control required name="path" type="file"
-                           ref={this.fileInput}
-                            />
+                            ref={
+                                this.fileInput
+                            }
+                            disabled={
+                                this.state.edit
+                            }/>
                         <Form.Control.Feedback type="invalid">
                             Please select a photo.
                         </Form.Control.Feedback>
@@ -93,18 +100,25 @@ export default class PhotoForm extends React.Component {
                 <Form.Row>
                     <Form.Group controlId="validationCustomCategory">
                         <Form.Label>Category</Form.Label>
-                        <Form.Control required name="category" as="select"
-                            custom
+                        <Form.Control required name="category" as="select" custom
+                            defaultValue={
+                                this.state.category
+                            }
                             value={
                                 this.state.category
                             }
                             onChange={
                                 this.handleChange
                         }>
-                            <option  hidden>Choose a category</option>
-                            {this.categories.map(c => <option value={c.id}>{c.name}</option>)}
-                            
-                        </Form.Control>
+                            <option hidden value="-1">Choose a category</option>
+                            {
+                            this.categories.map(c => <option value={
+                                c.id
+                            }>
+                                {
+                                c.name
+                            }</option>)
+                        } </Form.Control>
                         <Form.Control.Feedback type="invalid">
                             Please select a category.
                         </Form.Control.Feedback>

@@ -88,13 +88,12 @@ class PhotoController extends AbstractController
     public function new(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
     {
         $photo = new Photo();
-
+        $logger->critical("PHOTO : ".$request->files->get("path")->getClientOriginalName());
         $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $photo = $form->getData();
-            // $logger->critical("PHOTO : ".$request->files->all());
             
             $file = $request->files->get("path");
 
@@ -112,34 +111,48 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/admin/dashboard/photos/edit/{id}", name="edit_photo")
+     * @Route("/admin/dashboard/photos/edit/{id}", methods={"POST"}, name="edit_photo")
      */
     public function editPhoto(Request $request, $id)
     {
-        $photo = $this->_getPhoto($id);
+        $photo =  $this->getDoctrine()->getRepository(Photo::class)->find($id);
 
-        $form = $this->createForm(PhotoType::class, $photo);
+        if ($photo) {
+            $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
+            $form->submit($request->request->all());
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $photo = $form->getData();
+                $em->persist($photo);
+                $em->flush();
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $newPhoto = $form->getData();
-            $this->_editPhotos($id, $newPhoto);
-
-            return $this->redirectToRoute('categories');
+                $response = new JSONResponse("ok", Response::HTTP_OK);
+                return $response;
+            }
         }
-
-        return $this->render('photo/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 
-    /**
-     * @Route("/admin/dashboard/photos/delete/{id}", name="delete_photo")
+     /**
+     * @Route("/admin/dashboard/photos/delete/{id}", methods={"DELETE"}, name="delete_photo")
      */
     public function deletePhoto(Request $request, $id)
     {
-        return null;
+        // $submittedToken = $request->request->get('token');
+
+        // // 'delete-item' is the same value used in the template to generate the token
+        // if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
+        //     // ... do something, like deleting an object
+        // }
+        $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
+        if ($photo) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($photo);
+            $em->flush();
+            return new JsonResponse('ok', Response::HTTP_ACCEPTED);
+        }
+
+
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 }
