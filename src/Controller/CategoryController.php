@@ -40,16 +40,13 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/new", methods={"POST"}, name="new_category")
+     * @Route("/admin/dashboard/categories/new", methods={"POST"}, name="new_category")
      */
     public function newCategory(Request $request)
     {
         $category = new Category();
-
         $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
-
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data);
+        $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $category = $form->getData();
@@ -64,7 +61,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/edit/{id}", methods={"PUT"}, name="edit_category")
+     * @Route("/admin/dashboard/categories/edit/{id}", methods={"POST"}, name="edit_category")
      */
     public function editCategory(Request $request, $id)
     {
@@ -72,9 +69,7 @@ class CategoryController extends AbstractController
 
         if ($category) {
             $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
-
-            $data = json_decode($request->getContent(), true);
-            $form->submit($data);
+            $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $category = $form->getData();
@@ -89,16 +84,24 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/delete/{:id}", methods={"DELETE"}, name="delete_category")
+     * @Route("/admin/dashboard/categories/delete/{id}", methods={"DELETE"}, name="delete_category")
      */
-    public function deleteCategory(Request $request)
+    public function deleteCategory(Request $request, $id)
     {
-        $submittedToken = $request->request->get('token');
+        // $submittedToken = $request->request->get('token');
 
-        // 'delete-item' is the same value used in the template to generate the token
-        if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
-            // ... do something, like deleting an object
+        // // 'delete-item' is the same value used in the template to generate the token
+        // if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
+        //     // ... do something, like deleting an object
+        // }
+        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
+        if ($category) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($category);
+            $em->flush();
+            return new JsonResponse('ok', Response::HTTP_ACCEPTED);
         }
+
 
         return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }

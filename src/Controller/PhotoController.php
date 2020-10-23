@@ -12,11 +12,8 @@ use App\Form\PhotoType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Service\FileUploader;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use App\Service\ObjectEncoder;
+use Psr\Log\LoggerInterface;
 
 class PhotoController extends AbstractController
 {
@@ -43,7 +40,6 @@ class PhotoController extends AbstractController
      */
     public function photos($catName, ObjectEncoder $objectEncoder)
     {
-        $serializer = $this->get('serializer');
         $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($catName);
         $photos = $category->getPhotos();
 
@@ -87,35 +83,36 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photo/new", name="new_photo")
+     * @Route("/admin/dashboard/photos/new", methods={"POST"}, name="new_photo")
      */
-    public function new(Request $request, FileUploader $fileUploader)
+    public function new(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
     {
         $photo = new Photo();
-        $photo->setTitle('New photo');
-        $photo->setDescription("A short description");
 
-        $form = $this->createForm(PhotoType::class, $photo);
-        $form->handleRequest($request);
+        $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
+        $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
-            $metadata = $form->getData();
-
-            $file = $form->get('path')->getData();
+            $em = $this->getDoctrine()->getManager();
+            $photo = $form->getData();
+            // $logger->critical("PHOTO : ".$request->files->all());
+            
+            $file = $request->files->get("path");
 
             [$photoFileName, $exifs] = $fileUploader->upload($file);
-            $this->_addPhoto($metadata, $photoFileName, $exifs);
-
-            return $this->redirectToRoute('photos_by_cat', ["cat" => $photo->getCategory()->getName()]);
+            $photo->setPath($photoFileName);
+            $photo->setExifs($exifs);
+            $em->persist($photo);
+            $em->flush();
+            $response = new JSONResponse("ok", Response::HTTP_CREATED);
+            return $response;
         }
 
-        return $this->render('photo/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 
 
     /**
-     * @Route("/admin/dashboard/photo/edit/{id}", name="edit_photo")
+     * @Route("/admin/dashboard/photos/edit/{id}", name="edit_photo")
      */
     public function editPhoto(Request $request, $id)
     {
@@ -139,7 +136,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photo/delete/{id}", name="delete_photo")
+     * @Route("/admin/dashboard/photos/delete/{id}", name="delete_photo")
      */
     public function deletePhoto(Request $request, $id)
     {

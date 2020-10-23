@@ -9,6 +9,7 @@ import UsersList from './UsersList';
 import CategoriesList from './CategoriesList';
 import PhotoForm from './PhotoForm';
 import CategoryForm from './CategoryForm';
+import UserForm from './UserForm';
 import {Modal} from 'react-bootstrap';
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -19,7 +20,9 @@ export default class Dashboard extends React.Component {
             activeTab: "categories",
             filterBy: "id",
             asc: true,
-            data: null,
+            categories: null,
+            photos: null,
+            users: null,
             showForm: false,
             activeForm: "Category",
             formType: "",
@@ -41,46 +44,43 @@ export default class Dashboard extends React.Component {
     }
 
     handleDelete(item) {
-        fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id, {
-            method: 'DELETE',
-        }).then(response => {
+        fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id, {method: 'DELETE'}).then(response => {
             return response.json();
-        }).then(data => this.setState({data: data}));
+        });
     }
 
     handleClick(tab) {
         if (tab != this.state.activeTab) {
-            fetch("/admin/dashboard/" + tab).then(response => {
-                return response.json();
-            }).then(data => this.setState({
-                data: data,
-                activeTab: tab,
-                filterBy: "id",
-                asc: true
-            }));
-            switch (this.state.activeTab) {
+            switch (tab) {
                 case "photos":
                     this.setState({activeForm: "Photo"});
+                    break;
                 case "categories":
                     this.setState({activeForm: "Category"});
+                    break;
                 case "posts":
                     this.setState({activeForm: "Post"});
+                    break;
                 case "users":
                     this.setState({activeForm: "User"});
+                    break;
             }
+            this.setState({activeTab: tab, filterBy: "id", asc: true});
         }
     }
 
     handleRefresh() {
         fetch("/admin/dashboard/" + this.state.activeTab).then(response => {
             return response.json();
-        }).then(data => this.setState({data: data}));
+        }).then(data => this.setState({[this.state.activeTab]: data}));
     }
 
     componentDidMount() {
-        fetch("/admin/dashboard/categories").then(response => {
-            return response.json();
-        }).then(data => this.setState({data: data}));
+        for (let tab of ["categories", "photos", "users"]) {
+            fetch("/admin/dashboard/"+tab).then(response => {
+                return response.json();
+            }).then(data => this.setState({[tab]: data}));
+        }
     }
 
     getTab() {
@@ -89,23 +89,32 @@ export default class Dashboard extends React.Component {
         switch (this.state.activeTab) {
             case "photos":
                 return <PhotosList photos={
-                        this.state.data
+                        this.state.photos
                     }
-                    editClicked={editClicked} deleteClicked={deleteClicked}/>;
+                    editClicked={editClicked}
+                    deleteClicked={deleteClicked}
+                    refresh={this.handleRefresh}/>;
             case "posts":
-                return <PostsLis posts={
-                    this.state.data
-                }
-                editClicked={editClicked} deleteClicked={deleteClicked}t/>;
+                return <PostsList posts={
+                        this.state.posts
+                    }
+                    editClicked={editClicked}
+                    deleteClicked={deleteClicked}
+                    refresh={this.handleRefresh}/>;
             case "categories":
                 return <CategoriesList categories={
-                        this.state.data
+                        this.state.categories
                     }
-                    editClicked={editClicked} deleteClicked={deleteClicked}/>
+                    editClicked={editClicked}
+                    deleteClicked={deleteClicked}
+                    refresh={this.handleRefresh}/>
             case "users":
                 return <UsersList users={
-                    this.state.data
-                } editClicked={editClicked} deleteClicked={deleteClicked}/>
+                        this.state.users
+                    }
+                    editClicked={editClicked}
+                    deleteClicked={deleteClicked}
+                    refresh={this.handleRefresh}/>
             default:
                 return <Spinner animation="border" role="status" variant="success">
                     <span className="sr-only">Loading...</span>
@@ -121,28 +130,33 @@ export default class Dashboard extends React.Component {
                     }
                     edit={
                         this.state.edit
-                    }/>;
+                    }
+                    refresh={this.handleRefresh}
+                    categories={this.state.categories}/>;
             case "posts":
-                return <PostsForm post={
+                return <PostForm post={
                         this.state.currentItem
                     }
                     edit={
                         this.state.edit
-                    }/>;
+                    }
+                    refresh={this.handleRefresh}/>;
             case "categories":
                 return <CategoryForm category={
                         this.state.currentItem
                     }
                     edit={
                         this.state.edit
-                    }/>
+                    }
+                    refresh={this.handleRefresh}/>
             case "users":
-                return <UsersForm user={
+                return <UserForm user={
                         this.state.currentItem
                     }
                     edit={
                         this.state.edit
-                    }/>
+                    }
+                    refresh={this.handleRefresh}/>
             default:
                 return <></>;
         }
@@ -170,7 +184,7 @@ export default class Dashboard extends React.Component {
                                 }>Photos</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey="posts"
+                                <Nav.Link eventKey="posts" disabled
                                     onSelect={
                                         () => this.handleClick("posts")
                                 }>Posts</Nav.Link>

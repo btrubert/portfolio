@@ -31,17 +31,15 @@ export default class CategoryForm extends React.Component {
         if (form.checkValidity() === true) {
             form.disabled
             this.setState({validated: true});
-            fetch("/admin/dashboard/category/" + (
+            let formData = new FormData(form);
+            fetch("/admin/dashboard/categories/" + (
             this.state.edit ? "edit/" + this.state.id : "new"
         ), {
-                method: (this.state.edit ? 'PUT' : 'POST'),
+                method: (this.state.edit ? 'POST' : 'POST'),
                 headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
+                    enctype: "multipart/form-data",
                 },
-                body: JSON.stringify(
-                    {'name': this.state.name, 'public': this.state.isPublic, 'user': this.state.user}
-                )
+                body: formData
             });
         }
     }

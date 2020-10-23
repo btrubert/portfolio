@@ -12,6 +12,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use App\Service\ObjectEncoder;
+use App\Entity\User;
 
 class UserController extends AbstractController
 {
@@ -30,6 +32,16 @@ class UserController extends AbstractController
     public function dashboard()
     {
         return $this->render('default/index.html.twig');
+    }
+
+    /**
+     * @Route("/admin/dashboard/users", name="users_list")
+     */
+    public function listCategories(ObjectEncoder $objectEncoder)
+    {
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $susers = $objectEncoder->encodeObjectToJson($users);
+        return new JsonResponse(json_decode($susers));
     }
 
     /**

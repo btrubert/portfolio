@@ -53,7 +53,7 @@ class Photo
     /**
      * @ORM\Column(type="boolean")
      */
-    private $download;
+    private $download = false;
 
     public function getId(): ?int
     {

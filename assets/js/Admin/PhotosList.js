@@ -41,13 +41,14 @@ export default function PhotosList(props) {
                         </OverlayTrigger>
                             </th>
                         <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(p)}>Edit</Button>
-                        <OverlayTrigger trigger={"click"}
+                        <OverlayTrigger trigger={"focus"}
                             key={'d'+p.id}
                             placement="top"
                             overlay={
                                 <Popover id={'d'+p.id}>
                                 <Popover.Content>
-                                    <Button className="mr-2" variant="warning" onClick={() => props.deleteClicked(p)}>Confirm</Button>
+                                    <Button className="mr-2" variant="success" onClick={() => props.deleteClicked(p)}>Confirm</Button>
+                                    <Button variant="warning">Cancel</Button>
                                 </Popover.Content>
                                 </Popover>
                             }

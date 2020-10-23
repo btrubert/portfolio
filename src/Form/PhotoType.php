@@ -26,9 +26,8 @@ class PhotoType extends AbstractType
             ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
-                'choice_label' => 'name',
-            ])
-            ->add('save', SubmitType::class);
+                'choice_label' => 'id',
+            ]);
         ;
     }
 
