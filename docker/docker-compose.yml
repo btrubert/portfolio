@@ -45,6 +45,8 @@ services:
                         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
                         - ./nginx/sites/:/etc/nginx/sites-available
                         - ./nginx/conf.d/:/etc/nginx/conf.d
+                        - ./nginx/ssl/:/etc/ssl
                         - ./logs:/var/log
                 ports:
                         - "80:80"
+                        - "443:443"
