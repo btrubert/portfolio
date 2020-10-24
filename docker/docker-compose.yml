@@ -41,7 +41,7 @@ services:
                         - php-fpm
                         - builder
                 volumes:
-                        - ../portfolio:/var/www
+                        - ../:/var/www
                         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
                         - ./nginx/sites/:/etc/nginx/sites-available
                         - ./nginx/conf.d/:/etc/nginx/conf.d
