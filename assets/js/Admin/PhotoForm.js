@@ -1,131 +1,134 @@
 import React from "react";
-import Form from 'react-bootstrap/Form'
-import {Container, Row, Col, Button} from 'react-bootstrap/';
+import Form from 'react-bootstrap/Form';
+import {Formik} from 'formik';
+import * as yup from 'yup';
+import Button from 'react-bootstrap/Button';
 
 
-export default class PhotoForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: props.photo ? props.photo.title : "",
-            description: props.photo ? props.photo.description : "",
-            category: props.photo ? props.photo.category.id : "-1",
-            validated: false,
-            edit: props.edit,
-            id: props.photo ? props.photo.id : null,
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.fileInput = React.createRef();
-        this.categories = props.categories;
-    }
+export default function PhotoForm(props) {
 
-    handleChange(event) {
-        const target = event.currentTarget;
-        const value = target.value;
-        const name = target.name;
-        this.setState({[name]: value});
-    }
+    const schema = yup.object({
+        title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters'),
+        description: yup.string(),
+        category: yup.number().required().min(0, "Required"),
+        path: yup.string().required("Required")
+    });
 
-    handleSubmit(event) {
+    const handleSubmitForm = (event) => {
         event.preventDefault();
-        const form = event.currentTarget;;
+        const form = event.currentTarget;
         console.log(form);
-        if (form.checkValidity() === true) {
-            // this.setState({validated: true});
-            let formData = new FormData(form);
-            // formData.append('path', this.fileInput.current.files[0]);
-            fetch("/admin/dashboard/photos/" + (
-                this.state.edit ? "edit/" + this.state.id : "new"
-            ), {
-                method: 'POST',
-                headers: {
-                    enctype: "multipart/form-data"
-                },
-                body: formData
-            });
-        }
-    }
+        form.validate();
+        // if (form.checkValidity() === true) { // this.setState({validated: true});
+        //     let formData = new FormData(form);
+        //     // formData.append('path', this.fileInput.current.files[0]);
+        //     fetch("/admin/dashboard/photos/" + (
+        //     props.edit ? "edit/" + props.photo.id : "new"
+        // ), {
+        //         method: 'POST',
+        //         headers: {
+        //             enctype: "multipart/form-data"
+        //         },
+        //         body: formData
+        //     });
+        // }
+    };
 
-    render() {
-        return (
-            <Form validated={
-                    this.state.validated
+
+    return (
+        <Formik validationSchema={schema}
+            onSubmit={handleSubmitForm}
+            initialValues={
+                {
+                    title: props.photo ? props.photo.title : "",
+                    description: props.photo ? props.photo.description : "",
+                    category: props.photo ? props.photo.category.id : "-1",
+                    path: props.photo ? props.photo.path : ""
                 }
-                onSubmit={
-                    this.handleSubmit
-            }>
+        }>
+            {({
+                handleSubmit,
+                handleChange,
+                handleBlur,
+                values,
+                touched,
+                isValid,
+                errors,
+                isSubmitting
+            }) => <Form noValidate
+            onSubmit={handleSubmit}>
                 <Form.Row>
-                    <Form.Group controlId="validationCustomTitle">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control required name="title" type="text" placeholder="Photo's titlte"
-                            value={
-                                this.state.title
-                            }
-                            onChange={
-                                this.handleChange
-                            }/>
-                        <Form.Control.Feedback type="invalid">
-                            Please enter a photo title.
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationCustomDescription">
-                        <Form.Label>Description</Form.Label>
-                        <Form.Control name="description" type="text" placeholder="Description"
-                            value={
-                                this.state.description
-                            }
-                            onChange={
-                                this.handleChange
-                            }/>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationCustomFile">
-                        <Form.Label>File</Form.Label>
-                        <Form.Control required name="path" type="file"
-                            ref={
-                                this.fileInput
-                            }
-                            disabled={
-                                this.state.edit
-                            }/>
-                        <Form.Control.Feedback type="invalid">
-                            Please select a photo.
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationCustomCategory">
-                        <Form.Label>Category</Form.Label>
-                        <Form.Control required name="category" as="select" custom
-                            defaultValue={
-                                this.state.category
-                            }
-                            value={
-                                this.state.category
-                            }
-                            onChange={
-                                this.handleChange
-                        }>
-                            <option hidden value="-1">Choose a category</option>
-                            {
-                            this.categories.map(c => <option value={
-                                c.id
-                            }>
+                        <Form.Group controlId="validationFormikTitle">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control name="title" type="text" placeholder="Photo's title"
+                                value={
+                                    values.title
+                                }
+                                isInvalid={
+                                    !!errors.title
+                                }/>
+                            <Form.Control.Feedback type="invalid">
                                 {
-                                c.name
-                            }</option>)
-                        } </Form.Control>
-                        <Form.Control.Feedback type="invalid">
-                            Please select a category.
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </Form.Row>
-                <Button type="submit">Save Photo</Button>
-            </Form>
-        );
-    }
+                                errors.title
+                            } </Form.Control.Feedback>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group controlId="validationFormikDescription">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control name="description" type="text" placeholder="Description"
+                                value={
+                                    values.description
+                                }/>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group controlId="validationFormikFile">
+                            <Form.Label>Photo</Form.Label>
+                            <Form.Control name="path" type="file"
+                                value={
+                                    values.path
+                                }
+                                disabled={
+                                    props.edit
+                                }
+                                isInvalid={
+                                    !!errors.path
+                                }/>
+                            <Form.Control.Feedback type="invalid">
+                                {
+                                errors.path
+                            } </Form.Control.Feedback>
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
+                        <Form.Group controlId="validationFormikCategory">
+                            <Form.Label>Category</Form.Label>
+                            <Form.Control name="category" as="select" custom
+                                value={
+                                    values.category
+                                }
+                                isInvalid={
+                                    !!errors.category
+                            }>
+                                <option hidden value="-1">Choose a category</option>
+                                {
+                                props.categories.map(c => <option value={
+                                    c.id
+                                }>
+                                    {
+                                    c.name
+                                }</option>)
+                            } </Form.Control>
+                            <Form.Control.Feedback type="invalid">
+                                {
+                                errors.category
+                            } </Form.Control.Feedback>
+                        </Form.Group>
+                    </Form.Row>
+                     <Button type="submit"
+                        disabled={isSubmitting}>Save Photo</Button>
+                </Form>}
+        </Formik>
+    );
 }
