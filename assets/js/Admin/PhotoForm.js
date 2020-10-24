@@ -7,128 +7,129 @@ import Button from 'react-bootstrap/Button';
 
 export default function PhotoForm(props) {
 
+    const formRef = React.createRef();
+
     const schema = yup.object({
-        title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters'),
+        title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
         description: yup.string(),
-        category: yup.number().required().min(0, "Required"),
-        path: yup.string().required("Required")
+        category: yup.number().required().min(0, "You must choose a category"),
+        path: yup.mixed().required("You must select a photo")
     });
 
-    const handleSubmitForm = (event) => {
-        event.preventDefault();
-        const form = event.currentTarget;
-        console.log(form);
-        form.validate();
-        // if (form.checkValidity() === true) { // this.setState({validated: true});
-        //     let formData = new FormData(form);
-        //     // formData.append('path', this.fileInput.current.files[0]);
-        //     fetch("/admin/dashboard/photos/" + (
-        //     props.edit ? "edit/" + props.photo.id : "new"
-        // ), {
-        //         method: 'POST',
-        //         headers: {
-        //             enctype: "multipart/form-data"
-        //         },
-        //         body: formData
-        //     });
-        // }
+    const handleSubmitForm = () => {
+        let formData = new FormData(formRef.current);
+        fetch("/admin/dashboard/photos/" + (
+        props.edit ? "edit/" + props.photo.id : "new"
+    ), {
+            method: 'POST',
+            headers: {
+                enctype: "multipart/form-data"
+            },
+            body: formData
+        });
+
     };
 
 
     return (
         <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
+            validateOnBlur={false}
+            validateOnChange={false}
             initialValues={
                 {
                     title: props.photo ? props.photo.title : "",
-                    description: props.photo ? props.photo.description : "",
+                    description: props.photo ? props.photo.description || "" : "",
                     category: props.photo ? props.photo.category.id : "-1",
-                    path: props.photo ? props.photo.path : ""
+                    path: props.photo? props.photo.path : "",
                 }
         }>
             {({
                 handleSubmit,
                 handleChange,
-                handleBlur,
                 values,
-                touched,
-                isValid,
                 errors,
                 isSubmitting
             }) => <Form noValidate
-            onSubmit={handleSubmit}>
+                onSubmit={handleSubmit} ref={formRef}>
                 <Form.Row>
-                        <Form.Group controlId="validationFormikTitle">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control name="title" type="text" placeholder="Photo's title"
-                                value={
-                                    values.title
+                    <Form.Group controlId="validationFormikTitle">
+                        <Form.Label>Title</Form.Label>
+                        <Form.Control name="title" type="text" placeholder="Photo's title"
+                            value={
+                                values.title
+                            }
+                            isInvalid={
+                                !!errors.title
+                            }
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {
+                            errors.title
+                        } </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group controlId="validationFormikDescription">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control name="description" type="text" placeholder="Description"
+                            value={
+                                values.description
+                            }
+                            onChange={handleChange}/>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group controlId="validationFormikFile">
+                        <Form.Label>Photo</Form.Label>
+                        <Form.Control name="path" type="file"
+                            onChange={
+                                (event) => {
+                                    setFieldValue("path", event.currentTarget.files[0]);
                                 }
-                                isInvalid={
-                                    !!errors.title
-                                }/>
-                            <Form.Control.Feedback type="invalid">
-                                {
-                                errors.title
-                            } </Form.Control.Feedback>
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
-                        <Form.Group controlId="validationFormikDescription">
-                            <Form.Label>Description</Form.Label>
-                            <Form.Control name="description" type="text" placeholder="Description"
-                                value={
-                                    values.description
-                                }/>
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
-                        <Form.Group controlId="validationFormikFile">
-                            <Form.Label>Photo</Form.Label>
-                            <Form.Control name="path" type="file"
-                                value={
-                                    values.path
-                                }
-                                disabled={
-                                    props.edit
-                                }
-                                isInvalid={
-                                    !!errors.path
-                                }/>
-                            <Form.Control.Feedback type="invalid">
-                                {
-                                errors.path
-                            } </Form.Control.Feedback>
-                        </Form.Group>
-                    </Form.Row>
-                    <Form.Row>
-                        <Form.Group controlId="validationFormikCategory">
-                            <Form.Label>Category</Form.Label>
-                            <Form.Control name="category" as="select" custom
-                                value={
-                                    values.category
-                                }
-                                isInvalid={
-                                    !!errors.category
+                            }
+                            disabled={
+                                props.edit
+                            }
+                            isInvalid={
+                                !!errors.path
+                            }
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {
+                            errors.path
+                        } </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                    <Form.Group controlId="validationFormikCategory">
+                        <Form.Label>Category</Form.Label>
+                        <Form.Control name="category" as="select" custom
+                            value={
+                                values.category
+                            }
+                            isInvalid={
+                                !!errors.category
+                            }
+                            onChange={handleChange}>
+                            <option hidden value="-1">Choose a category</option>
+                            {
+                            props.categories.map(c => <option value={
+                                c.id
                             }>
-                                <option hidden value="-1">Choose a category</option>
                                 {
-                                props.categories.map(c => <option value={
-                                    c.id
-                                }>
-                                    {
-                                    c.name
-                                }</option>)
-                            } </Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                                {
-                                errors.category
-                            } </Form.Control.Feedback>
-                        </Form.Group>
-                    </Form.Row>
-                     <Button type="submit"
-                        disabled={isSubmitting}>Save Photo</Button>
-                </Form>}
+                                c.name
+                            }</option>)
+                        } </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            {
+                            errors.category
+                        } </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Button type="submit"
+                    disabled={isSubmitting}>Save Photo</Button>
+            </Form>}
         </Formik>
     );
 }
