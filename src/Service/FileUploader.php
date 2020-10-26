@@ -5,13 +5,15 @@ namespace App\Service;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 class FileUploader
 {
 
-    public function __construct($targetDirectory)
+    public function __construct($targetDirectory, LoggerInterface $logger)
     {
         $this->targetDirectory = $targetDirectory;
+        $this->logger = $logger;
     }
 
     public function upload(UploadedFile $file)
@@ -23,7 +25,7 @@ class FileUploader
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
             $this->_saveLowerRes($fileName);
         } catch (FileException $e) {
-            echo 'Caught exception while uploading a photo : ',  $e->getMessage(), "\n";
+            $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return "";
         }
 
@@ -41,8 +43,8 @@ class FileUploader
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
             $this->_saveLowerRes($fileName);
         } catch (FileException $e) {
-            echo 'Caught exception while uploading a photo : ',  $e->getMessage(), "\n";
-            return "";
+            $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
+            return ["",[]];
         }
 
         return [$fileName, $exifs];
@@ -68,7 +70,7 @@ class FileUploader
 
             imagejpeg($image_low, $this->getTargetDirectory().'img/'.$fileName);
         } catch (Exception $e) {
-            echo 'Caught exception while saving the low res photo : ',  $e->getMessage(), "\n";
+            $this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return false;
         }
         return true;
@@ -81,7 +83,7 @@ class FileUploader
 
 
         if (!$values) {
-            echo 'Error: Unable to read exif headers';
+            $this->logger->critical('Error: Unable to read exif headers');
             return [];
         }
 
