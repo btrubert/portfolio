@@ -6,6 +6,7 @@ services:
                         context: ./assets
                 volumes:
                         - ../:/var/www
+
         vendor:
                 build:
                         context: ./vendor

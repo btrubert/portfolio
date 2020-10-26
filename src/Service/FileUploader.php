@@ -18,12 +18,12 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-        $fileName = uniqid("IMG_", true).'.'.$file->guessExtension();
+	$fileName = uniqid("IMG_", true).'.'.$file->guessExtension();
 
         try {
-            $file->move($this->getTargetDirectory(), $fileName);
-            $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
-            $this->_saveLowerRes($fileName);
+            $file->move($this->getTargetDirectory().'original/', $fileName);
+	    $exifs = $this->extractExifs($this->getTargetDirectory().'original/'.$fileName);
+	    $this->saveLowerRes($fileName);
             return [$fileName, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
@@ -38,8 +38,9 @@ class FileUploader
     {
         $fileName = uniqid("IMG_", true).'.jpg';
         try {
-            copy($file, $this->getTargetDirectory().$fileName);
-            $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
+            copy($file, $this->getTargetDirectory().'original/'.$fileName);
+	    $exifs = $this->extractExifs("");
+	    $exifs = $this->extractExifs($this->getTargetDirectory().'original/'.$fileName);
             $this->_saveLowerRes($fileName);
             return [$fileName, $exifs];
         } catch (FileException $e) {
@@ -53,52 +54,49 @@ class FileUploader
         return $this->targetDirectory;
     }
 
-    public function _saveLowerRes($fileName)
+    public function saveLowerRes($fileName)
     {
         try {
-            list($width, $height) = getimagesize($this->getTargetDirectory().$fileName);
+            list($width, $height) = getimagesize($this->getTargetDirectory().'original/'.$fileName);
             $ratio = $width / $height;
             $new_width = 1024 * $ratio;
             $new_height = 1024;
 
             // Resample
             $image_low = imagecreatetruecolor($new_width, $new_height);
-            $image = imagecreatefromjpeg($this->getTargetDirectory().$fileName);
+	    $image = imagecreatefromjpeg($this->getTargetDirectory().'original/'.$fileName);
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
-            imagejpeg($image_low, $this->getTargetDirectory().'img/'.$fileName);
+            imagejpeg($image_low, $this->getTargetDirectory().$fileName);
         } catch (Exception $e) {
-            $this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
+            //$this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return false;
         }
         return true;
     }
 
-    public function _extractExifs($path): array
+    public function extractExifs($path): array
     {
-        // Attempt to read the exif headers
         $values = exif_read_data($path);
-
-
-        if (!$values) {
+	if (!$values) {
             $this->logger->critical('Error: Unable to read exif headers');
             return [];
         }
 
         $exifs = [];
 
-        $exifs['shutter'] = isset($values['ExposureTime']) ? $this->_getFloatValue($values['ExposureTime']) . 's' : "n/a";
-        $exifs['aperture'] = isset($values['FNumber']) ? 'f/' . $this->_getFloatValue($values['FNumber']) : "n/a";
+        $exifs['shutter'] = isset($values['ExposureTime']) ? $this->getFloatValue($values['ExposureTime']) . 's' : "n/a";
+        $exifs['aperture'] = isset($values['FNumber']) ? 'f/' . $this->getFloatValue($values['FNumber']) : "n/a";
         $exifs['iso'] = isset($values['ISOSpeedRatings']) ? $values['ISOSpeedRatings'] . ' iso' : 'n/a';
-        $exifs['focal'] = isset($values['FocalLength']) ? $this->_getFloatValue($values['FocalLength']) . 'mm' : "n/a";
+        $exifs['focal'] = isset($values['FocalLength']) ? $this->getFloatValue($values['FocalLength']) . 'mm' : "n/a";
         $exifs['brand'] = isset($values['Make']) ? $values['Make'] : 'n/a';
         $exifs['model'] = isset($values['Model']) ? $values['Model'] : 'n/a';
         $exifs['date'] = isset($values['DateTimeOriginal']) ? $values['DateTimeOriginal'] : 'n/a';
 
-        return $exifs;
+	return $exifs;
     }
 
-    public function _getFloatValue($s): string
+    public function getFloatValue($s): string
     {
         if (!strpos($s, '/')) {
             return $s;

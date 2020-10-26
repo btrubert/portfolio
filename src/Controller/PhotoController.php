@@ -62,9 +62,9 @@ class PhotoController extends AbstractController
 
         if ($photo->getCategory()->getPublic() || $this->isGranted('view', $photo)) {
             $response = new Response();
-            $path = $this->getParameter("img_base_dir") . 'img/' . $photo->getPath();
+            $path = $this->getParameter("img_base_dir") . $photo->getPath();
             $response->headers->set("Content-type", mime_content_type($path));
-            $response->headers->set('Content-Length', filesize($path));
+            $response->headers->set("Content-Length", filesize($path));
             $response->setContent(readfile($path));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
@@ -85,10 +85,9 @@ class PhotoController extends AbstractController
     /**
      * @Route("/admin/dashboard/photos/new", methods={"POST"}, name="new_photo")
      */
-    public function new(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
+    public function newPhoto(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
     {
-        $photo = new Photo();
-        $logger->critical("PHOTO : " . $request->files->get("path")->getClientOriginalName());
+	$photo = new Photo();
         $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
@@ -98,20 +97,20 @@ class PhotoController extends AbstractController
             $file = $request->files->get("path");
 
             $savedFile = $fileUploader->upload($file);
-            if (null === $savedFile) {
+            if ($savedFile) {
                 [$photoFileName, $exifs] = $savedFile;
                 $photo->setPath($photoFileName);
                 $photo->setExifs($exifs);
                 $em->persist($photo);
                 $em->flush();
                 $response = new JsonResponse("ok", Response::HTTP_CREATED);
-            } else {
+	    } else {
                 $response = new JsonResponse("file not saved", Response::HTTP_METHOD_NOT_ALLOWED);
             }
 
             return $response;
         }
-
+	
         return new JsonResponse("error", Response::HTTP_EXPECTATION_FAILED);
     }
 
