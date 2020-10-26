@@ -106,7 +106,7 @@ class PhotoController extends AbstractController
             return $response;
         }
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("error", Response::HTTP_EXPECTATION_FAILED);
     }
 
 
