@@ -4,4 +4,4 @@ WORKDIR /var/www
 
 CMD ["nginx"]
 
-EXPOSE 80
+EXPOSE 80 443
