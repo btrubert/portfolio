@@ -1,0 +1,13 @@
+version: "2.1"
+services:
+
+        assets:
+                build:
+                        context: ./assets
+                volumes:
+                        - ../:/var/www
+        vendor:
+                build:
+                        context: ./vendor
+                volumes:
+                        - ../:/var/www
