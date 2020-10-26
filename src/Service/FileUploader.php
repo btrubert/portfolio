@@ -24,12 +24,11 @@ class FileUploader
             $file->move($this->getTargetDirectory(), $fileName);
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
             $this->_saveLowerRes($fileName);
+            return [$fileName, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
-            return "";
-        }
-
-        return [$fileName, $exifs];
+            return null;
+        }     
     }
 
     /**
@@ -42,12 +41,11 @@ class FileUploader
             copy($file, $this->getTargetDirectory().$fileName);
             $exifs = $this->_extractExifs($this->getTargetDirectory().$fileName);
             $this->_saveLowerRes($fileName);
+            return [$fileName, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
-            return ["",[]];
+            return null;
         }
-
-        return [$fileName, $exifs];
     }
 
     public function getTargetDirectory()

@@ -47,7 +47,7 @@ class PhotoController extends AbstractController
         return new JsonResponse(json_decode($sphotos));
     }
 
-    
+
 
     /**
      * @Route("/img/{path}", name="show_img")
@@ -88,21 +88,27 @@ class PhotoController extends AbstractController
     public function new(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
     {
         $photo = new Photo();
-        $logger->critical("PHOTO : ".$request->files->get("path")->getClientOriginalName());
+        $logger->critical("PHOTO : " . $request->files->get("path")->getClientOriginalName());
         $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $photo = $form->getData();
-            
+
             $file = $request->files->get("path");
 
-            [$photoFileName, $exifs] = $fileUploader->upload($file);
-            $photo->setPath($photoFileName);
-            $photo->setExifs($exifs);
-            $em->persist($photo);
-            $em->flush();
-            $response = new JSONResponse("ok", Response::HTTP_CREATED);
+            $savedFile = $fileUploader->upload($file);
+            if (null === $savedFile) {
+                [$photoFileName, $exifs] = $savedFile;
+                $photo->setPath($photoFileName);
+                $photo->setExifs($exifs);
+                $em->persist($photo);
+                $em->flush();
+                $response = new JsonResponse("ok", Response::HTTP_CREATED);
+            } else {
+                $response = new JsonResponse("file not saved", Response::HTTP_METHOD_NOT_ALLOWED);
+            }
+
             return $response;
         }
 
@@ -133,7 +139,7 @@ class PhotoController extends AbstractController
         return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
 
-     /**
+    /**
      * @Route("/admin/dashboard/photos/delete/{id}", methods={"DELETE"}, name="delete_photo")
      */
     public function deletePhoto(Request $request, $id)
