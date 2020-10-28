@@ -1,14 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import {Container, Row, Col, Button} from 'react-bootstrap/';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import Spinner from 'react-bootstrap/Spinner';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import Alert from 'react-bootstrap/Alert'
 
 
 export default function UserForm (props) {
 
     const formRef = React.createRef();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [variantAlert, setVariantAlert] = useState("warning");
+    const [messageAlert, setMessageAlert] = useState("");
 
     const schema = yup.object({
         firstName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
@@ -21,7 +29,7 @@ export default function UserForm (props) {
         passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
     });
 
-    const handleSubmitForm = (values) => {
+    const handleSubmitForm = (values, actions) => {
         let formData = new FormData(formRef.current);
         if (!values.modifyPassword){
             formData.delete("password");
@@ -33,6 +41,25 @@ export default function UserForm (props) {
         ), {
             method:'POST',
             body: formData
+        }).then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error("verify your form info or try again later!");
+            }
+        }).then(data => {
+                actions.setSubmitting(false);
+                setMessageAlert(data);
+                setVariantAlert("success");
+                setShowAlert(true);
+                setTimeout(props.refresh, 3000);
+            })
+        .catch(error =>  {
+            actions.setSubmitting(false);
+            setVariantAlert("danger");
+            setMessageAlert(error+"");
+            setShowAlert(true);
+            setTimeout(()=>setShowAlert(false),3000);
         });
     }
 
@@ -84,8 +111,7 @@ export default function UserForm (props) {
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikEmail" as={Col}>
+                    <Form.Group controlId="validationFormikEmail" as={Row}>
                         <Form.Control required name="email" type="email" placeholder="Email"
                             value={
                                 values.email
@@ -96,9 +122,7 @@ export default function UserForm (props) {
                             {errors.email}
                         </Form.Control.Feedback>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                   <Form.Group controlId="validationFormikUsername" as={Col}>
+                   <Form.Group controlId="validationFormikUsername" as={Row}>
                    <InputGroup>
                         <InputGroup.Prepend>
                         <InputGroup.Text>@</InputGroup.Text>
@@ -114,9 +138,7 @@ export default function UserForm (props) {
                         </Form.Control.Feedback>
                         </InputGroup>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row hidden={!props.edit}>
-                <Form.Group controlId="validationFormikModifyPassword" as={Col}>
+                <Form.Group controlId="validationFormikModifyPassword" as={Row} hidden={!props.edit}>
                     <Form.Check type="switch" name="modifyPassword" label="Modify password"
                         checked={
                             values.modifyPassword
@@ -125,9 +147,7 @@ export default function UserForm (props) {
                             handleChange
                         }/>
                         </Form.Group>
-                </Form.Row>
-                <Form.Row hidden={!values.modifyPassword}>
-                   <Form.Group controlId="validationFormikPassword1" as={Col}>
+                   <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
                         <Form.Control required name="password" type="password" placeholder={props.edit? "Enter new password" : "Password"}
                             value={
                                 values.password
@@ -138,9 +158,7 @@ export default function UserForm (props) {
                             {errors.password}
                         </Form.Control.Feedback>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row hidden={!values.modifyPassword}>
-                   <Form.Group controlId="validationFormikPassword2" as={Col}>
+                   <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
                         <Form.Control required name="passwordConfirmation" type="password" placeholder="Confirm password"
                             value={
                                 values.passwordConfirmation
@@ -151,9 +169,7 @@ export default function UserForm (props) {
                             {errors.passwordConfirmation}
                         </Form.Control.Feedback>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                <Form.Group controlId="validationFormikAdmin" as={Col}>
+                <Form.Group controlId="validationFormikAdmin" as={Row}>
                     <Form.Check type="switch" name="admin" label="Give this user admin rights ?"
                         checked={
                             values.admin
@@ -162,9 +178,29 @@ export default function UserForm (props) {
                             handleChange
                         }/>
                         </Form.Group>
+                <Form.Row>
+                <Col sm={4}>
+                    <OverlayTrigger
+                        key="savedPop"
+                        show={isSubmitting}
+                        placement="right"
+                        overlay={
+                            <Popover id="savedPop">
+                            <Popover.Content>
+                                <Spinner animation="border" role="status" variant="success">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </Popover.Content>
+                            </Popover>
+                        }
+                        >
+                        <Button type="submit" disabled={isSubmitting}>Save Use</Button>
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={8}>
+                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
+                </Col>
                 </Form.Row>
-                <Button type="submit"
-                   >Save User</Button>
             </Form>}
             </Formik>
         );

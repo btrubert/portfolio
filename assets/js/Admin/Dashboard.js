@@ -47,8 +47,12 @@ export default class Dashboard extends React.Component {
     }
 
     handleDelete(item) {
-        fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id, {method: 'DELETE'}).then(response => {
-            return response.json();
+        fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id,
+        {method: 'DELETE'}
+        ).then(response => {
+            if (response.ok) {
+                this.handleRefresh();
+            }
         });
     }
 
@@ -73,6 +77,7 @@ export default class Dashboard extends React.Component {
     }
 
     handleRefresh() {
+        this.handleClose();
         fetch("/admin/dashboard/" + this.state.activeTab).then(response => {
             return response.json();
         }).then(data => this.setState({[this.state.activeTab]: data}));
@@ -134,7 +139,7 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}
+                    refresh={() => this.handleRefresh()}
                     categories={this.state.categories}/>;
             case "posts":
                 return <PostForm post={
@@ -143,7 +148,7 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}/>;
+                    refresh={() => this.handleRefresh()}/>;
             case "categories":
                 return <CategoryForm category={
                         this.state.currentItem
@@ -151,7 +156,7 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}
+                    refresh={() => this.handleRefresh()}
                     users={this.state.users}/>;
             case "users":
                 return <UserForm user={
@@ -220,7 +225,7 @@ export default class Dashboard extends React.Component {
                     {
                     this.getTab()
                 }</Container>
-                <Modal className="custom-form" size="sm"
+                <Modal className="custom-form" size="md"
                     show={
                         this.state.showForm
                     }

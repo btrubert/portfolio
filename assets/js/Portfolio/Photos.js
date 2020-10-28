@@ -2,7 +2,7 @@ import React from "react";
 import Image from 'react-bootstrap/Image';
 import {Container, Row, Col} from 'react-bootstrap/';
 import Spinner from 'react-bootstrap/Spinner';
-import Photo from './Carousel';
+import Photo from './Photo';
 
 export default class Photos extends React.Component {
     constructor(props) {

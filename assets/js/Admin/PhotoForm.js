@@ -1,15 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import Form from 'react-bootstrap/Form';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import Button from 'react-bootstrap/Button';
 import {Container, Row, Col} from 'react-bootstrap/';
+import Spinner from 'react-bootstrap/Spinner';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import Alert from 'react-bootstrap/Alert'
 
 
 
 export default function PhotoForm(props) {
 
     const formRef = React.createRef();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [variantAlert, setVariantAlert] = useState("warning");
+    const [messageAlert, setMessageAlert] = useState("");
 
     const schema = yup.object({
         title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
@@ -18,7 +26,7 @@ export default function PhotoForm(props) {
         path: yup.mixed().required("You must select a photo")
     });
 
-    const handleSubmitForm = () => {
+    const handleSubmitForm = (values, actions) => {
         let formData = new FormData(formRef.current);
         fetch("/admin/dashboard/photos/" + (
         props.edit ? "edit/" + props.photo.id : "new"
@@ -28,6 +36,25 @@ export default function PhotoForm(props) {
                 enctype: "multipart/form-data"
             },
             body: formData
+        }).then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error("verify your form info or try again later!");
+            }
+        }).then(data => {
+                actions.setSubmitting(false);
+                setMessageAlert(data);
+                setVariantAlert("success");
+                setShowAlert(true);
+                setTimeout(props.refresh, 3000);
+            })
+        .catch(error =>  {
+            actions.setSubmitting(false);
+            setVariantAlert("danger");
+            setMessageAlert(error+"");
+            setShowAlert(true);
+            setTimeout(()=>setShowAlert(false),3000);
         });
 
     };
@@ -54,9 +81,8 @@ export default function PhotoForm(props) {
                 isSubmitting
             }) => <Form noValidate
                 onSubmit={handleSubmit} ref={formRef}>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikTitle" as={Col}>
-                        <Form.Label>Title</Form.Label>
+                    <Form.Group controlId="validationFormikTitle" as={Row}>
+                        <Col>
                         <Form.Control name="title" type="text" placeholder="Photo's title"
                             value={
                                 values.title
@@ -69,21 +95,19 @@ export default function PhotoForm(props) {
                             {
                             errors.title
                         } </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikDescription" as={Col}>
-                        <Form.Label>Description</Form.Label>
+                    <Form.Group controlId="validationFormikDescription" as={Row}>
+                        <Col>
                         <Form.Control name="description" type="text" placeholder="Description"
                             value={
                                 values.description
                             }
                             onChange={handleChange}/>
+                        </Col>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikFile" as={Col}>
-                        <Form.Label>Photo</Form.Label>
+                    <Form.Group controlId="validationFormikFile" as={Row}>
+                        <Col>
                         <Form.Control name="path" type="file"
                             onChange={
                                 (event) => {
@@ -101,11 +125,10 @@ export default function PhotoForm(props) {
                             {
                             errors.path
                         } </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikCategory" as={Col}>
-                        <Form.Label>Category</Form.Label>
+                    <Form.Group controlId="validationFormikCategory" as={Row}>
+                        <Col>
                         <Form.Control name="category" as="select" custom
                             value={
                                 values.category
@@ -127,10 +150,31 @@ export default function PhotoForm(props) {
                             {
                             errors.category
                         } </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
+                <Form.Row>
+                <Col sm={4}>
+                    <OverlayTrigger
+                        key="savedPop"
+                        show={isSubmitting}
+                        placement="right"
+                        overlay={
+                            <Popover id="savedPop">
+                            <Popover.Content>
+                                <Spinner animation="border" role="status" variant="success">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </Popover.Content>
+                            </Popover>
+                        }
+                        >
+                        <Button type="submit" disabled={isSubmitting}>Save Photo</Button>
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={8}>
+                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
+                </Col>
                 </Form.Row>
-                <Button type="submit"
-                    disabled={isSubmitting}>Save Photo</Button>
             </Form>}
         </Formik>
     );

@@ -103,15 +103,15 @@ class PhotoController extends AbstractController
                 $photo->setExifs($exifs);
                 $em->persist($photo);
                 $em->flush();
-                $response = new JsonResponse("ok", Response::HTTP_CREATED);
+                $response = new JsonResponse("The photo has been created.", Response::HTTP_CREATED);
             } else {
-                $response = new JsonResponse("file not saved", Response::HTTP_METHOD_NOT_ALLOWED);
+                $response = new JsonResponse("The picture has not been saved", Response::HTTP_METHOD_NOT_ALLOWED);
             }
 
             return $response;
         }
 
-        return new JsonResponse("error", Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while creating the new photo.", Response::HTTP_EXPECTATION_FAILED);
     }
 
 
@@ -131,11 +131,11 @@ class PhotoController extends AbstractController
                 $em->persist($photo);
                 $em->flush();
 
-                $response = new JSONResponse("ok", Response::HTTP_OK);
+                $response = new JSONResponse("The photo has been edited.", Response::HTTP_OK);
                 return $response;
             }
         }
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while saving the edited photo', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -154,10 +154,10 @@ class PhotoController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($photo);
             $em->flush();
-            return new JsonResponse('ok', Response::HTTP_ACCEPTED);
+            return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
         }
 
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while deleting the photo.', Response::HTTP_EXPECTATION_FAILED);
     }
 }

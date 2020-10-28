@@ -1,13 +1,21 @@
-import React from "react";
+import React, {useState} from "react";
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/';
 import {Formik} from 'formik';
 import * as yup from 'yup';
+import Spinner from 'react-bootstrap/Spinner';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
+import Alert from 'react-bootstrap/Alert'
 
 
 export default function CategoryForm (props) {
 
     const formRef = React.createRef();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [variantAlert, setVariantAlert] = useState("warning");
+    const [messageAlert, setMessageAlert] = useState("");
 
     const schema = yup.object({
         name: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
@@ -15,7 +23,7 @@ export default function CategoryForm (props) {
         user: yup.number().when('public', {is: false, then:yup.number().required("Required").min(0, "Select a user"), otherwise: yup.number().nullable()}),
     });
 
-    const handleSubmitForm = (values) => {
+    const handleSubmitForm = (values, actions) => {
         let formData = new FormData(formRef.current);
         if (values.public){
             formData.delete("user");
@@ -25,9 +33,29 @@ export default function CategoryForm (props) {
         ), {
             method:'POST',
             body: formData
+        }).then(response => {
+            if (response.ok) {
+                return response.json()
+            } else {
+                throw new Error("verify your form info or try again later!");
+            }
+        }).then(data => {
+                actions.setSubmitting(false);
+                setMessageAlert(data);
+                setVariantAlert("success");
+                setShowAlert(true);
+                setTimeout(props.refresh, 3000);
+            })
+        .catch(error =>  {
+            actions.setSubmitting(false);
+            setVariantAlert("danger");
+            setMessageAlert(error+"");
+            setShowAlert(true);
+            setTimeout(()=>setShowAlert(false),3000);
         });
-    }
+    }            
 
+  
    return (
        <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
@@ -48,9 +76,8 @@ export default function CategoryForm (props) {
         }) => <Form noValidate
                 onSubmit={handleSubmit}
                 ref={formRef}>
-                <Form.Row>
-                    <Form.Group controlId="validationFormikName" as={Col}>
-                        <Form.Label>Name</Form.Label>
+                    <Form.Group as={Row} controlId="validationFormikName">
+                        <Col>
                         <Form.Control required name="name" type="text" placeholder="Category's name"
                             value={
                                 values.name
@@ -60,10 +87,10 @@ export default function CategoryForm (props) {
                         <Form.Control.Feedback type="invalid">
                             {errors.name}
                         </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
-                </Form.Row>
-                <Form.Row>
-                <Form.Group controlId="validationFormikIsPublic" as={Col}>
+                <Form.Group controlId="validationFormikIsPublic" as={Row}>
+                    <Col>
                     <Form.Check type="switch" name="public" label="Make this category public ?"
                         checked={
                             values.public
@@ -71,11 +98,10 @@ export default function CategoryForm (props) {
                         onChange={
                             handleChange
                         }/>
-                        </Form.Group>
-                </Form.Row>
-                <Form.Row hidden={values.public}>
-                <Form.Group controlId="validationFormikUser" as={Col}>
-                        <Form.Label>User</Form.Label>
+                        </Col>
+                </Form.Group>
+                <Form.Group controlId="validationFormikUser" as={Row} hidden={values.public}>
+                        <Col>
                         <Form.Control name="user" as="select" custom
                             value={
                                 values.user
@@ -97,11 +123,32 @@ export default function CategoryForm (props) {
                             {
                             errors.user
                         } </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
+                <Form.Row>
+                <Col sm={4}>
+                    <OverlayTrigger
+                        key="savedPop"
+                        show={isSubmitting}
+                        placement="right"
+                        overlay={
+                            <Popover id="savedPop">
+                            <Popover.Content>
+                                <Spinner animation="border" role="status" variant="success">
+                                    <span className="sr-only">Loading...</span>
+                                </Spinner>
+                            </Popover.Content>
+                            </Popover>
+                        }
+                        >
+                        <Button type="submit" disabled={isSubmitting}>Save Category</Button>
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={8}>
+                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
+                </Col>
                 </Form.Row>
-                <Button type="submit"
-                    disabled={isSubmitting}>Save Category</Button>
             </Form>}
-            </Formik>
+        </Formik>
         );
 }

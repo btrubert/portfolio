@@ -54,11 +54,11 @@ class CategoryController extends AbstractController
             $em->persist($category);
             $em->flush();
 
-            $response = new JSONResponse("ok", Response::HTTP_CREATED);
+            $response = new JSONResponse("The category has been created.", Response::HTTP_CREATED);
             return $response;
         }
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while creating the new category.', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -77,11 +77,11 @@ class CategoryController extends AbstractController
                 $em->persist($category);
                 $em->flush();
 
-                $response = new JSONResponse("ok", Response::HTTP_OK);
+                $response = new JSONResponse("The category has been edited.", Response::HTTP_OK);
                 return $response;
             }
         }
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while saving the edited category.', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -100,10 +100,10 @@ class CategoryController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($category);
             $em->flush();
-            return new JsonResponse('ok', Response::HTTP_ACCEPTED);
+            return new JsonResponse('The category has been deleted.', Response::HTTP_ACCEPTED);
         }
 
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while deleting the category.', Response::HTTP_EXPECTATION_FAILED);
     }
 }
