@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ObjectEncoder
 {
-    public function encodeObjectToJson($object)
+    public function encodeObjectToJson($object, $ignored = [])
     {
         $encoder = new JsonEncoder();
         $defaultContext = [
@@ -17,6 +17,7 @@ class ObjectEncoder
                 // value returned in the cat object refering $this
                 return $object->getId();
             },
+            AbstractNormalizer::IGNORED_ATTRIBUTES => $ignored
         ];
         $normalizer = new ObjectNormalizer(null, null, null, null, null, null, $defaultContext);
 

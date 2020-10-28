@@ -1,86 +1,171 @@
 import React from "react";
-import Form from 'react-bootstrap/Form'
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import {Container, Row, Col, Button} from 'react-bootstrap/';
+import {Formik} from 'formik';
+import * as yup from 'yup';
 
 
-export default class UserForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: props.category ? props.category.name : "",
-            isPublic: props.category ? props.category.public : false,
-            edit: props.edit,
-            id: props.category ? props.category.id : null,
-            user: null,
-            validated: false
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+export default function UserForm (props) {
 
-    handleChange(event) {
-        const target = event.currentTarget;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        this.setState({[name]: value});
-    }
+    const formRef = React.createRef();
 
-    handleSubmit(event) {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (form.checkValidity() === true) {
-            form.disabled
-            this.setState({validated: true});
-            fetch("/admin/dashboard/category/" + (
-            this.state.edit ? "edit/" + this.state.id : "new"
-        ), {
-                method: (this.state.edit ? 'PUT' : 'POST'),
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(
-                    {'name': this.state.name, 'public': this.state.isPublic, 'user': this.state.user}
-                )
-            });
+    const schema = yup.object({
+        firstName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
+        lastName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
+        email: yup.string().required("Required").email("Email invalid"),
+        username: yup.string().required("Required").matches(/^[a-zA-Z0-9]+$/, 'Must contain only letters and numbers'),
+        admin: yup.boolean(),
+        modifyPassword: yup.boolean(),
+        password: yup.string().when("modifyPassword", {is: true, then : yup.string().required("Required").min(8, "Must be at least 8 characters long").max(32, "Must be at most 32 characters long"), otherwise: yup.string().nullable()}),
+        passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
+    });
+
+    const handleSubmitForm = (values) => {
+        let formData = new FormData(formRef.current);
+        if (!values.modifyPassword){
+            formData.delete("password");
         }
+        formData.delete("modifyPassword");
+        formData.delete("passwordConfirmation");
+        fetch("/admin/dashboard/users/" + (
+            props.edit ? "edit/" + props.user.id : "new"
+        ), {
+            method:'POST',
+            body: formData
+        });
     }
 
-    render() {
-        return (
-            <Form validated={
-                    this.state.validated
+   return (
+       <Formik validationSchema={schema}
+            onSubmit={handleSubmitForm}
+            validateOnBlur={false}
+            validateOnChange={false}
+            initialValues={
+                {
+                    firstName: props.user ? props.user.firstName : "",
+                    lastName: props.user ? props.user.lastName : "",
+                    email: props.user ? props.user.email : "",
+                    username: props.user ? props.user.username : "",
+                    password: "",
+                    admin: props.user ? props.user.admin : false,
+                    modifyPassword: !props.edit,
                 }
-                onSubmit={
-                    this.handleSubmit
-            }>
+        }>{({
+            handleSubmit,
+            handleChange,
+            values,
+            errors,
+            isSubmitting
+        }) => <Form noValidate
+                onSubmit={handleSubmit}
+                ref={formRef}>
                 <Form.Row>
-                    <Form.Group controlId="validationCustomName">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control required name="name" type="text" placeholder="Category's name"
+                    <Form.Group controlId="validationFormikFirstName" as={Col}>
+                        <Form.Control required name="firstName" type="text" placeholder="First name"
                             value={
-                                this.state.name
+                                values.firstName
                             }
-                            onChange={
-                                this.handleChange
-                            }/>
+                            isInvalid={!!errors.firstName}
+                            onChange={handleChange}/>
                         <Form.Control.Feedback type="invalid">
-                            Please enter a category name.
+                            {errors.firstName}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="validationFormiklastName" as={Col}>
+                        <Form.Control required name="lastName" type="text" placeholder="Last name"
+                            value={
+                                values.lastName
+                            }
+                            isInvalid={!!errors.lastName}
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.lastName}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                    <Form.Check type="checkbox" name="isPublic" label="Make this category public ?"
+                    <Form.Group controlId="validationFormikEmail" as={Col}>
+                        <Form.Control required name="email" type="email" placeholder="Email"
+                            value={
+                                values.email
+                            }
+                            isInvalid={!!errors.email}
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.email}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                   <Form.Group controlId="validationFormikUsername" as={Col}>
+                   <InputGroup>
+                        <InputGroup.Prepend>
+                        <InputGroup.Text>@</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <Form.Control required name="username" type="text" placeholder="username"
+                            value={
+                                values.username
+                            }
+                            isInvalid={!!errors.lastName}
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.lastName}
+                        </Form.Control.Feedback>
+                        </InputGroup>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row hidden={!props.edit}>
+                <Form.Group controlId="validationFormikModifyPassword" as={Col}>
+                    <Form.Check type="switch" name="modifyPassword" label="Modify password"
                         checked={
-                            this.state.isPublic
+                            values.modifyPassword
                         }
                         onChange={
-                            this.handleChange
+                            handleChange
                         }/>
+                        </Form.Group>
                 </Form.Row>
-                <Form.Row> {/* TODO add user */} </Form.Row>
-                <Button type="submit">Save Category</Button>
-            </Form>
+                <Form.Row hidden={!values.modifyPassword}>
+                   <Form.Group controlId="validationFormikPassword1" as={Col}>
+                        <Form.Control required name="password" type="password" placeholder={props.edit? "Enter new password" : "Password"}
+                            value={
+                                values.password
+                            }
+                            isInvalid={!!errors.password}
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.password}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row hidden={!values.modifyPassword}>
+                   <Form.Group controlId="validationFormikPassword2" as={Col}>
+                        <Form.Control required name="passwordConfirmation" type="password" placeholder="Confirm password"
+                            value={
+                                values.passwordConfirmation
+                            }
+                            isInvalid={!!errors.passwordConfirmation}
+                            onChange={handleChange}/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.passwordConfirmation}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                <Form.Group controlId="validationFormikAdmin" as={Col}>
+                    <Form.Check type="switch" name="admin" label="Give this user admin rights ?"
+                        checked={
+                            values.admin
+                        }
+                        onChange={
+                            handleChange
+                        }/>
+                        </Form.Group>
+                </Form.Row>
+                <Button type="submit"
+                   >Save User</Button>
+            </Form>}
+            </Formik>
         );
-    }
 }

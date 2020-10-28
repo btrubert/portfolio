@@ -13,6 +13,7 @@ export default function UsersList (props) {
                     <th>Username</th>
                     <th>Name</th>
                     <th>email</th>
+                    <th>Roles</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -29,6 +30,7 @@ export default function UsersList (props) {
                             {
                             u.email
                         }</th>
+                        <th>{u.admin && "Admin"}</th>
                         <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(u)}>Edit</Button>
                         <OverlayTrigger trigger={"focus"}
                             key={'d'+u.id}

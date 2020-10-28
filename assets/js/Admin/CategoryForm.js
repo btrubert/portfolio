@@ -24,9 +24,6 @@ export default function CategoryForm (props) {
             props.edit ? "edit/" + props.category.id : "new"
         ), {
             method:'POST',
-            headers: {
-                enctype: "multipart/form-data",
-            },
             body: formData
         });
     }
@@ -52,7 +49,7 @@ export default function CategoryForm (props) {
                 onSubmit={handleSubmit}
                 ref={formRef}>
                 <Form.Row>
-                    <Form.Group controlId="validationFormikName">
+                    <Form.Group controlId="validationFormikName" as={Col}>
                         <Form.Label>Name</Form.Label>
                         <Form.Control required name="name" type="text" placeholder="Category's name"
                             value={
@@ -66,27 +63,18 @@ export default function CategoryForm (props) {
                     </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                <Form.Group controlId="validationFormikIsPublic">
+                <Form.Group controlId="validationFormikIsPublic" as={Col}>
                     <Form.Check type="switch" name="public" label="Make this category public ?"
                         checked={
                             values.public
                         }
-                        value={
-                            values.public
-                        }
-                        isInvalid={
-                            !!errors.public
-                        }
                         onChange={
                             handleChange
                         }/>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.public}
-                        </Form.Control.Feedback>
                         </Form.Group>
                 </Form.Row>
                 <Form.Row hidden={values.public}>
-                <Form.Group controlId="validationFormikUser">
+                <Form.Group controlId="validationFormikUser" as={Col}>
                         <Form.Label>User</Form.Label>
                         <Form.Control name="user" as="select" custom
                             value={

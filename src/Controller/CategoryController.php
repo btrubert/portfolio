@@ -64,14 +64,13 @@ class CategoryController extends AbstractController
     /**
      * @Route("/admin/dashboard/categories/edit/{id}", methods={"POST"}, name="edit_category")
      */
-    public function editCategory(Request $request, $id, LoggerInterface $logger)
+    public function editCategory(Request $request, $id)
     {
         $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
 
         if ($category) {
             $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
             $form->submit($request->request->all());
-            $logger->critical("LOG : " . $request->request->get("public"));
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $category = $form->getData();

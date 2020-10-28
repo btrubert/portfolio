@@ -2,7 +2,6 @@ import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
 import {Navbar, Nav} from 'react-bootstrap';
 import {Button} from 'react-bootstrap';
-import {Switch, Route, Link} from 'react-router-dom';
 import PhotosList from './PhotosList';
 import PostsList from './PostsList';
 import UsersList from './UsersList';
@@ -31,7 +30,9 @@ export default class Dashboard extends React.Component {
     }
 
     handleShow(type) {
-        this.setState({showForm: true, formType: type});
+        if (this.state.categories && this.state.photos && this.state.users) {
+            this.setState({showForm: true, formType: type});
+        }
     }
 
     handleClose() {
@@ -39,8 +40,10 @@ export default class Dashboard extends React.Component {
     }
 
     handleEdit(item) {
-        this.setState({currentItem: item, edit: true});
-        this.handleShow("Edit");
+        if (this.state.categories && this.state.photos && this.state.users) {
+            this.setState({currentItem: item, edit: true});
+            this.handleShow("Edit");
+        }
     }
 
     handleDelete(item) {
@@ -149,7 +152,7 @@ export default class Dashboard extends React.Component {
                         this.state.edit
                     }
                     refresh={this.handleRefresh}
-                    users={this.state.users}/>
+                    users={this.state.users}/>;
             case "users":
                 return <UserForm user={
                         this.state.currentItem
@@ -157,7 +160,7 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}/>
+                    refresh={this.handleRefresh}/>;
             default:
                 return <></>;
         }

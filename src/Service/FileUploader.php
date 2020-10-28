@@ -39,7 +39,6 @@ class FileUploader
         $fileName = uniqid("IMG_", true) . '.jpg';
         try {
             copy($file, $this->getTargetDirectory() . 'original/' . $fileName);
-            $exifs = $this->extractExifs("");
             $exifs = $this->extractExifs($this->getTargetDirectory() . 'original/' . $fileName);
             $this->saveLowerRes($fileName);
             return [$fileName, $exifs];
