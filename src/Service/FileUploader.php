@@ -18,17 +18,17 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-	$fileName = uniqid("IMG_", true).'.'.$file->guessExtension();
+        $fileName = uniqid("IMG_", true) . '.' . $file->guessExtension();
 
         try {
-            $file->move($this->getTargetDirectory().'original/', $fileName);
-	    $exifs = $this->extractExifs($this->getTargetDirectory().'original/'.$fileName);
-	    $this->saveLowerRes($fileName);
+            $file->move($this->getTargetDirectory() . 'original/', $fileName);
+            $exifs = $this->extractExifs($this->getTargetDirectory() . 'original/' . $fileName);
+            $this->saveLowerRes($fileName);
             return [$fileName, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return null;
-        }     
+        }
     }
 
     /**
@@ -36,12 +36,12 @@ class FileUploader
      */
     public function addLocal($file)
     {
-        $fileName = uniqid("IMG_", true).'.jpg';
+        $fileName = uniqid("IMG_", true) . '.jpg';
         try {
-            copy($file, $this->getTargetDirectory().'original/'.$fileName);
-	    $exifs = $this->extractExifs("");
-	    $exifs = $this->extractExifs($this->getTargetDirectory().'original/'.$fileName);
-            $this->_saveLowerRes($fileName);
+            copy($file, $this->getTargetDirectory() . 'original/' . $fileName);
+            $exifs = $this->extractExifs("");
+            $exifs = $this->extractExifs($this->getTargetDirectory() . 'original/' . $fileName);
+            $this->saveLowerRes($fileName);
             return [$fileName, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
@@ -57,17 +57,17 @@ class FileUploader
     public function saveLowerRes($fileName)
     {
         try {
-            list($width, $height) = getimagesize($this->getTargetDirectory().'original/'.$fileName);
+            list($width, $height) = getimagesize($this->getTargetDirectory() . 'original/' . $fileName);
             $ratio = $width / $height;
             $new_width = 1024 * $ratio;
             $new_height = 1024;
 
             // Resample
             $image_low = imagecreatetruecolor($new_width, $new_height);
-	    $image = imagecreatefromjpeg($this->getTargetDirectory().'original/'.$fileName);
+            $image = imagecreatefromjpeg($this->getTargetDirectory() . 'original/' . $fileName);
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
 
-            imagejpeg($image_low, $this->getTargetDirectory().$fileName);
+            imagejpeg($image_low, $this->getTargetDirectory() . $fileName);
         } catch (Exception $e) {
             //$this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return false;
@@ -78,7 +78,7 @@ class FileUploader
     public function extractExifs($path): array
     {
         $values = exif_read_data($path);
-	if (!$values) {
+        if (!$values) {
             $this->logger->critical('Error: Unable to read exif headers');
             return [];
         }
@@ -93,7 +93,7 @@ class FileUploader
         $exifs['model'] = isset($values['Model']) ? $values['Model'] : 'n/a';
         $exifs['date'] = isset($values['DateTimeOriginal']) ? $values['DateTimeOriginal'] : 'n/a';
 
-	return $exifs;
+        return $exifs;
     }
 
     public function getFloatValue($s): string

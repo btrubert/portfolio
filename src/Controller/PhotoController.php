@@ -87,7 +87,7 @@ class PhotoController extends AbstractController
      */
     public function newPhoto(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
     {
-	$photo = new Photo();
+        $photo = new Photo();
         $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
@@ -104,13 +104,13 @@ class PhotoController extends AbstractController
                 $em->persist($photo);
                 $em->flush();
                 $response = new JsonResponse("ok", Response::HTTP_CREATED);
-	    } else {
+            } else {
                 $response = new JsonResponse("file not saved", Response::HTTP_METHOD_NOT_ALLOWED);
             }
 
             return $response;
         }
-	
+
         return new JsonResponse("error", Response::HTTP_EXPECTATION_FAILED);
     }
 

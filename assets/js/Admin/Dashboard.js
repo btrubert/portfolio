@@ -148,7 +148,8 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}/>
+                    refresh={this.handleRefresh}
+                    users={this.state.users}/>
             case "users":
                 return <UserForm user={
                         this.state.currentItem

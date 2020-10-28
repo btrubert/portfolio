@@ -1,84 +1,119 @@
 import React from "react";
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/';
+import {Formik} from 'formik';
+import * as yup from 'yup';
 
 
-export default class CategoryForm extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: props.category ? props.category.name : "",
-            isPublic: props.category ? props.category.public : false,
-            edit: props.edit,
-            id: props.category ? props.category.id : null,
-            user: null,
-            validated: false
-        };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-    }
+export default function CategoryForm (props) {
 
-    handleChange(event) {
-        const target = event.currentTarget;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-        this.setState({[name]: value});
-    }
+    const formRef = React.createRef();
 
-    handleSubmit(event) {
-        event.preventDefault();
-        const form = event.currentTarget;
-        if (form.checkValidity() === true) {
-            form.disabled
-            this.setState({validated: true});
-            let formData = new FormData(form);
-            fetch("/admin/dashboard/categories/" + (
-            this.state.edit ? "edit/" + this.state.id : "new"
-        ), {
-                method: (this.state.edit ? 'POST' : 'POST'),
-                headers: {
-                    enctype: "multipart/form-data",
-                },
-                body: formData
-            });
+    const schema = yup.object({
+        name: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
+        public: yup.boolean(),
+        user: yup.number().when('public', {is: false, then:yup.number().required("Required").min(0, "Select a user"), otherwise: yup.number().nullable()}),
+    });
+
+    const handleSubmitForm = (values) => {
+        let formData = new FormData(formRef.current);
+        if (values.public){
+            formData.delete("user");
         }
+        fetch("/admin/dashboard/categories/" + (
+            props.edit ? "edit/" + props.category.id : "new"
+        ), {
+            method:'POST',
+            headers: {
+                enctype: "multipart/form-data",
+            },
+            body: formData
+        });
     }
 
-    render() {
-        return (
-            <Form validated={
-                    this.state.validated
+   return (
+       <Formik validationSchema={schema}
+            onSubmit={handleSubmitForm}
+            validateOnBlur={false}
+            validateOnChange={false}
+            initialValues={
+                {
+                    name: props.category ? props.category.name : "",
+                    public: props.category ? props.category.public : false,
+                    user: props.category && props.category.user ? props.category.user.id : "",
                 }
-                onSubmit={
-                    this.handleSubmit
-            }>
+        }>{({
+            handleSubmit,
+            handleChange,
+            values,
+            errors,
+            isSubmitting
+        }) => <Form noValidate
+                onSubmit={handleSubmit}
+                ref={formRef}>
                 <Form.Row>
-                    <Form.Group controlId="validationCustomName">
+                    <Form.Group controlId="validationFormikName">
                         <Form.Label>Name</Form.Label>
                         <Form.Control required name="name" type="text" placeholder="Category's name"
                             value={
-                                this.state.name
+                                values.name
                             }
-                            onChange={
-                                this.handleChange
-                            }/>
+                            isInvalid={!!errors.name}
+                            onChange={handleChange}/>
                         <Form.Control.Feedback type="invalid">
-                            Please enter a category name.
+                            {errors.name}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                    <Form.Check type="checkbox" name="isPublic" label="Make this category public ?"
+                <Form.Group controlId="validationFormikIsPublic">
+                    <Form.Check type="switch" name="public" label="Make this category public ?"
                         checked={
-                            this.state.isPublic
+                            values.public
+                        }
+                        value={
+                            values.public
+                        }
+                        isInvalid={
+                            !!errors.public
                         }
                         onChange={
-                            this.handleChange
+                            handleChange
                         }/>
+                        <Form.Control.Feedback type="invalid">
+                            {errors.public}
+                        </Form.Control.Feedback>
+                        </Form.Group>
                 </Form.Row>
-                <Form.Row> {/* TODO add user */} </Form.Row>
-                <Button type="submit">Save Category</Button>
-            </Form>
+                <Form.Row hidden={values.public}>
+                <Form.Group controlId="validationFormikUser">
+                        <Form.Label>User</Form.Label>
+                        <Form.Control name="user" as="select" custom
+                            value={
+                                values.user
+                            }
+                            isInvalid={
+                                !!errors.user
+                            }
+                            onChange={handleChange}>
+                            <option hidden value="">Choose a user</option>
+                            {
+                            props.users.map(u => <option value={
+                                u.id
+                            }>
+                                {
+                                u.username
+                            }</option>)
+                        } </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            {
+                            errors.user
+                        } </Form.Control.Feedback>
+                    </Form.Group>
+                </Form.Row>
+                <Button type="submit"
+                    disabled={isSubmitting}>Save Category</Button>
+            </Form>}
+            </Formik>
         );
-    }
 }

@@ -19,11 +19,11 @@ class CategoryType extends AbstractType
             ->add('name', TextType::class)
             ->add('public', CheckboxType::class, [
                 'label'    => 'Show this category publicly?',
-                'required' => false,
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'id',
+                'required' => false,
             ]);
     }
 
