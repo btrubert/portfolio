@@ -51,8 +51,6 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
         $password = $request->request->get('password');
         $username = $request->request->get('username');
         if (null === $username || null === $password) {
-            // The token header was empty, authentication fails with HTTP Status
-            // Code 401 "Unauthorized"
             throw new CustomUserMessageAuthenticationException('Missing credentials');
         }
 

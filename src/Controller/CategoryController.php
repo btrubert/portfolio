@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Form\CategoryType;
 use App\Service\ObjectEncoder;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+
 
 class CategoryController extends AbstractController
 {
@@ -21,10 +23,7 @@ class CategoryController extends AbstractController
      */
     public function categories(ObjectEncoder $objectEncoder)
     {
-        $serializer = $this->get('serializer');
         $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
-
-
         $scategories = $objectEncoder->encodeObjectToJson($categories);
 
         return new JsonResponse(json_decode($scategories));
@@ -41,12 +40,15 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/new", methods={"POST"}, name="new_category")
+     * @Route("/admin/dashboard/categories/new", methods={"GET", "POST"}, name="new_category")
      */
-    public function newCategory(Request $request)
+    public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token)
     {
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("category_item"));
+        }
         $category = new Category();
-        $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
+        $form = $this->createForm(CategoryType::class, $category);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -62,14 +64,17 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/edit/{id}", methods={"POST"}, name="edit_category")
+     * @Route("/admin/dashboard/categories/edit/{id}", methods={"GET", "POST"}, name="edit_category")
      */
-    public function editCategory(Request $request, $id)
+    public function editCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("category_item"));
+        }
         $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
 
         if ($category) {
-            $form = $this->createForm(CategoryType::class, $category, array('csrf_protection' => false));
+            $form = $this->createForm(CategoryType::class, $category);
             $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();

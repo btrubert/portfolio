@@ -23,11 +23,16 @@ export default function CategoryForm (props) {
         user: yup.number().when('public', {is: false, then:yup.number().required("Required").min(0, "Select a user"), otherwise: yup.number().nullable()}),
     });
 
-    const handleSubmitForm = (values, actions) => {
+    const handleSubmitForm = async (values, actions) => {
         let formData = new FormData(formRef.current);
         if (values.public){
             formData.delete("user");
         }
+        let token = "";
+        await fetch("/admin/dashboard/categories/" + (
+            props.edit ? "edit/" + props.category.id : "new"
+        ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
+        formData.append("_token", token);
         fetch("/admin/dashboard/categories/" + (
             props.edit ? "edit/" + props.category.id : "new"
         ), {
