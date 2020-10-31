@@ -20,6 +20,7 @@ class UserType extends AbstractType
             ->add('firstName', TextType::class)
             ->add('lastName', TextType::class)
             ->add('admin', CheckboxType::class, ["mapped" => false])
+            ->add('password', TextType::class, ["mapped" => false])
         ;
     }
 

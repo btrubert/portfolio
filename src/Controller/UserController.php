@@ -12,6 +12,8 @@ use App\Service\ObjectEncoder;
 use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 
 
 class UserController extends AbstractController
@@ -44,12 +46,16 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/users/new", methods={"POST"}, name="new_user")
+     * @Route("/admin/dashboard/users/new", methods={"GET", "POST"}, name="new_user")
      */
-    public function newUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function newUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token)
     {
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("user_item"));
+        }
+
         $user = new User();
-        $form = $this->createForm(UserType::class, $user, array('csrf_protection' => false));
+        $form = $this->createForm(UserType::class, $user);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid() && $request->request->has("password")) {
             $em = $this->getDoctrine()->getManager();
@@ -61,22 +67,26 @@ class UserController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            $response = new JSONResponse("ok", Response::HTTP_CREATED);
+            $response = new JSONResponse("The user has been created.", Response::HTTP_CREATED);
             return $response;
         }
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while creating a new user.', Response::HTTP_EXPECTATION_FAILED);
     }
 
-        /**
-     * @Route("/admin/dashboard/users/edit/{id}", methods={"POST"}, name="edit_user")
+    /**
+     * @Route("/admin/dashboard/users/edit/{id}", methods={"GET", "POST"}, name="edit_user")
      */
-    public function editUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, $id)
+    public function editUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token, $id)
     {
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("user_item"));
+        }
+
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         if ($user) {
-            $form = $this->createForm(UserType::class, $user, array('csrf_protection' => false));
+            $form = $this->createForm(UserType::class, $user);
             $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -91,34 +101,34 @@ class UserController extends AbstractController
                 }
                 $em->persist($user);
                 $em->flush();
-    
-                $response = new JSONResponse("ok", Response::HTTP_CREATED);
+
+                $response = new JSONResponse("The user has been edited.", Response::HTTP_CREATED);
                 return $response;
             }
         }
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while editing the user', Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
-     * @Route("/admin/dashboard/users/delete/{id}", methods={"DELETE"}, name="delete_user")
+     * @Route("/admin/dashboard/users/delete/{id}", methods={"GET", "POST"}, name="delete_user")
      */
-    public function deleteUser(Request $request, $id)
+    public function deleteUser(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
-        // $submittedToken = $request->request->get('token');
-
-        // // 'delete-item' is the same value used in the template to generate the token
-        // if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
-        //     // ... do something, like deleting an object
-        // }
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-        if ($user) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($user);
-            $em->flush();
-            return new JsonResponse('ok', Response::HTTP_ACCEPTED);
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("delete_user_" . $id));
         }
 
+        $submittedToken = $request->request->get('_token');
+        if ($this->isCsrfTokenValid("delete_user_" . $id, $submittedToken)) {
+            $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+            if ($user) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($user);
+                $em->flush();
+                return new JsonResponse('ok', Response::HTTP_ACCEPTED);
+            }
+        }
 
         return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
     }
@@ -128,7 +138,6 @@ class UserController extends AbstractController
      */
     public function profileInfo(Security $security, ObjectEncoder $objectEncoder): Response
     {
-        $serializer = $this->get('serializer');
         $curentUser = $security->getUser();
         $user = null;
         $isAdmin = false;

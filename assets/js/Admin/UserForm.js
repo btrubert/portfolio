@@ -29,8 +29,13 @@ export default function UserForm (props) {
         passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
     });
 
-    const handleSubmitForm = (values, actions) => {
+    const handleSubmitForm = async (values, actions) => {
         let formData = new FormData(formRef.current);
+        let token = "";
+        await fetch("/admin/dashboard/users/" + (
+            props.edit ? "edit/" + props.user.id : "new"
+        ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
+        formData.append("_token", token);
         if (!values.modifyPassword){
             formData.delete("password");
         }
@@ -112,6 +117,7 @@ export default function UserForm (props) {
                     </Form.Group>
                 </Form.Row>
                     <Form.Group controlId="validationFormikEmail" as={Row}>
+                        <Col>
                         <Form.Control required name="email" type="email" placeholder="Email"
                             value={
                                 values.email
@@ -121,8 +127,10 @@ export default function UserForm (props) {
                         <Form.Control.Feedback type="invalid">
                             {errors.email}
                         </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
                    <Form.Group controlId="validationFormikUsername" as={Row}>
+                       <Col>
                    <InputGroup>
                         <InputGroup.Prepend>
                         <InputGroup.Text>@</InputGroup.Text>
@@ -137,8 +145,10 @@ export default function UserForm (props) {
                             {errors.lastName}
                         </Form.Control.Feedback>
                         </InputGroup>
+                        </Col>
                     </Form.Group>
                 <Form.Group controlId="validationFormikModifyPassword" as={Row} hidden={!props.edit}>
+                    <Col>
                     <Form.Check type="switch" name="modifyPassword" label="Modify password"
                         checked={
                             values.modifyPassword
@@ -146,8 +156,10 @@ export default function UserForm (props) {
                         onChange={
                             handleChange
                         }/>
+                        </Col>
                         </Form.Group>
                    <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
+                       <Col>
                         <Form.Control required name="password" type="password" placeholder={props.edit? "Enter new password" : "Password"}
                             value={
                                 values.password
@@ -157,8 +169,10 @@ export default function UserForm (props) {
                         <Form.Control.Feedback type="invalid">
                             {errors.password}
                         </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
                    <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
+                       <Col>
                         <Form.Control required name="passwordConfirmation" type="password" placeholder="Confirm password"
                             value={
                                 values.passwordConfirmation
@@ -168,8 +182,10 @@ export default function UserForm (props) {
                         <Form.Control.Feedback type="invalid">
                             {errors.passwordConfirmation}
                         </Form.Control.Feedback>
+                        </Col>
                     </Form.Group>
                 <Form.Group controlId="validationFormikAdmin" as={Row}>
+                    <Col>
                     <Form.Check type="switch" name="admin" label="Give this user admin rights ?"
                         checked={
                             values.admin
@@ -177,6 +193,7 @@ export default function UserForm (props) {
                         onChange={
                             handleChange
                         }/>
+                        </Col>
                         </Form.Group>
                 <Form.Row>
                 <Col sm={4}>

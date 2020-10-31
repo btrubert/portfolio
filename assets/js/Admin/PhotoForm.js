@@ -26,8 +26,13 @@ export default function PhotoForm(props) {
         path: yup.mixed().required("You must select a photo")
     });
 
-    const handleSubmitForm = (values, actions) => {
+    const handleSubmitForm = async (values, actions) => {
         let formData = new FormData(formRef.current);
+        let token = "";
+        await fetch("/admin/dashboard/photos/" + (
+            props.edit ? "edit/" + props.photo.id : "new"
+        ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
+        formData.append("_token", token);
         fetch("/admin/dashboard/photos/" + (
         props.edit ? "edit/" + props.photo.id : "new"
     ), {

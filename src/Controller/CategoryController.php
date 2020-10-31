@@ -90,24 +90,25 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/delete/{id}", methods={"DELETE"}, name="delete_category")
+     * @Route("/admin/dashboard/categories/delete/{id}", methods={"GET", "POST"}, name="delete_category")
      */
-    public function deleteCategory(Request $request, $id)
+    public function deleteCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
-        // $submittedToken = $request->request->get('token');
-
-        // // 'delete-item' is the same value used in the template to generate the token
-        // if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
-        //     // ... do something, like deleting an object
-        // }
-        $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
-        if ($category) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($category);
-            $em->flush();
-            return new JsonResponse('The category has been deleted.', Response::HTTP_ACCEPTED);
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("delete_category_".$id));
         }
 
+        $submittedToken = $request->request->get('_token');
+        if ($this->isCsrfTokenValid("delete_category_".$id, $submittedToken)) {
+
+            $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
+            if ($category) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($category);
+                $em->flush();
+                return new JsonResponse('The category has been deleted.', Response::HTTP_ACCEPTED);
+            }
+        }
 
         return new JsonResponse('Error while deleting the category.', Response::HTTP_EXPECTATION_FAILED);
     }

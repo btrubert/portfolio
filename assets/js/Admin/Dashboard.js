@@ -11,6 +11,7 @@ import CategoryForm from './CategoryForm';
 import UserForm from './UserForm';
 import {Modal} from 'react-bootstrap';
 import Spinner from 'react-bootstrap/Spinner';
+import { data } from 'jquery';
 
 export default class Dashboard extends React.Component {
     constructor(props) {
@@ -46,9 +47,16 @@ export default class Dashboard extends React.Component {
         }
     }
 
-    handleDelete(item) {
+    async handleDelete(item) {
+        let token ="";
+        await fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id,
+        {method: 'GET'}
+        ).then(response => {return response.text()}).then(data => {token=data});
+        let data = new FormData();
+        data.append("_token", token);
         fetch("/admin/dashboard/" + this.state.activeTab + "/delete/" + item.id,
-        {method: 'DELETE'}
+        {method: 'POST',
+        body: data}
         ).then(response => {
             if (response.ok) {
                 this.handleRefresh();
@@ -165,7 +173,7 @@ export default class Dashboard extends React.Component {
                     edit={
                         this.state.edit
                     }
-                    refresh={this.handleRefresh}/>;
+                    refresh={() => this.handleRefresh()}/>;
             default:
                 return <></>;
         }

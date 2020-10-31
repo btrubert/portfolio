@@ -14,6 +14,7 @@ use App\Entity\Category;
 use App\Service\FileUploader;
 use App\Service\ObjectEncoder;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 class PhotoController extends AbstractController
 {
@@ -83,12 +84,15 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photos/new", methods={"POST"}, name="new_photo")
+     * @Route("/admin/dashboard/photos/new", methods={"GET", "POST"}, name="new_photo")
      */
-    public function newPhoto(Request $request, FileUploader $fileUploader,  LoggerInterface $logger)
+    public function newPhoto(Request $request, FileUploader $fileUploader,  CsrfTokenManagerInterface $csrf_token)
     {
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("photo_item"));
+        }
         $photo = new Photo();
-        $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
+        $form = $this->createForm(PhotoType::class, $photo);
         $form->submit($request->request->all());
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -116,14 +120,17 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/admin/dashboard/photos/edit/{id}", methods={"POST"}, name="edit_photo")
+     * @Route("/admin/dashboard/photos/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
      */
-    public function editPhoto(Request $request, $id)
+    public function editPhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
-        $photo =  $this->getDoctrine()->getRepository(Photo::class)->find($id);
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("photo_item"));
+        }
 
+        $photo =  $this->getDoctrine()->getRepository(Photo::class)->find($id);
         if ($photo) {
-            $form = $this->createForm(PhotoType::class, $photo, array('csrf_protection' => false));
+            $form = $this->createForm(PhotoType::class, $photo);
             $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -139,24 +146,24 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photos/delete/{id}", methods={"DELETE"}, name="delete_photo")
+     * @Route("/admin/dashboard/photos/delete/{id}", methods={"GET", "POST"}, name="delete_photo")
      */
-    public function deletePhoto(Request $request, $id)
+    public function deletePhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
-        // $submittedToken = $request->request->get('token');
-
-        // // 'delete-item' is the same value used in the template to generate the token
-        // if ($this->isCsrfTokenValid('delete-item', $submittedToken)) {
-        //     // ... do something, like deleting an object
-        // }
-        $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
-        if ($photo) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($photo);
-            $em->flush();
-            return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
+        if ($request->isMethod("GET")) {
+            return new Response($csrf_token->getToken("delete_photo_" . $id));
         }
 
+        $submittedToken = $request->request->get('_token');
+        if ($this->isCsrfTokenValid('delete_photo_-item' . $id, $submittedToken)) {
+            $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
+            if ($photo) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($photo);
+                $em->flush();
+                return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
+            }
+        }
 
         return new JsonResponse('Error while deleting the photo.', Response::HTTP_EXPECTATION_FAILED);
     }
