@@ -29,7 +29,8 @@ export default function Photo(props) {
             }
             onHide={
                 (current) => props.onHide(current)
-        }>
+            }
+	    centered>
             <Modal.Header></Modal.Header>
             <Modal.Body>
                 <Carousel defaultActiveIndex={
