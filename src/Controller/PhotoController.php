@@ -155,7 +155,7 @@ class PhotoController extends AbstractController
         }
 
         $submittedToken = $request->request->get('_token');
-        if ($this->isCsrfTokenValid('delete_photo_-item' . $id, $submittedToken)) {
+        if ($this->isCsrfTokenValid('delete_photo_' . $id, $submittedToken)) {
             $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
             if ($photo) {
                 $em = $this->getDoctrine()->getManager();

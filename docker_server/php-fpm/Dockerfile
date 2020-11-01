@@ -13,18 +13,22 @@ RUN apk add --no-cache \
       freetype \
       libjpeg-turbo \
       libpng \
+      libwebp \
       freetype-dev \
       libjpeg-turbo-dev \
       libpng-dev \
+      libwebp-dev \
     && docker-php-ext-configure gd \
       --with-freetype=/usr/include/ \
       --with-jpeg=/usr/include/ \
+      --with-webp=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-enable gd \
     && apk del --no-cache \
       freetype-dev \
       libjpeg-turbo-dev \
       libpng-dev \
+      libwebp-dev \
     && rm -rf /tmp/* 
 CMD wait-for-it database:3306 -- php bin/console doctrine:migrations:migrate --no-interaction; php bin/console cache:clear; php bin/console app:create-admin; php-fpm
 
