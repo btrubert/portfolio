@@ -11,7 +11,6 @@ import CategoryForm from './CategoryForm';
 import UserForm from './UserForm';
 import {Modal} from 'react-bootstrap';
 import Spinner from 'react-bootstrap/Spinner';
-import { data } from 'jquery';
 
 export default class Dashboard extends React.Component {
     constructor(props) {

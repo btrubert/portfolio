@@ -30,6 +30,21 @@ class CategoryController extends AbstractController
     }
 
     /**
+     * @Route("/profile/categories/", name="profile_categories")
+     */
+    public function profileCategory(ObjectEncoder $objectEncoder)
+    {
+        $user = $this->getUser();
+        $category = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['user' => $user->getId()]);
+        if ($this->isGranted("access", $category)) {
+            $scategory = $objectEncoder->encodeObjectToJson($category);
+
+            return new JsonResponse(json_decode($scategory));
+        }
+        return new JsonResponse("No private categories available.", Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
      * @Route("/admin/dashboard/categories", name="categories_list")
      */
     public function listCategories(ObjectEncoder $objectEncoder)
@@ -95,11 +110,11 @@ class CategoryController extends AbstractController
     public function deleteCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
         if ($request->isMethod("GET")) {
-            return new Response($csrf_token->getToken("delete_category_".$id));
+            return new Response($csrf_token->getToken("delete_category_" . $id));
         }
 
         $submittedToken = $request->request->get('_token');
-        if ($this->isCsrfTokenValid("delete_category_".$id, $submittedToken)) {
+        if ($this->isCsrfTokenValid("delete_category_" . $id, $submittedToken)) {
 
             $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
             if ($category) {

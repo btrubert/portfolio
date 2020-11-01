@@ -10,7 +10,7 @@ import Popover from 'react-bootstrap/Popover';
 import Alert from 'react-bootstrap/Alert'
 
 
-export default function UserForm (props) {
+export default function UserDetails (props) {
 
     const formRef = React.createRef();
 
@@ -23,7 +23,6 @@ export default function UserForm (props) {
         lastName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
         email: yup.string().required("Required").email("Email invalid"),
         username: yup.string().required("Required").matches(/^[a-zA-Z0-9]+$/, 'Must contain only letters and numbers'),
-        admin: yup.boolean(),
         modifyPassword: yup.boolean(),
         password: yup.string().when("modifyPassword", {is: true, then : yup.string().required("Required").min(8, "Must be at least 8 characters long").max(32, "Must be at most 32 characters long"), otherwise: yup.string().nullable()}),
         passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
@@ -80,7 +79,6 @@ export default function UserForm (props) {
                     email: props.user ? props.user.email : "",
                     username: props.user ? props.user.username : "",
                     password: "",
-                    admin: props.user ? props.user.admin : false,
                     modifyPassword: !props.edit,
                 }
         }>{({
@@ -184,17 +182,6 @@ export default function UserForm (props) {
                         </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
-                <Form.Group controlId="validationFormikAdmin" as={Row}>
-                    <Col>
-                    <Form.Check type="switch" name="admin" label="Give this user admin rights ?"
-                        checked={
-                            values.admin
-                        }
-                        onChange={
-                            handleChange
-                        }/>
-                        </Col>
-                        </Form.Group>
                 <Form.Row>
                 <Col sm={4}>
                     <OverlayTrigger
@@ -211,7 +198,7 @@ export default function UserForm (props) {
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting}>Save User</Button>
+                        <Button type="submit" disabled={isSubmitting}>Save Use</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>
