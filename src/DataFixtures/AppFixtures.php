@@ -39,12 +39,10 @@ class AppFixtures extends Fixture
 
 
                         $manager->persist($photo);
+                        $manager->flush();
                     }
                 }
             }
-        }
-
-        $manager->flush();
+        }        
     }
-
 }

@@ -50,7 +50,8 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
     {
         $password = $request->request->get('password');
         $username = $request->request->get('username');
-        if (null === $username || null === $password) {
+        $csrfToken = $request->request->get('_csrf_token');
+        if (null === $username || null === $password || null === $csrfToken) {
             throw new CustomUserMessageAuthenticationException('Missing credentials');
         }
 
@@ -63,6 +64,7 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
         return new Passport($user, new PasswordCredentials($password), [
             new PasswordUpgradeBadge($password, $this->userRepository),
             new RememberMeBadge(),
+            new CsrfTokenBadge('authenticate', $csrfToken),
         ]);
     }
 
@@ -89,6 +91,6 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
             // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
-        return new RedirectResponse("/");
+        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 }

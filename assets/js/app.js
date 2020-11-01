@@ -19,7 +19,8 @@ class App extends React.Component {
         this.state = {
             user: null,
             admin: false,
-            loading: true
+            loading: true,
+            token: ""
         };
     }
 
@@ -27,7 +28,7 @@ class App extends React.Component {
         fetch("/api/profile_info").then(response => {
             return response.json();
         }).then(data => {
-            this.setState({user: data.user, admin: data.admin, loading: false})
+            this.setState({user: data.user, admin: data.admin, token: data.token, loading: false})
         });
     }
 
@@ -38,18 +39,27 @@ class App extends React.Component {
             return (
                 <BrowserRouter>
                     <Menu user={
-                        this.state.user
-                    }   admin={
-                        this.state.admin}/>
-                    <Switch>
-                        {
-                            this.state.admin?
-                            <Route path="/admin/dashboard"
-                            component={() => <Dashboard user={this.state.user} />}/>
-                            :
-                            <Route path="/profile"
-                            component={() => <Profile user={this.state.user} />}/>
+                            this.state.user
                         }
+                        admin={
+                            this.state.admin
+                        }
+                        token={
+                            this.state.token
+                        }/>
+                    <Switch> {
+                        this.state.admin ? <Route path="/admin/dashboard"
+                            component={
+                                () => <Dashboard user={
+                                    this.state.user
+                                }/>
+                            }/> : <Route path="/profile"
+                            component={
+                                () => <Profile user={
+                                    this.state.user
+                                }/>
+                            }/>
+                    }
                         <Route path="/gallery/:cat"
                             component={Photos}/>
                         <Route path="/gallery"
@@ -71,6 +81,6 @@ class App extends React.Component {
 }
 
 ReactDOM.render (
-        <App/>,
+    <App/>,
     document.getElementById('root')
 );

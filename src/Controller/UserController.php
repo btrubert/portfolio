@@ -136,16 +136,20 @@ class UserController extends AbstractController
     /**
      * @Route("/api/profile_info", name="profile_info")
      */
-    public function profileInfo(Security $security, ObjectEncoder $objectEncoder): Response
+    public function profileInfo(Security $security, ObjectEncoder $objectEncoder, CsrfTokenManagerInterface $csrf_token): Response
     {
         $curentUser = $security->getUser();
         $user = null;
         $isAdmin = false;
+        $token = "";
         if (isset($curentUser)) {
             $isAdmin = in_array("ROLE_ADMIN", $curentUser->getRoles());
             $user = json_decode($objectEncoder->encodeObjectToJson($curentUser, ['password', 'salt', 'roles', 'categories', 'id']));
+            $token = $csrf_token->getToken("logout")->getValue();
+        } else {
+            $token = $csrf_token->getToken("authenticate")->getValue();
         }
 
-        return new JsonResponse(['user' => $user, 'admin' => $isAdmin]);
+        return new JsonResponse(['user' => $user, 'admin' => $isAdmin, 'token' => $token]);
     }
 }

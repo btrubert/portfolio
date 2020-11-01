@@ -21,7 +21,7 @@ class SecurityController extends AbstractController
     {
         $curentUser = $security->getUser();
         if (isset($curentUser)) {
-            return new JsonResponse("Sign in", Response::HTTP_ACCEPTED);
+            return new JsonResponse("Signed in.", Response::HTTP_ACCEPTED);
         }
         return $this->redirectToRoute('index');
     }

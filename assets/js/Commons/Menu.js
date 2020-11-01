@@ -12,6 +12,15 @@ export default function Menu(props) {
     const handleShow = () => setShowLogin(true);
     const handleClose = () => setShowLogin(false);
 
+    const handleLogout = () => {
+        let formData = new FormData();
+        formData.append("_csrf_token", props.token);
+        fetch("/logout", {
+            method: 'POST',
+            body: formData
+        }).then(response => {return response.json()});
+    }
+
     return (
         <>
             <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
@@ -46,7 +55,7 @@ export default function Menu(props) {
                                     <NavDropdown.Item as={Link} eventKey="4" to="/admin/dashboard">Dashboard</NavDropdown.Item>
                                       :  <NavDropdown.Item as={Link} eventKey="4" to="/profile">Profile</NavDropdown.Item>
                                     }
-                                    <NavDropdown.Item href="/logout">Logout</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                                 </> : <NavDropdown.Item eventKey="4"
                                     onClick={handleShow}>Login</NavDropdown.Item>
                             } </NavDropdown>
@@ -58,7 +67,7 @@ export default function Menu(props) {
                 show={showLogin}
                 onHide={handleClose}>
                 <Modal.Body>
-                    <Login/>
+                    <Login token={props.token} />
                 </Modal.Body>
             </Modal>
         </>

@@ -65,8 +65,9 @@ class FileUploader
             $image_low = imagecreatetruecolor($new_width, $new_height);
             $image = imagecreatefromjpeg($this->getTargetDirectory() . 'original/' . $fileName);
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
-
-            imagejpeg($image_low, $this->getTargetDirectory() . $fileName);
+            imagedestroy($image);
+            imagewebp($image_low, $this->getTargetDirectory() . $fileName);
+            imagedestroy($image_low);
         } catch (Exception $e) {
             //$this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return false;
