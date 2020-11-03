@@ -23,7 +23,7 @@ export default function Menu(props) {
 
     return (
         <>
-            <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
+            <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <Navbar.Brand as={Link}
                         to="/">
