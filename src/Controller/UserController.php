@@ -13,7 +13,6 @@ use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Psr\Log\LoggerInterface;
 
 
 class UserController extends AbstractController
@@ -107,7 +106,7 @@ class UserController extends AbstractController
             }
         }
 
-        return new JsonResponse('Error while editing the user', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while editing the user.", Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -130,7 +129,7 @@ class UserController extends AbstractController
             }
         }
 
-        return new JsonResponse('error', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while deleting the user.", Response::HTTP_EXPECTATION_FAILED);
     }
 
     /**
@@ -138,7 +137,7 @@ class UserController extends AbstractController
      */
     public function profileInfo(Security $security, ObjectEncoder $objectEncoder, CsrfTokenManagerInterface $csrf_token): Response
     {
-        $curentUser = $security->getUser();
+        $curentUser = $this->getUser();
         $user = null;
         $isAdmin = false;
         $token = "";

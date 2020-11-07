@@ -21,6 +21,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\PasswordUpgradeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Psr\Log\LoggerInterface;
 
 class CustomLoginFormAuthenticator extends AbstractAuthenticator
 {
@@ -28,11 +29,13 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
 
     private $entityManager;
     private $userRepository;
+    private $logger;
 
-    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
+    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
         $this->userRepository = $userRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -75,9 +78,9 @@ class CustomLoginFormAuthenticator extends AbstractAuthenticator
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['username' => $username]);
         if (in_array("ROLE_ADMIN", $user->getRoles())) {
-            return new RedirectResponse("/admin/dashboard");
+            return new JsonResponse("/admin/dashboard", Response::HTTP_ACCEPTED);
         } else {
-            return new RedirectResponse("/profile");
+            return new JsonResponse("/profile", Response::HTTP_ACCEPTED);
         }
     }
 

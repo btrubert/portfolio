@@ -1,0 +1,31 @@
+body {
+    background-color: #3a3c3f;
+    color: whitesmoke;
+}
+
+.navbar-collapse {
+    text-align: right;
+}
+
+.main-content {
+    margin-top: 1em;
+}
+.baniere {
+    width: 100vw;
+}
+
+.custom-form {
+    color: black;
+}
+
+/* Category */
+@import "category";
+
+/* Gallery */
+@import "gallery";
+
+/* Caroussel */
+@import "caroussel";
+
+/* Admin */
+@import"admin";

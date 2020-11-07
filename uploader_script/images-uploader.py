@@ -3,7 +3,8 @@ import json
 import os
 import argparse
 
-LOGIN_TOKEN_URL ="api/profile_info/"
+LOGIN_TOKEN_URL = "api/profile_info/"
+LOGIN_URL = "login"
 DASHBOARD_URL = "admin/dashboard/"
 
 class Uploader:
@@ -26,7 +27,7 @@ class Uploader:
         login_token = content["token"]
 
         payload = {'_csrf_token': login_token, 'username': username, 'password': password}
-        r = self.session.post(URL + "login", data=payload, verify=self.verify)
+        r = self.session.post(self.domain + LOGIN_URL, data=payload, verify=self.verify)
         return r.status_code
 
     def createCategory(self, name):

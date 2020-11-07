@@ -1,42 +1,62 @@
-import React, {useState} from "react";
+import React, {useState} from "react"
 import Form from 'react-bootstrap/Form'
-import {Container, Row, Col, Button} from 'react-bootstrap/';
-import {Formik} from 'formik';
-import * as yup from 'yup';
-import Spinner from 'react-bootstrap/Spinner';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
+import {Container, Row, Col, Button} from 'react-bootstrap/'
+import {Formik} from 'formik'
+import * as yup from 'yup'
+import Spinner from 'react-bootstrap/Spinner'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
+import {useSession} from '../services/SessionContext'
+import TokenService from '../services/TokenService'
 
 
 export default function Login(props) {
 
-    const formRef = React.createRef();
+    const formRef: React.RefObject<HTMLFormElement> = React.createRef()
 
-    const [showAlert, setShowAlert] = useState(false);
-    const [variantAlert, setVariantAlert] = useState("warning");
-    const [messageAlert, setMessageAlert] = useState("");
+    const [showAlert, setShowAlert] = useState(false)
+    const [variantAlert, setVariantAlert] = useState("warning")
+    const [messageAlert, setMessageAlert] = useState("")
+    const [state, dispatch] = useSession()
 
-    const schema = yup.object({username: yup.string().required("Required"), password: yup.string().required("Required"), _remember_me: yup.boolean()});
+    const schema = yup.object({username: yup.string().required("Required"), password: yup.string().required("Required"), _remember_me: yup.boolean()})
 
-    const handleSubmitForm = (values, actions) => {
-        let formData = new FormData(formRef.current);
-        formData.append("_csrf_token", props.token);
-        fetch("/login", {
+    const handleSubmitForm = async (values, actions) => {
+        let token = ""
+        await fetch("/api/profile_info").then(response => {console.log(response.headers.get("Set-Cookie"));return response.json()})
+        .then(data => token = data.token)
+        fetch("/api/login", {
             method: 'POST',
             headers: {
-                enctype: "multipart/form-data"
+                "Content-Type": "application/json",
             },
-            body: formData
-        }).then(response => {
+            body: JSON.stringify({
+                username: values.username,
+                password: values.password,
+                _remember_me: values._remember_me,
+                _csrf_token: token
+            })
+        }).then(response => {console.log(response.headers.get('set-cookie'));
             if (response.ok) {
                 return response.json()
             } else {
-                throw new Error("verify your login info or try again later!");
+                throw new Error("Verify your login info or try again later!");
             }
         }).then(data => {
             actions.setSubmitting(false);
-            setMessageAlert(data);
+            dispatch({
+                type: 'setSession',
+                payload: {
+                    username: data.user.username,
+                    firstName: data.user.firstName,
+                    lastName: data.user.lastName,
+                    email: data.user.email,
+                    admin: data.user.admin,
+                    token: data.token,
+                }
+            })
+            setMessageAlert("Conencted as "+data.user.username);
             setVariantAlert("success");
             setShowAlert(true);
             // setTimeout(redirect, 3000);

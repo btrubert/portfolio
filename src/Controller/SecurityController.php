@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Security;
+use App\Service\ObjectEncoder;
 
 
 class SecurityController extends AbstractController
@@ -17,11 +18,12 @@ class SecurityController extends AbstractController
     /**
      * @Route("/login", name="login")
      */
-    public function login(Security $security)
+    public function login(Security $security, ObjectEncoder $objectEncoder)
     {
         $curentUser = $security->getUser();
         if (isset($curentUser)) {
-            return new JsonResponse("Signed in.", Response::HTTP_ACCEPTED);
+            $user = json_decode($objectEncoder->encodeObjectToJson($curentUser, ['password', 'salt', 'roles', 'categories', 'id']));
+            return new JsonResponse($user, Response::HTTP_ACCEPTED);
         }
         return $this->redirectToRoute('index');
     }

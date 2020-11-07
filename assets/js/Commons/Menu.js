@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Navbar, Nav, NavDropdown, NavItem} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {Container, Row, Col} from 'react-bootstrap';
 import {Modal} from 'react-bootstrap';
@@ -25,7 +25,7 @@ export default function Menu(props) {
         <>
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
-                    <Navbar.Brand as={Link}
+                    <Navbar.Brand as={Link} eventKey="0"
                         to="/">
                         <img src="/build/logo.svg" width="30" height="30" className="d-inline-block align-top" alt="logo"/>{' '}
                         Benjamin Trubert - Photographie
