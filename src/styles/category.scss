@@ -14,14 +14,16 @@
     filter: brightness(.42);
 }
 
-.category-card-img:hover {
-    filter: brightness(1);
-}
-
 .category-card-text {
     top: 45%;
 }
 
-.category-card-text:hover {
-    color: transparent;
+.category-card:hover {
+    & .category-card-img {
+        filter: brightness(1);
+    }
+
+    & .category-card-text {
+        color: transparent;
+    }
 }
