@@ -133,11 +133,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/profile_info", name="profile_info")
+     * @Route("/api/profile_info", methods={"GET"}, name="profile_info")
      */
     public function profileInfo(Security $security, ObjectEncoder $objectEncoder, CsrfTokenManagerInterface $csrf_token): Response
     {
-        $curentUser = $this->getUser();
+        $curentUser = $security->getUser();
         $user = null;
         $isAdmin = false;
         $token = "";

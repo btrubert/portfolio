@@ -35,3 +35,9 @@ services:
             $targetDirectory: '%kernel.project_dir%/public/uploads/'
 
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
+
+    App\EventListener\RestLogoutListener:
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
+              dispatcher: security.event_dispatcher.main

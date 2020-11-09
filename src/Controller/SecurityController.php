@@ -25,14 +25,14 @@ class SecurityController extends AbstractController
             $user = json_decode($objectEncoder->encodeObjectToJson($curentUser, ['password', 'salt', 'roles', 'categories', 'id']));
             return new JsonResponse($user, Response::HTTP_ACCEPTED);
         }
-        return $this->redirectToRoute('index');
+        return new JsonResponse("Connection failed.", Response::HTTP_UNAUTHORIZED);
     }
 
     /**
      * @Route("/logout", name="logout")
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        return $this->redirectToRoute('index');
+        return null;
     }
 }

@@ -38,8 +38,8 @@ security:
                 secret:   '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
                 path:     /
-                secure: true
-                samesite: strict
+                secure: false
+                samesite: lax
                 httponly: true
                 token_provider: 'Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider'
 
