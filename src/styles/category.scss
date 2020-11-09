@@ -4,24 +4,24 @@
 }
 
 .category-card {
-    width: 19rem;
-    height: 19rem;
     background-color: transparent;
     border: none;
     margin-top: 2em;
 }
 
 .category-card-img {
-    width: 19rem;
-    height: 19rem;
     object-fit:cover;
+    filter: brightness(.42);
+}
+
+.category-card-img:hover {
+    filter: brightness(1);
 }
 
 .category-card-text {
-    background-color: rgba(0,0,0,.6);
+    top: 45%;
 }
 
 .category-card-text:hover {
-    background-color: transparent;
     color: transparent;
 }

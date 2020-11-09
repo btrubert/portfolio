@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React from "react"
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
 import Link from 'next/link'
 import Container from 'react-bootstrap/Container'
@@ -23,24 +23,26 @@ export default class Menu extends React.Component<{}, State> {
     }
 
     componentDidMount() {
-        fetch("/api/profile_info")
-        .then(response => {return response.json()})
-        .then(data => {
-            this.setState({csrfToken: data.token})
-            if (data.user) {
-                const [state, dispatch] = this.context
-                dispatch({
-                    type: 'setSession',
-                    payload: {
-                        username: data.user.username,
-                        firstName: data.user.firstName,
-                        lastName: data.user.lastName,
-                        email: data.user.email,
-                        admin: data.user.admin,
-                    }
-                })
-            }
-        })
+        const [state, dispatch] = this.context
+        if (state.user){
+            fetch("/api/profile_info")
+            .then(response => {return response.json()})
+            .then(data => {
+                this.setState({csrfToken: data.token})
+                if (data.user) {
+                    dispatch({
+                        type: 'setSession',
+                        payload: {
+                            username: data.user.username,
+                            firstName: data.user.firstName,
+                            lastName: data.user.lastName,
+                            email: data.user.email,
+                            admin: data.user.admin,
+                        }
+                    })
+                }
+            })
+        }
     }
 
     toggleShow(show) {

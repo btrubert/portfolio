@@ -1,13 +1,10 @@
 .gallery {
-    padding: 0;
-    margin-top: 1em;
+    padding: 1rem;
     text-align: -moz-center;
     text-align: -webkit-center;
 }
 
 .gallery-photo {
-    width: 19rem;
-    height: 19rem;
     object-fit:cover;
 }
 
