@@ -1,0 +1,29 @@
+.category-cards {
+    text-align: -moz-center;
+    text-align: -webkit-center;
+}
+
+.category-card {
+    background-color: transparent;
+    border: none;
+    margin-top: 2em;
+}
+
+.category-card-img {
+    object-fit:cover;
+    filter: brightness(.42);
+}
+
+.category-card-text {
+    top: 45%;
+}
+
+.category-card:hover {
+    & .category-card-img {
+        filter: brightness(1);
+    }
+
+    & .category-card-text {
+        color: transparent;
+    }
+}
