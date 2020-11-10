@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Menu from '../components/Menu'
 import Container from 'react-bootstrap/Container'
 import type { AppProps /*, AppContext */ } from 'next/app'
-import {SessionProvider} from '../services/SessionContext'
+import {SessionProvider} from '../utils/SessionContext'
 
 function MyApp({Component, pageProps}: AppProps) {
     return <>

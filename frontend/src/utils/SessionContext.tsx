@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useEffect } from "react"
+import React, { useReducer, useContext, useEffect } from 'react'
 
 export const SessionContext = React.createContext({})
 
@@ -6,7 +6,7 @@ const initialState = {username: "", firstName: "", lastName: "", email: "", admi
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "setSession":
+    case 'setSession':
       return {
         username: action.payload.username,
         firstName: action.payload.firstName,
@@ -15,7 +15,7 @@ const reducer = (state, action) => {
         admin: action.payload.admin,
         token: action.payload.token,
       }
-    case "dropSession":
+    case 'dropSession':
       return {
         username: initialState.username,
         firstName: initialState.firstName,

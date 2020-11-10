@@ -1,15 +1,10 @@
-import React, {useState} from "react"
+import React, {useState} from 'react'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
 import Image from 'next/image'
 import {Container, Row, Col} from 'react-bootstrap/'
 import Photo from '../../components/Photo'
 
-interface Photo {
-    name: string,
-    path: string,
-    exifs: Array<any>,
-}
 
 function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const imgBaseUrl = props.imgBaseUrl
@@ -19,7 +14,7 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
 
     return (<Container className="main-content">
                 <Row> {
-                    photos.map((p, index) => <Col className="gallery" sm={12}
+                    photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
                         md={6}
                         lg={4}
                         key={index}>
@@ -34,22 +29,22 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export async function getStaticPaths() {
-    const response = await fetch("http://127.0.0.1:8000/api/categories")
+    const response = await fetch(process.env.SYMFONY_URL+"/api/categories")
     const categories = await response.json()
-    const paths = categories.map((c) => ({
+    const paths = categories.map((c: Category) => ({
         params: { category: c.name },
       }))
     return {
       paths: paths,
-      fallback: false
+      fallback: 'blocking',
     };
   }
   
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const response = await fetch("http://127.0.0.1:8000/api/gallery/"+ context.params.category)
+    const response = await fetch(process.env.SYMFONY_URL+"/api/gallery/"+ context.params?.category)
     const photos: Array<Photo> = await response.json()
-    const imgBaseUrl: string = process.env.SYMFONY_URL + '/img/'
+    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
     return {
         props: {photos, imgBaseUrl},
         revalidate: 1,

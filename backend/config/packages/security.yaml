@@ -56,5 +56,5 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/admin, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%'}
-        - { path: ^/uploads, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
+        # - { path: ^/uploads, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
         # - { path: ^/api, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%'}

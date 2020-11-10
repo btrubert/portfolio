@@ -42,10 +42,15 @@ class PhotoController extends AbstractController
     public function photos($catName, ObjectEncoder $objectEncoder)
     {
         $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($catName);
-        $photos = $category->getPhotos();
+        if ($category && ($category->getPublic() || $this->isGranted("access", $category))) {
+            $photos = $category->getPhotos();
 
-        $sphotos = $objectEncoder->encodeObjectToJson($photos);
-        return new JsonResponse(json_decode($sphotos));
+            $sphotos = $objectEncoder->encodeObjectToJson($photos);
+            return new JsonResponse(json_decode($sphotos));
+        } else {
+            return new JsonResponse("This category does not exit.", Response::HTTP_NOT_FOUND);
+        }
+        
     }
 
 

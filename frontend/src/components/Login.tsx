@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState} from 'react'
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/'
 import {Formik} from 'formik'
@@ -7,11 +7,20 @@ import Spinner from 'react-bootstrap/Spinner'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
-import {useSession} from '../services/SessionContext'
+import {useSession} from '../utils/SessionContext'
 import { useRouter } from 'next/router'
 
+interface Props {
+    token: string,
+}
 
-export default function Login(props) {
+interface FormValues {
+    username: string,
+    password: string,
+    _remember_me: boolean,
+}
+
+export default function Login(props: Props) {
 
     const [showAlert, setShowAlert] = useState(false)
     const [variantAlert, setVariantAlert] = useState("warning")
@@ -21,7 +30,7 @@ export default function Login(props) {
 
     const schema = yup.object({username: yup.string().required("Required"), password: yup.string().required("Required"), _remember_me: yup.boolean()})
 
-    const handleSubmitForm = async (values, actions) => {
+    const handleSubmitForm = async (values: FormValues, actions: any) => {
         let token = props.token
         fetch("/api/login", {
             method: 'POST',

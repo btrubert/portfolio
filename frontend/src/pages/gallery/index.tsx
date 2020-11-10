@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState} from 'react'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
 import {Container, Row, Col} from 'react-bootstrap/'
@@ -7,30 +7,19 @@ import Carousel from 'react-bootstrap/Carousel'
 import Link from 'next/link'
 import Image from 'next/image'
 
-interface Photo {
-    title: string,
-    path: string,
-    exifs: Array<any>
-}
-
-interface Category {
-    name: string,
-    photos: Array<Photo>
-}
-
 
 function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
     const imgBaseUrl = props.imgBaseUrl
     const categories = props.categories
     const [play, setPlay] = useState(props.play)
 
-    const handlePlay = (index) => {
+    const handlePlay = (index: number) => {
         const play_ = play.slice();
         play_[index] = 500;
         setPlay(play_)
     }
 
-    const handleStop = (index) => {
+    const handleStop = (index: number) => {
         const play_ = play.slice();
         play_[index] = null;
         setPlay(play_)
@@ -39,7 +28,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
     return (
         <Container className="main-content">
             <Row> {
-                categories.map((c, index) => <Col className="category-cards"
+                categories.map((c: Category, index: number) => <Col className="category-cards"
                     sm={12}
                     md={6}
                     lg={4}
@@ -67,7 +56,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 controls={false}
                                 pause={false}>
                                 {
-                                c.photos.map((p, index) => <Carousel.Item key={index}>
+                                c.photos.map((p: Photo, index: number) => <Carousel.Item key={index}>
                                     <Card.Img as={Image} src={imgBaseUrl+p.path}
                                         alt="Card category's images"
                                         className="category-card-img"
@@ -95,7 +84,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const response = await fetch("http://127.0.0.1:8000/api/categories")
     const categories: Array<Category> =  await response.json()
     const play: Array<number> = Array(categories.length).fill(null)
-    const imgBaseUrl: string = process.env.SYMFONY_URL + '/img/'
+    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
     return {
         props: {categories, play, imgBaseUrl},
         revalidate: 1,
