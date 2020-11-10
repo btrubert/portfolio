@@ -55,6 +55,11 @@ class Photo
      */
     private $download = false;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $original_path;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +143,18 @@ class Photo
     public function setDownload(bool $download): self
     {
         $this->download = $download;
+
+        return $this;
+    }
+
+    public function getOriginalPath(): ?string
+    {
+        return $this->original_path;
+    }
+
+    public function setOriginalPath(string $original_path): self
+    {
+        $this->original_path = $original_path;
 
         return $this;
     }

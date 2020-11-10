@@ -18,13 +18,15 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-        $fileName = uniqid("IMG_", true) . '.' . $file->guessExtension();
+        $fileName = uniqid("IMG_", true);
+        $originalFilename =  'original/' . $fileName . '.' . $file->guessExtension();
+
 
         try {
-            $file->move($this->getTargetDirectory() . 'original/', $fileName);
-            $exifs = $this->extractExifs($this->getTargetDirectory() . 'original/' . $fileName);
-            $this->saveLowerRes($fileName);
-            return [$fileName, $exifs];
+            $file->move($this->getTargetDirectory() . $originalFilename);
+            $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
+            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName);
+            return [$originalFilename, $lowerResFilename, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return null;
@@ -36,12 +38,14 @@ class FileUploader
      */
     public function addLocal($file)
     {
-        $fileName = uniqid("IMG_", true) . '.jpg';
+        $fileName = uniqid("IMG_", true);
+        $originalFilename =  'original/' . $fileName . '.jpg';
+
         try {
-            copy($file, $this->getTargetDirectory() . 'original/' . $fileName);
-            $exifs = $this->extractExifs($this->getTargetDirectory() . 'original/' . $fileName);
-            $this->saveLowerRes($fileName);
-            return [$fileName, $exifs];
+            copy($file, $this->getTargetDirectory() . $originalFilename);
+            $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
+            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName);
+            return [$originalFilename, $lowerResFilename, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return null;
@@ -53,26 +57,26 @@ class FileUploader
         return $this->targetDirectory;
     }
 
-    public function saveLowerRes($fileName)
+    public function saveLowerRes($originalFilename, $fileName)
     {
         try {
-            list($width, $height) = getimagesize($this->getTargetDirectory() . 'original/' . $fileName);
+            list($width, $height) = getimagesize($this->getTargetDirectory() . $originalFilename);
             $ratio = $width / $height;
             $new_width = 1024 * $ratio;
             $new_height = 1024;
 
             // Resample
             $image_low = imagecreatetruecolor($new_width, $new_height);
-            $image = imagecreatefromjpeg($this->getTargetDirectory() . 'original/' . $fileName);
+            $image = imagecreatefromjpeg($this->getTargetDirectory() . $originalFilename);
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
             imagedestroy($image);
-            imagewebp($image_low, $this->getTargetDirectory() . $fileName);
+            imagewebp($image_low, $this->getTargetDirectory() . $fileName . '.webp', 100);
             imagedestroy($image_low);
         } catch (Exception $e) {
             //$this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
-            return false;
+            return null;
         }
-        return true;
+        return  $fileName . '.webp';
     }
 
     public function extractExifs($path): array

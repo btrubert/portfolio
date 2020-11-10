@@ -102,8 +102,9 @@ class PhotoController extends AbstractController
 
             $savedFile = $fileUploader->upload($file);
             if ($savedFile) {
-                [$photoFileName, $exifs] = $savedFile;
+                [$originalFilename, $photoFileName, $exifs] = $savedFile;
                 $photo->setPath($photoFileName);
+                $photo->setOriginalPath($originalFilename);
                 $photo->setExifs($exifs);
                 $em->persist($photo);
                 $em->flush();

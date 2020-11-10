@@ -29,13 +29,14 @@ class AppFixtures extends Fixture
 
                 foreach (new DirectoryIterator($cat->getPathname()) as $file) {
                     if ($file->isFile() && $file->getBasename()!='.gitignore') {
-                        [$fileName, $exifs] = $this->fileUploader->addLocal($file->getPathname());
+                        [$originalFilename, $fileName, $exifs] = $this->fileUploader->addLocal($file->getPathname());
                         $photo = new Photo();
                         $photo->setTitle($file->getBasename());
                         $photo->setExifs($exifs);
                         $photo->setCategory($category);
                         $photo->getCategory()->addPhoto($photo);
                         $photo->setPath($fileName);
+                        $photo->setOriginalPath($originalFilename);
 
 
                         $manager->persist($photo);
