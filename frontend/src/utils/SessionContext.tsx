@@ -1,10 +1,24 @@
 import React, { useReducer, useContext, useEffect } from 'react'
 
+interface State {
+  username: string,
+  firstName: string,
+  lastName: string,
+  email: string,
+  admin: boolean,
+  token: string,
+}
+
+interface Action {
+  type: 'setSession' | 'dropSession',
+  payload: State,
+}
+
 export const SessionContext = React.createContext({})
 
-const initialState = {username: "", firstName: "", lastName: "", email: "", admin: false, token: ""}
+const initialState: State = {username: "", firstName: "", lastName: "", email: "", admin: false, token: ""}
 
-const reducer = (state, action) => {
+const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case 'setSession':
       return {
@@ -29,7 +43,7 @@ const reducer = (state, action) => {
   }
 }
 
-export const SessionProvider = ({ children }) => {
+export const SessionProvider = ({children}: any ) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   return (

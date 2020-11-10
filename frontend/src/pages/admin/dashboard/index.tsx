@@ -71,6 +71,7 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
 
     const handleRefresh = () => {
         setShowForm(false)
+        setCurrentIten(null)
         // fetch("/admin/dashboard/" + this.state.activeTab).then(response => {
         //     return response.json();
         // }).then(data => this.setState({[this.state.activeTab]: data}));
@@ -110,27 +111,27 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
 
     const getForm = () => {
         switch (activeTab) {
-            case 'photos':
-                return <PhotoForm photo={
-                        currentItem
-                    }
-                    edit={
-                        formType === 'Edit'
-                    }
-                    refresh={() => handleRefresh()}
-                    categories={categories}/>
             case 'categories':
                 return <CategoryForm category={
-                        currentItem
+                        currentItem as Category
                     }
                     edit={
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
                     users={users}/>
+            case 'photos':
+                return <PhotoForm photo={
+                        currentItem as Photo
+                    }
+                    edit={
+                        formType === 'Edit'
+                    }
+                    refresh={() => handleRefresh()}
+                    categories={categories}/>
             case 'users':
                 return <UserForm user={
-                        currentItem
+                        currentItem as User
                     }
                     edit={
                         formType === 'Edit'
@@ -161,12 +162,12 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
                                     () => handleClick("photos")
                             }>Photos</Nav.Link>
                         </Nav.Item>
-                        <Nav.Item>
+                        {/* <Nav.Item>
                             <Nav.Link eventKey="posts" disabled
                                 onSelect={
                                     () => handleClick("posts")
                             }>Posts</Nav.Link>
-                        </Nav.Item>
+                        </Nav.Item> */}
                         <Nav.Item>
                             <Nav.Link eventKey="users"
                                 onSelect={
@@ -198,9 +199,9 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
                 show={
                     showForm
                 }
-                onHide={
-                    setShowForm(false)
-            }>
+                onHide={() => {
+                    setShowForm(false); setCurrentIten(null)
+                }}>
                 <Modal.Header closeButton>
                     {
                     formType + " " + activeForm
