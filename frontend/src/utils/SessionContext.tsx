@@ -7,6 +7,7 @@ interface State {
   email: string,
   admin: boolean,
   token: string,
+  loading: boolean,
 }
 
 interface Action {
@@ -16,7 +17,7 @@ interface Action {
 
 export const SessionContext = React.createContext({})
 
-const initialState: State = {username: "", firstName: "", lastName: "", email: "", admin: false, token: ""}
+const initialState: State = {username: "", firstName: "", lastName: "", email: "", admin: false, token: "", loading: true}
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -28,6 +29,7 @@ const reducer = (state: State, action: Action) => {
         email: action.payload.email,
         admin: action.payload.admin,
         token: action.payload.token,
+        loading: false,
       }
     case 'dropSession':
       return {
@@ -37,6 +39,7 @@ const reducer = (state: State, action: Action) => {
         email: initialState.email,
         admin: initialState.admin,
         token: initialState.token,
+        loading: false,
       }
     default:
       throw new Error(`Unhandled action type: ${action.type}`)

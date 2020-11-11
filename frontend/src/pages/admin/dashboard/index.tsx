@@ -21,28 +21,34 @@ type Entity = 'categories' | 'photos' | 'users'
 
 function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const [loading, setLoading] = useState<boolean>(true)
+    // Entity lists managment
     const [categories, setCategories] = useState<Array<Category> | null>(null)
     const [refreshCategories, setRefreshCategories] = useState<boolean>(true)
     const [photos, setPhotos] = useState<Array<Photo> | null>(null)
     const [refreshPhotos, setRefreshPhotos] = useState<boolean>(true)
     const [users, setUsers] = useState<Array<User> | null>(null)
     const [refreshUsers, setRefreshUsers] = useState<boolean>(true)
-    const imgBaseUrl: string = props.imgBaseUrl
+
+    // Form management
     const [activeTab, setActiveTab] = useState<Entity>('categories')
     const [showForm, setShowForm] = useState<boolean>(false)
     const [activeForm, setActiveForm] = useState<'Category' | 'Photo' | 'User'>('Category')
     const [formType, setFormType] = useState<'New' | 'Edit'>('New')
     const [currentItem, setCurrentIten] = useState<Category | Photo | User | null>(null)
+
+    const imgBaseUrl: string = props.imgBaseUrl
     const router = useRouter()
     const [state, dispatch] = useSession()
 
     useEffect(() => {
-        if (!state.admin) {
-            router.push('/')
-        } else {
-            setLoading(false)
+        if (!state.loading) {
+            if (!state.admin) {
+                router.push('/')
+            } else {
+                setLoading(false)
+            }
         }
-    }, [state.admin])
+    }, [state.admin, state.loading])
 
     const fetchEntity = async (entity: Entity) => {
         const response = await fetch("/api/admin/"+entity)
@@ -90,9 +96,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
         body: JSON.stringify({_token: token})}
         ).then(response => {
             if (response.ok) {
-                handleRefresh();
+                handleRefresh()
             }
-        });
+        })
     }
 
     const handleClick = (tab: Entity) => {
@@ -100,13 +106,13 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             switch (tab) {
                 case 'photos':
                     setActiveForm('Photo')
-                    break;
+                    break
                 case 'categories':
                     setActiveForm('Category')
-                    break;
+                    break
                 case 'users':
                     setActiveForm('User')
-                    break;
+                    break
             }
             setActiveTab(tab)
         }
@@ -140,7 +146,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                     editClicked={editClicked}
                     deleteClicked={deleteClicked}
                     refresh={handleRefresh}
-                    imgBaseUrl={imgBaseUrl}/>;
+                    imgBaseUrl={imgBaseUrl}/>
             case 'users':
                 return <UsersList users={
                         users
@@ -151,7 +157,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             default:
                 return <Spinner animation="border" role="status" variant="success">
                     <span className="sr-only">Loading...</span>
-                </Spinner>;
+                </Spinner>
         }
     }
 
