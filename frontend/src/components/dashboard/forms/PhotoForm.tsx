@@ -46,12 +46,12 @@ export default function PhotoForm (props: Props) {
         }
         let formData = new FormData(formRef.current)
         let token = "";
-        await fetch("/api/admin/photos/" + (
-            props.edit && props.photo ? "edit/" + props.photo.id : "new"
+        await fetch("/api/admin/" + (
+            props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token);
-        fetch("/api/admin/photos/" + (
-        props.edit && props.photo ? "edit/" + props.photo.id : "new"
+        fetch("/api/admin/" + (
+        props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
     ), {
             method: 'POST',
             headers: {
@@ -60,7 +60,7 @@ export default function PhotoForm (props: Props) {
             body: formData
         }).then(response => {
             if (response.ok) {
-                return response.json()
+                return response.text()
             } else {
                 throw new Error("verify your form info or try again later!")
             }

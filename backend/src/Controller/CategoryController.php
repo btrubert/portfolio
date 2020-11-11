@@ -55,13 +55,14 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/new", methods={"GET", "POST"}, name="new_category")
+     * @Route("/admin/dashboard/category/new", methods={"GET", "POST"}, name="new_category")
      */
-    public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token)
+    public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token, LoggerInterface $logger)
     {
         if ($request->isMethod("GET")) {
             return new Response($csrf_token->getToken("category_item"));
         }
+        $logger->critical("NEXTJS : ".$request->request->get('_token'));
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->submit($request->request->all());
@@ -79,7 +80,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/edit/{id}", methods={"GET", "POST"}, name="edit_category")
+     * @Route("/admin/dashboard/category/edit/{id}", methods={"GET", "POST"}, name="edit_category")
      */
     public function editCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -105,7 +106,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories/delete/{id}", methods={"GET", "POST"}, name="delete_category")
+     * @Route("/admin/dashboard/category/delete/{id}", methods={"GET", "POST"}, name="delete_category")
      */
     public function deleteCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {

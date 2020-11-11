@@ -6,7 +6,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const {
         query: { entity },
     } = req
-    if (!(typeof entity === 'string') || ['categories', 'photos', 'users'].indexOf(entity) === -1) {
+    if (typeof entity !== 'string' || ['categories', 'photos', 'users'].indexOf(entity) === -1) {
         res.status(404)
     } else {
         const response = await fetch(process.env.SYMFONY_URL + "/admin/dashboard/" + entity, {

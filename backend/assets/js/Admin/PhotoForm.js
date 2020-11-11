@@ -29,11 +29,11 @@ export default function PhotoForm(props) {
     const handleSubmitForm = async (values, actions) => {
         let formData = new FormData(formRef.current);
         let token = "";
-        await fetch("/admin/dashboard/photos/" + (
+        await fetch("/admin/dashboard/photo/" + (
             props.edit ? "edit/" + props.photo.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
         formData.append("_token", token);
-        fetch("/admin/dashboard/photos/" + (
+        fetch("/admin/dashboard/photo/" + (
         props.edit ? "edit/" + props.photo.id : "new"
     ), {
             method: 'POST',

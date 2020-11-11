@@ -53,8 +53,8 @@ export default function UserForm (props: Props) {
         }
         let formData = new FormData(formRef.current)
         let token = ""
-        await fetch("/admin/dashboard/users/" + (
-            props.edit && props.user ? "edit/" + props.user.id : "new"
+        await fetch("/api/admin/" + (
+            props.edit && props.user ? "edit/user/" + props.user.id : "new/user"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
         if (!values.modifyPassword){
@@ -62,14 +62,17 @@ export default function UserForm (props: Props) {
         }
         formData.delete("modifyPassword")
         formData.delete("passwordConfirmation")
-        fetch("/admin/dashboard/users/" + (
-            props.edit && props.user ? "edit/" + props.user.id : "new"
+        fetch("/api/admin/" + (
+            props.edit && props.user ? "edit/user/" + props.user.id : "new/user"
         ), {
             method:'POST',
+            headers: {
+                enctype: "multipart/form-data"
+            },
             body: formData
         }).then(response => {
             if (response.ok) {
-                return response.json()
+                return response.text()
             } else {
                 throw new Error("verify your form info or try again later!");
             }

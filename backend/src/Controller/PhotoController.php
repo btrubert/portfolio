@@ -89,7 +89,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photos/new", methods={"GET", "POST"}, name="new_photo")
+     * @Route("/admin/dashboard/photo/new", methods={"GET", "POST"}, name="new_photo")
      */
     public function newPhoto(Request $request, FileUploader $fileUploader,  CsrfTokenManagerInterface $csrf_token)
     {
@@ -126,7 +126,7 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/admin/dashboard/photos/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
+     * @Route("/admin/dashboard/photo/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
      */
     public function editPhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -152,7 +152,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photos/delete/{id}", methods={"GET", "POST"}, name="delete_photo")
+     * @Route("/admin/dashboard/photo/delete/{id}", methods={"GET", "POST"}, name="delete_photo")
      */
     public function deletePhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {

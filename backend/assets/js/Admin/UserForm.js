@@ -32,7 +32,7 @@ export default function UserForm (props) {
     const handleSubmitForm = async (values, actions) => {
         let formData = new FormData(formRef.current);
         let token = "";
-        await fetch("/admin/dashboard/users/" + (
+        await fetch("/admin/dashboard/user/" + (
             props.edit ? "edit/" + props.user.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
         formData.append("_token", token);
@@ -41,7 +41,7 @@ export default function UserForm (props) {
         }
         formData.delete("modifyPassword");
         formData.delete("passwordConfirmation");
-        fetch("/admin/dashboard/users/" + (
+        fetch("/admin/dashboard/user/" + (
             props.edit ? "edit/" + props.user.id : "new"
         ), {
             method:'POST',

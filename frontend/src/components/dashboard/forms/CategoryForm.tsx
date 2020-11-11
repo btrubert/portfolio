@@ -46,18 +46,21 @@ export default function CategoryForm (props: Props) {
             formData.delete("user")
         }
         let token = "";
-        await fetch("/admin/dashboard/categories/" + (
-            props.edit && props.category ? "edit/" + props.category.id : "new"
+        await fetch("/api/admin/" + (
+            props.edit && props.category ? "edit/category/" + props.category.id : "new/category"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        fetch("/admin/dashboard/categories/" + (
-            props.edit && props.category ? "edit/" + props.category.id : "new"
+        fetch("/api/admin/" + (
+            props.edit && props.category ? "edit/category/" + props.category.id : "new/category"
         ), {
             method:'POST',
+            headers: {
+                enctype: "multipart/form-data"
+            },
             body: formData
         }).then(response => {
             if (response.ok) {
-                return response.json()
+                return response.text()
             } else {
                 throw new Error("verify your form info or try again later!")
             }

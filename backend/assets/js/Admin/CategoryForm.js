@@ -29,11 +29,11 @@ export default function CategoryForm (props) {
             formData.delete("user");
         }
         let token = "";
-        await fetch("/admin/dashboard/categories/" + (
+        await fetch("/admin/dashboard/category/" + (
             props.edit ? "edit/" + props.category.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data});
         formData.append("_token", token);
-        fetch("/admin/dashboard/categories/" + (
+        fetch("/admin/dashboard/category/" + (
             props.edit ? "edit/" + props.category.id : "new"
         ), {
             method:'POST',

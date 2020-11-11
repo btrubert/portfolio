@@ -88,9 +88,15 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     }
 
     const handleDelete = async (item: Item) => {
-        const response = await fetch("/api/admin/delete/" + activeTab + "/" + item.id, {method: 'GET'})
-        const token = response.text()
-        fetch("/admin/delete/" + activeTab + "/" + item.id,
+        let entity:string
+        switch (activeTab){
+            case 'categories':  entity = 'category'; break
+            case 'photos': entity = 'photo'; break
+            case 'users': entity = 'user'; break
+        }
+        const response = await fetch("/api/admin/delete/" + entity + "/" + item.id, {method: 'GET'})
+        const token = await response.text()
+        fetch("/api/admin/delete/" + entity + "/" + item.id,
         {method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({_token: token})}

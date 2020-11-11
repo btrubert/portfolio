@@ -45,7 +45,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/users/new", methods={"GET", "POST"}, name="new_user")
+     * @Route("/admin/dashboard/user/new", methods={"GET", "POST"}, name="new_user")
      */
     public function newUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token)
     {
@@ -74,7 +74,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/users/edit/{id}", methods={"GET", "POST"}, name="edit_user")
+     * @Route("/admin/dashboard/user/edit/{id}", methods={"GET", "POST"}, name="edit_user")
      */
     public function editUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -110,7 +110,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/users/delete/{id}", methods={"GET", "POST"}, name="delete_user")
+     * @Route("/admin/dashboard/user/delete/{id}", methods={"GET", "POST"}, name="delete_user")
      */
     public function deleteUser(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
