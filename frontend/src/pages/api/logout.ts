@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
-  user: User,
-  token: string
+    redirectPath: string
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {

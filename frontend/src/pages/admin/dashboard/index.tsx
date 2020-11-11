@@ -1,6 +1,8 @@
-import React, {useState} from 'react'
-import { GetServerSideProps } from 'next'
-import { InferGetServerSidePropsType } from 'next'
+import React, {useState, useEffect} from 'react'
+import { useRouter } from 'next/router'
+import { GetStaticProps } from 'next'
+import { InferGetStaticPropsType } from 'next'
+import {useSession} from '../../../utils/SessionContext'
 import {Container, Row, Col} from 'react-bootstrap'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
@@ -15,31 +17,72 @@ import {Modal} from 'react-bootstrap'
 import Spinner from 'react-bootstrap/Spinner'
 
 type Item = Category | Photo | User
+type Entity = 'categories' | 'photos' | 'users'
 
-function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [categories, setCategories] = useState<Array<Category>>(props.categories)
-    const [photos, setPhotos] = useState<Array<Photo>>(props.photos)
-    const [users, setUsers] = useState<Array<User>>(props.users)
+function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
+    const [loading, setLoading] = useState<boolean>(true)
+    const [categories, setCategories] = useState<Array<Category> | null>(null)
+    const [refreshCategories, setRefreshCategories] = useState<boolean>(true)
+    const [photos, setPhotos] = useState<Array<Photo> | null>(null)
+    const [refreshPhotos, setRefreshPhotos] = useState<boolean>(true)
+    const [users, setUsers] = useState<Array<User> | null>(null)
+    const [refreshUsers, setRefreshUsers] = useState<boolean>(true)
     const imgBaseUrl: string = props.imgBaseUrl
-    const [activeTab, setActiveTab] = useState<'categories' | 'photos' | 'users'>('categories')
+    const [activeTab, setActiveTab] = useState<Entity>('categories')
     const [showForm, setShowForm] = useState<boolean>(false)
     const [activeForm, setActiveForm] = useState<'Category' | 'Photo' | 'User'>('Category')
     const [formType, setFormType] = useState<'New' | 'Edit'>('New')
     const [currentItem, setCurrentIten] = useState<Category | Photo | User | null>(null)
+    const router = useRouter()
+    const [state, dispatch] = useSession()
+
+    useEffect(() => {
+        if (!state.admin) {
+            router.push('/')
+        } else {
+            setLoading(false)
+        }
+    }, [state.admin])
+
+    const fetchEntity = async (entity: Entity) => {
+        const response = await fetch("/api/admin/"+entity)
+        const data = await response.json()
+        switch (entity) {
+            case 'categories': setCategories(data); setRefreshCategories(false); break
+            case 'photos': setPhotos(data); setRefreshPhotos(false); break
+            case 'users': setUsers(data); setRefreshUsers(false); break
+        }
+    }
+
+    useEffect(() => {
+        fetchEntity('categories')
+    }, [refreshCategories])
+
+    useEffect(() => {
+        fetchEntity('photos')
+    }, [refreshPhotos])
+
+    useEffect(() => {
+        fetchEntity('users')
+    }, [refreshUsers])
 
 
     const handleShow = (type: 'New' | 'Edit') => {
-        setFormType(type)
-        setShowForm(true)
+        if (!refreshCategories && !refreshPhotos && !refreshUsers) {
+            setFormType(type)
+            setShowForm(true)
+        }
     }
 
     const handleEdit = (item: Item) => {
-        setCurrentIten(item)
-        handleShow('Edit');
+        if (!refreshCategories && !refreshPhotos && !refreshUsers) {
+            setCurrentIten(item)
+            handleShow('Edit')
+        }
     }
 
     const handleDelete = async (item: Item) => {
-        const response = await fetch("/admin/delete/" + activeTab + "/" + item.id, {method: 'GET'})
+        const response = await fetch("/api/admin/delete/" + activeTab + "/" + item.id, {method: 'GET'})
         const token = response.text()
         fetch("/admin/delete/" + activeTab + "/" + item.id,
         {method: 'POST',
@@ -52,7 +95,7 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
         });
     }
 
-    const handleClick = (tab: 'categories' | 'photos' | 'users') => {
+    const handleClick = (tab: Entity) => {
         if (tab != activeTab) {
             switch (tab) {
                 case 'photos':
@@ -72,9 +115,11 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
     const handleRefresh = () => {
         setShowForm(false)
         setCurrentIten(null)
-        // fetch("/admin/dashboard/" + this.state.activeTab).then(response => {
-        //     return response.json();
-        // }).then(data => this.setState({[this.state.activeTab]: data}));
+        switch (activeTab) {
+            case 'categories': setRefreshCategories(true); break
+            case 'photos': setRefreshPhotos(true); break
+            case 'users': setRefreshUsers(true); break
+        }
     }
 
     const getTab = () => {
@@ -94,7 +139,8 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
                     }
                     editClicked={editClicked}
                     deleteClicked={deleteClicked}
-                    refresh={handleRefresh}/>;
+                    refresh={handleRefresh}
+                    imgBaseUrl={imgBaseUrl}/>;
             case 'users':
                 return <UsersList users={
                         users
@@ -119,7 +165,7 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    users={users}/>
+                    users={users as Array<User>}/>
             case 'photos':
                 return <PhotoForm photo={
                         currentItem as Photo
@@ -128,7 +174,7 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    categories={categories}/>
+                    categories={categories as Array<Category>}/>
             case 'users':
                 return <UserForm user={
                         currentItem as User
@@ -143,88 +189,86 @@ function Dashboard (props: InferGetServerSidePropsType<typeof getServerSideProps
 
     }
 
-    return (
-        <Container className="main-content">
-            <h2>Dashboard</h2>
-            <Navbar expand="md" variant="dark" collapseOnSelect>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto" variant="pills" justify defaultActiveKey="categories">
+    if (loading) {
+        return <></>
+    } else {
+        return (
+            <Container className="main-content">
+                <h2>Dashboard</h2>
+                <Navbar expand="md" variant="dark" collapseOnSelect>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="mr-auto" variant="pills" justify defaultActiveKey="categories">
+                            <Nav.Item>
+                                <Nav.Link eventKey="categories"
+                                    onSelect={
+                                        () => handleClick("categories")
+                                }>Categories</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="photos"
+                                    onSelect={
+                                        () => handleClick("photos")
+                                }>Photos</Nav.Link>
+                            </Nav.Item>
+                            {/* <Nav.Item>
+                                <Nav.Link eventKey="posts" disabled
+                                    onSelect={
+                                        () => handleClick("posts")
+                                }>Posts</Nav.Link>
+                            </Nav.Item> */}
+                            <Nav.Item>
+                                <Nav.Link eventKey="users"
+                                    onSelect={
+                                        () => handleClick("users")
+                                }>Users</Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                    </Navbar.Collapse>
+                    <Nav className="justify-content-end">
                         <Nav.Item>
-                            <Nav.Link eventKey="categories"
-                                onSelect={
-                                    () => handleClick("categories")
-                            }>Categories</Nav.Link>
+                            <Button className="mr-2" variant="outline-success"
+                                onClick={
+                                    handleRefresh
+                            }>Refresh</Button>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link eventKey="photos"
-                                onSelect={
-                                    () => handleClick("photos")
-                            }>Photos</Nav.Link>
-                        </Nav.Item>
-                        {/* <Nav.Item>
-                            <Nav.Link eventKey="posts" disabled
-                                onSelect={
-                                    () => handleClick("posts")
-                            }>Posts</Nav.Link>
-                        </Nav.Item> */}
-                        <Nav.Item>
-                            <Nav.Link eventKey="users"
-                                onSelect={
-                                    () => handleClick("users")
-                            }>Users</Nav.Link>
+                            <Button variant="outline-info"
+                                onClick={
+                                    () => handleShow("New")
+                            }>New</Button>
                         </Nav.Item>
                     </Nav>
-                </Navbar.Collapse>
-                <Nav className="justify-content-end">
-                    <Nav.Item>
-                        <Button className="mr-2" variant="outline-success"
-                            onClick={
-                                handleRefresh
-                        }>Refresh</Button>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Button variant="outline-info"
-                            onClick={
-                                () => handleShow("New")
-                        }>New</Button>
-                    </Nav.Item>
-                </Nav>
-            </Navbar>
-            <Container className="main-content">
-                {
-                getTab()
-            }</Container>
-            <Modal className="custom-form" size="lg"
-                show={
-                    showForm
-                }
-                onHide={() => {
-                    setShowForm(false); setCurrentIten(null)
-                }}>
-                <Modal.Header closeButton>
+                </Navbar>
+                <Container className="main-content">
                     {
-                    formType + " " + activeForm
-                } </Modal.Header>
-                <Modal.Body> {
-                    getForm()
-                } </Modal.Body>
-            </Modal>
-        </Container>
-    )
+                    getTab()
+                }</Container>
+                <Modal className="custom-form" size="lg"
+                    show={
+                        showForm
+                    }
+                    onHide={() => {
+                        setShowForm(false); setCurrentIten(null)
+                    }}>
+                    <Modal.Header closeButton>
+                        {
+                        formType + " " + activeForm
+                    } </Modal.Header>
+                    <Modal.Body> {
+                        getForm()
+                    } </Modal.Body>
+                </Modal>
+            </Container>
+        )
+    }
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    let response = await fetch(process.env.SYMFONY_URL+"/admin/dashboard/categories")
-    const categories: Array<Category> = await response.json()
-    response = await fetch(process.env.SYMFONY_URL+"/admin/dashboard/photos")
-    const photos: Array<Photo> = await response.json()
-    response = await fetch(process.env.SYMFONY_URL+"/admin/dashboard/users")
-    const users: Array<User> = await response.json()
-    const imgBaseUrl: string = process.env.SYMFONY_URL + "/uploads/"
-
+export const getStaticProps: GetStaticProps = async (context) => {
+    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
     return {
-        props: {categories, photos, users, imgBaseUrl},
+        props: {imgBaseUrl},
+        revalidate: 1,
     }
 }
 

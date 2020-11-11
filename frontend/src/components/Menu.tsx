@@ -57,7 +57,16 @@ export default class Menu extends React.Component<{}, State> {
             },
             body: JSON.stringify({_csrf_token: this.state.csrfToken})
         })
-        .then(response => {window.location.assign('/')})
+        .then(response => {
+            if (response.ok) {
+                window.location.assign('/')
+            } else {
+                throw new Error("Error while trying to logout.")
+            }
+        })
+        .catch(error => {
+            console.log(error)
+        })
     }
 
     render() {

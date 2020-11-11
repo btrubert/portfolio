@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = string
+type Data = {
+    redirectPath: string
+}
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const response = await fetch(process.env.SYMFONY_URL + "/login", {
