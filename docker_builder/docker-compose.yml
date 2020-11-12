@@ -1,14 +1,20 @@
 version: "2.1"
 services:
 
-        assets:
-                build:
-                        context: ./assets
-                volumes:
-                        - ../:/var/www
+        #assets:
+        #        build:
+        #                context: ./assets
+        #        volumes:
+        #                - ../backend/:/var/www
 
         vendor:
                 build:
                         context: ./vendor
                 volumes:
-                        - ../:/var/www
+                        - ../backend/:/var/www
+
+        nextjs:
+                build:
+                        context: ./nextjs
+                volumes:
+                        - ../frontend/:/var/www

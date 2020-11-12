@@ -26,15 +26,26 @@ services:
                         - APP_SECRET=${APP_SECRET}
                         - DATABASE_URL=mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@database:3306/${DATABASE_NAME}?serverVersion=mariadb-10.4.10
                 volumes:
-                        - ../:/var/www
+                        - ../backend/:/var/www
+
+        nextjs:
+                build:
+                        context: ./nextjs
+                depends_on:
+                        - php-fpm
+                environment:
+                        - SYMFONY_URL=http://php-fpm:9000
+                volumes:
+                        - ../frontend/:/var/www
 
         nginx:
                 build:
                            context: ./nginx
                 depends_on:
                         - php-fpm
+                        - nextjs
                 volumes:
-                        - ../:/var/www
+                        - ../backend/:/var/www
                         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
                         - ./nginx/sites/:/etc/nginx/sites-available
                         - ./nginx/conf.d/:/etc/nginx/conf.d
