@@ -94,9 +94,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             case 'photos': entity = 'photo'; break
             case 'users': entity = 'user'; break
         }
-        const response = await fetch("/api/admin/delete/" + entity + "/" + item.id, {method: 'GET'})
+        const response = await fetch(props.adminApi + "/admin/" + entity + "/delete/" + item.id, {method: 'GET'})
         const token = await response.text()
-        fetch("/api/admin/delete/" + entity + "/" + item.id,
+        fetch(props.adminApi + "/admin/" + entity + "/delete/" + item.id,
         {method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({_token: token})}
@@ -177,7 +177,8 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    users={users as Array<User>}/>
+                    users={users as Array<User>}
+                    adminUrl={props.adminApi}/>
             case 'photos':
                 return <PhotoForm photo={
                         currentItem as Photo
@@ -186,7 +187,8 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    categories={categories as Array<Category>}/>
+                    categories={categories as Array<Category>}
+                    adminUrl={props.adminApi}/>
             case 'users':
                 return <UserForm user={
                         currentItem as User
@@ -194,7 +196,8 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                     edit={
                         formType === 'Edit'
                     }
-                    refresh={() => handleRefresh()}/>
+                    refresh={() => handleRefresh()}
+                    adminUrl={props.adminApi}/>
             default:
                 return <></>;
         }
@@ -277,9 +280,10 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
+    const imgBaseUrl: string = process.env.BACKEND_URL + '/uploads/'
+    const  adminApi: string = process.env.SYMFONY_URL + ''
     return {
-        props: {imgBaseUrl},
+        props: {imgBaseUrl, adminApi},
         revalidate: 1,
     }
 }

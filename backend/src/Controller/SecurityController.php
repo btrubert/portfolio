@@ -11,7 +11,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Security;
 use App\Service\ObjectEncoder;
 
-
+/**
+ * @Route("/smf")
+ */
 class SecurityController extends AbstractController
 {
     

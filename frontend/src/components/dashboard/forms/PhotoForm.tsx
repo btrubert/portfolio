@@ -15,6 +15,7 @@ interface Props {
     edit: boolean,
     refresh:  () => void,
     categories: Array<Category>,
+    adminUrl: string,
 }
 
 interface FormValues {
@@ -46,12 +47,12 @@ export default function PhotoForm (props: Props) {
         }
         let formData = new FormData(formRef.current)
         let token = "";
-        await fetch("/api/admin/" + (
-            props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
+        await fetch(props.adminUrl + "/admin/photo/" + (
+            props.edit && props.photo ? "edit/" + props.photo.id : "new/"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        fetch("/api/admin/" + (
-        props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
+        fetch(props.adminUrl + "/admin/photo/" + (
+        props.edit && props.photo ? "edit/" + props.photo.id : "new/"
     ), {
             method: 'POST',
             headers: {                

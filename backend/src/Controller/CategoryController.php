@@ -14,12 +14,14 @@ use App\Service\ObjectEncoder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-
+/**
+ * @Route("/smf")
+ */
 class CategoryController extends AbstractController
 {
 
     /**
-     * @Route("/api/categories", name="api_categories")
+     * @Route("/categories", name="api_categories")
      */
     public function categories(ObjectEncoder $objectEncoder)
     {
@@ -45,7 +47,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/categories", name="categories_list")
+     * @Route("/admin/categories", name="categories_list")
      */
     public function listCategories(ObjectEncoder $objectEncoder)
     {
@@ -55,7 +57,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/new", methods={"GET", "POST"}, name="new_category")
+     * @Route("/admin/category/new", methods={"GET", "POST"}, name="new_category")
      */
     public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token)
     {
@@ -79,7 +81,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/edit/{id}", methods={"GET", "POST"}, name="edit_category")
+     * @Route("/admin/category/edit/{id}", methods={"GET", "POST"}, name="edit_category")
      */
     public function editCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -105,7 +107,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/category/delete/{id}", methods={"GET", "POST"}, name="delete_category")
+     * @Route("/admin/category/delete/{id}", methods={"GET", "POST"}, name="delete_category")
      */
     public function deleteCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {

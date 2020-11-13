@@ -29,7 +29,7 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export async function getStaticPaths() {
-    const response = await fetch(process.env.SYMFONY_URL+"/api/categories")
+    const response = await fetch(process.env.SYMFONY_URL+"/categories")
     const categories = await response.json()
     const paths = categories.map((c: Category) => ({
         params: { category: c.name },
@@ -42,9 +42,9 @@ export async function getStaticPaths() {
   
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const response = await fetch(process.env.SYMFONY_URL+"/api/gallery/"+ context.params?.category)
+    const response = await fetch(process.env.SYMFONY_URL+"/gallery/"+ context.params?.category)
     const photos: Array<Photo> = await response.json()
-    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
+    const imgBaseUrl: string = process.env.BACKEND_URL + '/uploads/'
     return {
         props: {photos, imgBaseUrl},
         revalidate: 1,

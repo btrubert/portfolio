@@ -81,10 +81,10 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const response = await fetch("http://127.0.0.1:8000/api/categories")
+    const response = await fetch(process.env.SYMFONY_URL+"/categories")
     const categories: Array<Category> =  await response.json()
     const play: Array<number> = Array(categories.length).fill(null)
-    const imgBaseUrl: string = process.env.SYMFONY_URL + '/uploads/'
+    const imgBaseUrl: string = process.env.BACKEND_URL + '/uploads/'
     return {
         props: {categories, play, imgBaseUrl},
         revalidate: 1,

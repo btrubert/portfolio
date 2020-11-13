@@ -14,28 +14,15 @@ use App\Form\UserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
-
+/**
+ * @Route("/smf")
+ */
 class UserController extends AbstractController
 {
 
-    /**
-     * @Route("/profile", name="user_profile")
-     */
-    public function profile()
-    {
-        return $this->render('default/index.html.twig');
-    }
 
     /**
-     * @Route("/admin/dashboard", name="dashboard")
-     */
-    public function dashboard()
-    {
-        return $this->render('default/index.html.twig');
-    }
-
-    /**
-     * @Route("/admin/dashboard/users", name="users_list")
+     * @Route("/admin/users", name="users_list")
      */
     public function listCategories(ObjectEncoder $objectEncoder)
     {
@@ -45,7 +32,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/user/new", methods={"GET", "POST"}, name="new_user")
+     * @Route("/admin/user/new", methods={"GET", "POST"}, name="new_user")
      */
     public function newUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token)
     {
@@ -74,7 +61,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/user/edit/{id}", methods={"GET", "POST"}, name="edit_user")
+     * @Route("/admin/user/edit/{id}", methods={"GET", "POST"}, name="edit_user")
      */
     public function editUser(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -110,7 +97,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/user/delete/{id}", methods={"GET", "POST"}, name="delete_user")
+     * @Route("/admin/user/delete/{id}", methods={"GET", "POST"}, name="delete_user")
      */
     public function deleteUser(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -133,7 +120,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/api/profile_info", methods={"GET"}, name="profile_info")
+     * @Route("/profile_info", methods={"GET"}, name="profile_info")
      */
     public function profileInfo(Security $security, ObjectEncoder $objectEncoder, CsrfTokenManagerInterface $csrf_token): Response
     {

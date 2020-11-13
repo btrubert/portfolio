@@ -14,6 +14,7 @@ interface Props {
     edit: boolean,
     refresh:  () => void,
     users: Array<User>,
+    adminUrl: string,
 }
 
 interface FormValues {
@@ -46,12 +47,12 @@ export default function CategoryForm (props: Props) {
             formData.delete("user")
         }
         let token = "";
-        await fetch("/api/admin/" + (
-            props.edit && props.category ? "edit/category/" + props.category.id : "new/category"
+        await fetch(props.adminUrl + "/admin/category/" + (
+            props.edit && props.category ? "edit/" + props.category.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        fetch("/api/admin/" + (
-            props.edit && props.category ? "edit/category/" + props.category.id : "new/category"
+        fetch(props.adminUrl + "/admin/category/" + (
+            props.edit && props.category ? "edit/" + props.category.id : "new/"
         ), {
             method:'POST',
             headers: {

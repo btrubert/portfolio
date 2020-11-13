@@ -6,7 +6,7 @@ type Data = {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    const response = await fetch(process.env.SYMFONY_URL + "/api/profile_info", {
+    const response = await fetch(process.env.SYMFONY_URL + "/profile_info", {
         headers: {
             cookie: req.headers.cookie ?? ""
         }

@@ -16,28 +16,15 @@ use App\Service\ObjectEncoder;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
+/**
+ * @Route("/smf")
+ */
 class PhotoController extends AbstractController
 {
 
-    /**
-     * @Route("/gallery/{name}", name="gallery", defaults={"name": null})
-     */
-    public function gallery($name)
-    {
-        if (!$name) {
-            return $this->render('default/index.html.twig');
-        }
-
-        $category = $this->getDoctrine()->getRepository(Category::class)->findFromName($name);
-        if ($this->isGranted("access", $category)) {
-            return $this->render('default/index.html.twig');
-        }
-
-        return $this->redirectToRoute('gallery');
-    }
 
     /**
-     * @Route("/api/gallery/{catName}", name="api_photos")
+     * @Route("/gallery/{catName}", name="api_photos")
      */
     public function photos($catName, ObjectEncoder $objectEncoder)
     {
@@ -79,7 +66,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photos", name="photos_list")
+     * @Route("/admin/photos", name="photos_list")
      */
     public function listPhotos(ObjectEncoder $objectEncoder)
     {
@@ -89,7 +76,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photo/new", methods={"GET", "POST"}, name="new_photo")
+     * @Route("/admin/photo/new", methods={"GET", "POST"}, name="new_photo")
      */
     public function newPhoto(Request $request, FileUploader $fileUploader,  CsrfTokenManagerInterface $csrf_token)
     {
@@ -127,7 +114,7 @@ class PhotoController extends AbstractController
 
 
     /**
-     * @Route("/admin/dashboard/photo/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
+     * @Route("/admin/photo/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
      */
     public function editPhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
@@ -153,7 +140,7 @@ class PhotoController extends AbstractController
     }
 
     /**
-     * @Route("/admin/dashboard/photo/delete/{id}", methods={"GET", "POST"}, name="delete_photo")
+     * @Route("/admin/photo/delete/{id}", methods={"GET", "POST"}, name="delete_photo")
      */
     public function deletePhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {

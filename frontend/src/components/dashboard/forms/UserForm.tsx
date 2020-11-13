@@ -14,6 +14,7 @@ interface Props {
     user: User | null,
     edit: boolean,
     refresh:  () => void,
+    adminUrl: string,
 }
 
 interface FormValues {
@@ -53,8 +54,8 @@ export default function UserForm (props: Props) {
         }
         let formData = new FormData(formRef.current)
         let token = ""
-        await fetch("/api/admin/" + (
-            props.edit && props.user ? "edit/user/" + props.user.id : "new/user"
+        await fetch(props.adminUrl + "/admin/user/" + (
+            props.edit && props.user ? "edit/" + props.user.id : "new/"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
         if (!values.modifyPassword){
@@ -62,8 +63,8 @@ export default function UserForm (props: Props) {
         }
         formData.delete("modifyPassword")
         formData.delete("passwordConfirmation")
-        fetch("/api/admin/" + (
-            props.edit && props.user ? "edit/user/" + props.user.id : "new/user"
+        fetch(props.adminUrl + "/admin/user/" + (
+            props.edit && props.user ? "edit/" + props.user.id : "new/"
         ), {
             method:'POST',
             headers: {
