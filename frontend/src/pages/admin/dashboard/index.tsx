@@ -51,7 +51,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     }, [state.admin, state.loading])
 
     const fetchEntity = async (entity: Entity) => {
-        const response = await fetch("/api/admin/"+entity)
+        const response = await fetch("/smf/admin/"+entity)
         const data = await response.json()
         switch (entity) {
             case 'categories': setCategories(data); setRefreshCategories(false); break
@@ -94,9 +94,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             case 'photos': entity = 'photo'; break
             case 'users': entity = 'user'; break
         }
-        const response = await fetch(props.adminApi + "/admin/" + entity + "/delete/" + item.id, {method: 'GET'})
+        const response = await fetch("/smf/admin/" + entity + "/delete/" + item.id, {method: 'GET'})
         const token = await response.text()
-        fetch(props.adminApi + "/admin/" + entity + "/delete/" + item.id,
+        fetch("/smf/admin/" + entity + "/delete/" + item.id,
         {method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify({_token: token})}

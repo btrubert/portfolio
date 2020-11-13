@@ -47,17 +47,16 @@ export default function CategoryForm (props: Props) {
             formData.delete("user")
         }
         let token = "";
-        await fetch(props.adminUrl + "/admin/category/" + (
+        await fetch("/smf/admin/category/" + (
             props.edit && props.category ? "edit/" + props.category.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        fetch(props.adminUrl + "/admin/category/" + (
-            props.edit && props.category ? "edit/" + props.category.id : "new/"
+        fetch("/smf/admin/category/" + (
+            props.edit && props.category ? "edit/" + props.category.id : "new"
         ), {
             method:'POST',
             headers: {
                 enctype: "multipart/form-data",
-                'Content-Type': "multipart/form-data",
             },
             body: formData
         }).then(response => {
