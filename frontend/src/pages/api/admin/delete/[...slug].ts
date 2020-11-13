@@ -28,11 +28,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
                 const data = await response.text()
                 res.status(200).json(data)
             }
-            res.status(401)
+            res.status(400)
             res.end()
         }
         if (req.method === 'POST') {
-            console.log(req.body)
             const response = await fetch(process.env.SYMFONY_URL + "/admin/dashboard/" + slug[0] + "/delete/" + slug[1], {
                 method: 'POST',
                 headers: {
@@ -49,10 +48,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
                     res.setHeader("set-cookie", res_cookies ?? "")
                 }
                 const data = await response.json()
-                console.log(data)
                 res.status(200).json(data)
             }
-            res.status(401)
+            res.status(400)
             res.end()
         }
     }

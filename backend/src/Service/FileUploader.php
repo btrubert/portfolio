@@ -18,16 +18,17 @@ class FileUploader
 
     public function upload(UploadedFile $file)
     {
-        $fileName = uniqid("IMG_", true);
-        $originalFilename =  'original/' . $fileName . '.' . $file->guessExtension();
-
-
         try {
-            $file->move($this->getTargetDirectory() . $originalFilename);
+            if (!in_array($file->guessExtension(), ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"])) {
+                throw new Exception("Only Jpeg and PNG are supported.");
+            }
+            $fileName = uniqid("IMG_", true);
+            $originalFilename =  'original/' . $fileName . '.' . $file->guessExtension();
+            $file->move($this->getTargetDirectory() . 'original/', $fileName . '.' . $file->guessExtension());
             $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
             $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName);
             return [$originalFilename, $lowerResFilename, $exifs];
-        } catch (FileException $e) {
+        } catch (Exception $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return null;
         }

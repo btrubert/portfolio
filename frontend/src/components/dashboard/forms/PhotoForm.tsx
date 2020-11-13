@@ -49,13 +49,13 @@ export default function PhotoForm (props: Props) {
         await fetch("/api/admin/" + (
             props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
-        formData.append("_token", token);
+        formData.append("_token", token)
         fetch("/api/admin/" + (
         props.edit && props.photo ? "edit/photo/" + props.photo.id : "new/photo"
     ), {
             method: 'POST',
-            headers: {
-                enctype: "multipart/form-data"
+            headers: {                
+                enctype: "multipart/form-data",
             },
             body: formData
         }).then(response => {
@@ -161,9 +161,10 @@ export default function PhotoForm (props: Props) {
                             onChange={handleChange}>
                             <option hidden value="-1">Choose a category</option>
                             {
-                            props.categories.map(c => <option value={
+                            props.categories.map((c, index: number) => <option value={
                                 c.id
-                            }>
+                            }
+                            key={index}>
                                 {
                                 c.name
                             }</option>)

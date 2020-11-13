@@ -57,12 +57,11 @@ class CategoryController extends AbstractController
     /**
      * @Route("/admin/dashboard/category/new", methods={"GET", "POST"}, name="new_category")
      */
-    public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token, LoggerInterface $logger)
+    public function newCategory(Request $request, CsrfTokenManagerInterface $csrf_token)
     {
         if ($request->isMethod("GET")) {
             return new Response($csrf_token->getToken("category_item"));
         }
-        $logger->critical("NEXTJS : ".$request->request->get('_token'));
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->submit($request->request->all());
@@ -76,7 +75,7 @@ class CategoryController extends AbstractController
             return $response;
         }
 
-        return new JsonResponse('Error while creating the new category.', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while creating the new category.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -102,7 +101,7 @@ class CategoryController extends AbstractController
                 return $response;
             }
         }
-        return new JsonResponse('Error while saving the edited category.', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while saving the edited category.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -126,6 +125,6 @@ class CategoryController extends AbstractController
             }
         }
 
-        return new JsonResponse('Error while deleting the category.', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while deleting the category.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 }

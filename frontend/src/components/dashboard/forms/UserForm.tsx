@@ -67,7 +67,7 @@ export default function UserForm (props: Props) {
         ), {
             method:'POST',
             headers: {
-                enctype: "multipart/form-data"
+                'Content-Type': "multipart/form-data"
             },
             body: formData
         }).then(response => {

@@ -70,7 +70,7 @@ class UserController extends AbstractController
             return $response;
         }
 
-        return new JsonResponse('Error while creating a new user.', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while creating a new user.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -106,7 +106,7 @@ class UserController extends AbstractController
             }
         }
 
-        return new JsonResponse("Error while editing the user.", Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while editing the user.", Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -129,7 +129,7 @@ class UserController extends AbstractController
             }
         }
 
-        return new JsonResponse("Error while deleting the user.", Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while deleting the user.", Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**

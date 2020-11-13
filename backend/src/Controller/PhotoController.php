@@ -96,6 +96,7 @@ class PhotoController extends AbstractController
         if ($request->isMethod("GET")) {
             return new Response($csrf_token->getToken("photo_item"));
         }
+
         $photo = new Photo();
         $form = $this->createForm(PhotoType::class, $photo);
         $form->submit($request->request->all());
@@ -115,13 +116,13 @@ class PhotoController extends AbstractController
                 $em->flush();
                 $response = new JsonResponse("The photo has been created.", Response::HTTP_CREATED);
             } else {
-                $response = new JsonResponse("The picture has not been saved", Response::HTTP_METHOD_NOT_ALLOWED);
+                $response = new JsonResponse("The picture has not been saved", Response::HTTP_FORBIDDEN);
             }
 
             return $response;
         }
 
-        return new JsonResponse("Error while creating the new photo.", Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse("Error while creating the new photo.", Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
 
@@ -148,7 +149,7 @@ class PhotoController extends AbstractController
                 return $response;
             }
         }
-        return new JsonResponse('Error while saving the edited photo', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while saving the edited photo', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -171,6 +172,6 @@ class PhotoController extends AbstractController
             }
         }
 
-        return new JsonResponse('Error while deleting the photo.', Response::HTTP_EXPECTATION_FAILED);
+        return new JsonResponse('Error while deleting the photo.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 }
