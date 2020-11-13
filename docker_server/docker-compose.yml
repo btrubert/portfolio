@@ -34,7 +34,8 @@ services:
                 depends_on:
                         - php-fpm
                 environment:
-                        - SYMFONY_URL=http://php-fpm:9000
+                        - SYMFONY_URL=https://nginx
+                        - NODE_TLS_REJECT_UNAUTHORIZED=0
                 volumes:
                         - ../frontend/:/var/www
 
@@ -43,7 +44,6 @@ services:
                            context: ./nginx
                 depends_on:
                         - php-fpm
-                        - nextjs
                 volumes:
                         - ../backend/:/var/www
                         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
