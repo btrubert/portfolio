@@ -57,11 +57,12 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 pause={false}>
                                 {
                                 c.photos.map((p, index: number) => <Carousel.Item key={index}>
-                                    <Card.Img as={Image} src={imgBaseUrl+p.path}
+                                    <Card.Img as={Image} src={"/uploads/" + p.path}
                                         alt="Card category's images"
                                         className="category-card-img"
                                         height="480"
-                                        width="480"/>
+                                        width="480"
+					unoptimized/>
                                 </Carousel.Item>)
                             } </Carousel>
 

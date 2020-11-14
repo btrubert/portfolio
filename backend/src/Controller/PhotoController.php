@@ -105,7 +105,6 @@ class PhotoController extends AbstractController
             } else {
                 $response = new JsonResponse("The picture has not been saved", Response::HTTP_FORBIDDEN);
             }
-
             return $response;
         }
 
@@ -156,7 +155,9 @@ class PhotoController extends AbstractController
                 $em->remove($photo);
                 $em->flush();
                 return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
-            }
+	    } else {
+		return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+	    }
         }
 
         return new JsonResponse('Error while deleting the photo.', Response::HTTP_SERVICE_UNAVAILABLE);

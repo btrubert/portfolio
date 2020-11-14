@@ -24,7 +24,7 @@ class UserController extends AbstractController
     /**
      * @Route("/admin/users", name="users_list")
      */
-    public function listCategories(ObjectEncoder $objectEncoder)
+    public function listUsers(ObjectEncoder $objectEncoder)
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
         $susers = $objectEncoder->encodeObjectToJson($users,  ['password', 'salt', 'roles', 'categories']);
@@ -113,7 +113,9 @@ class UserController extends AbstractController
                 $em->remove($user);
                 $em->flush();
                 return new JsonResponse('ok', Response::HTTP_ACCEPTED);
-            }
+	    } else {
+	        return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+	    }
         }
 
         return new JsonResponse("Error while deleting the user.", Response::HTTP_SERVICE_UNAVAILABLE);

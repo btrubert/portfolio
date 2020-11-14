@@ -45,7 +45,7 @@ export default function Login(props: Props) {
             })
         }).then(response => {console.log(response.headers.get('set-cookie'))
             if (response.ok) {
-                return response.json()
+                return response.text()
             } else {
                 throw new Error("Verify your login info or try again later!")
             }
@@ -54,7 +54,7 @@ export default function Login(props: Props) {
             setMessageAlert("Connected")
             setVariantAlert("success")
             setShowAlert(true)
-            setTimeout(() => {router.push(data.redirectPath)}, 2000);
+            setTimeout(() => {window.location.assign(data)}, 1000);
         }).catch(error => {
             actions.setSubmitting(false)
             setVariantAlert("danger")

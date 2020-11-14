@@ -54,8 +54,8 @@ export default function UserForm (props: Props) {
         }
         let formData = new FormData(formRef.current)
         let token = ""
-        await fetch(props.adminUrl + "/admin/user/" + (
-            props.edit && props.user ? "edit/" + props.user.id : "new/"
+        await fetch("/smf/admin/user/" + (
+            props.edit && props.user ? "edit/" + props.user.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
         if (!values.modifyPassword){
@@ -63,12 +63,12 @@ export default function UserForm (props: Props) {
         }
         formData.delete("modifyPassword")
         formData.delete("passwordConfirmation")
-        fetch(props.adminUrl + "/admin/user/" + (
-            props.edit && props.user ? "edit/" + props.user.id : "new/"
+        fetch("/smf/admin/user/" + (
+            props.edit && props.user ? "edit/" + props.user.id : "new"
         ), {
             method:'POST',
             headers: {
-                'Content-Type': "multipart/form-data"
+                enctype: "multipart/form-data"
             },
             body: formData
         }).then(response => {
@@ -82,7 +82,7 @@ export default function UserForm (props: Props) {
                 setMessageAlert(data);
                 setVariantAlert("success");
                 setShowAlert(true);
-                setTimeout(props.refresh, 3000);
+                setTimeout(props.refresh, 1000);
             })
         .catch(error =>  {
             actions.setSubmitting(false);
