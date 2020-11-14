@@ -11,7 +11,6 @@ interface Props {
     editClicked: (item: Photo) => void,
     deleteClicked: (item: Photo) => void,
     refresh:  () => void,
-    imgBaseUrl: string,
 }
 
 export default function PhotosList (props: Props) {
@@ -40,7 +39,7 @@ export default function PhotosList (props: Props) {
                             overlay={
                                 <Popover id={index+''}>
                                 <Popover.Content>
-                                <Image src={props.imgBaseUrl + "/img/" + p.path} unsized />
+                                <Image src={"/smf/img/" + p.path} layout="fill" unoptimized />
                                 </Popover.Content>
                                 </Popover>
                             }

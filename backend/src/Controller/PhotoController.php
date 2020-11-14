@@ -37,7 +37,6 @@ class PhotoController extends AbstractController
         } else {
             return new JsonResponse("This category does not exit.", Response::HTTP_NOT_FOUND);
         }
-        
     }
 
 
@@ -107,7 +106,6 @@ class PhotoController extends AbstractController
             }
             return $response;
         }
-
         return new JsonResponse("Error while creating the new photo.", Response::HTTP_SERVICE_UNAVAILABLE);
     }
 
@@ -135,7 +133,7 @@ class PhotoController extends AbstractController
                 return $response;
             }
         }
-        return new JsonResponse('Error while saving the edited photo', Response::HTTP_SERVICE_UNAVAILABLE);
+        return new JsonResponse('Error while saving the edited photo', Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -155,9 +153,9 @@ class PhotoController extends AbstractController
                 $em->remove($photo);
                 $em->flush();
                 return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
-	    } else {
-		return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
-	    }
+            } else {
+                return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+            }
         }
 
         return new JsonResponse('Error while deleting the photo.', Response::HTTP_SERVICE_UNAVAILABLE);

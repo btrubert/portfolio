@@ -43,7 +43,7 @@ export default function Login(props: Props) {
                 _remember_me: values._remember_me,
                 _csrf_token: token
             })
-        }).then(response => {console.log(response.headers.get('set-cookie'))
+        }).then(response => {
             if (response.ok) {
                 return response.text()
             } else {

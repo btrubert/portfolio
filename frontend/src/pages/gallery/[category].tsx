@@ -19,8 +19,8 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         lg={4}
                         key={index}>
                         <Image className="gallery-photo" src={"/uploads/" + p.path}
-                        width="480" height="480" unoptimized
-                        onClick={() => {setCurrentIndex(index); setShow(true)}} />
+                            width="480" height="480" unoptimized
+                            onClick={() => {setCurrentIndex(index); setShow(true)}} />
                     </Col>)
                 } </Row>
             <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} imgBaseUrl={props.imgBaseUrl}/>
@@ -44,9 +44,8 @@ export async function getStaticPaths() {
 export const getStaticProps: GetStaticProps = async (context) => {
     const response = await fetch(process.env.SYMFONY_URL+"/gallery/"+ context.params?.category)
     const photos: Array<Photo> = await response.json()
-    const imgBaseUrl: string = process.env.BACKEND_URL + '/uploads/'
     return {
-        props: {photos, imgBaseUrl},
+        props: {photos},
         revalidate: 1,
     }
 }

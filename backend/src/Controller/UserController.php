@@ -92,8 +92,7 @@ class UserController extends AbstractController
                 return $response;
             }
         }
-
-        return new JsonResponse("Error while editing the user.", Response::HTTP_SERVICE_UNAVAILABLE);
+        return new JsonResponse("Error while editing the user.", Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -113,9 +112,9 @@ class UserController extends AbstractController
                 $em->remove($user);
                 $em->flush();
                 return new JsonResponse('ok', Response::HTTP_ACCEPTED);
-	    } else {
-	        return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
-	    }
+            } else {
+                return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+            }
         }
 
         return new JsonResponse("Error while deleting the user.", Response::HTTP_SERVICE_UNAVAILABLE);

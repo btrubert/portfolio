@@ -36,7 +36,6 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const [formType, setFormType] = useState<'New' | 'Edit'>('New')
     const [currentItem, setCurrentIten] = useState<Category | Photo | User | null>(null)
 
-    const imgBaseUrl: string = props.imgBaseUrl
     const router = useRouter()
     const [state, dispatch] = useSession()
 
@@ -151,8 +150,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                     }
                     editClicked={editClicked}
                     deleteClicked={deleteClicked}
-                    refresh={handleRefresh}
-                    imgBaseUrl={imgBaseUrl}/>
+                    refresh={handleRefresh}/>
             case 'users':
                 return <UsersList users={
                         users

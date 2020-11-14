@@ -38,12 +38,16 @@ class CategoryController extends AbstractController
     {
         $user = $this->getUser();
         $category = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['user' => $user->getId()]);
-        if ($this->isGranted("access", $category)) {
-            $scategory = $objectEncoder->encodeObjectToJson($category);
-
-            return new JsonResponse(json_decode($scategory));
+        if ($category) {
+            if ($this->isGranted("access", $category)) {
+                $scategory = $objectEncoder->encodeObjectToJson($category);
+                return new JsonResponse(json_decode($scategory));
+            } else {
+                return new JsonResponse("Access denied.", Response::HTTP_UNAUTHORIZED);
+            }
+        } else {
+            return new JsonResponse("No private categories available.", Response::HTTP_NOT_FOUND);
         }
-        return new JsonResponse("No private categories available.", Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -103,7 +107,7 @@ class CategoryController extends AbstractController
                 return $response;
             }
         }
-        return new JsonResponse('Error while saving the edited category.', Response::HTTP_SERVICE_UNAVAILABLE);
+        return new JsonResponse('Error while saving the edited category.', Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -124,9 +128,9 @@ class CategoryController extends AbstractController
                 $em->remove($category);
                 $em->flush();
                 return new JsonResponse('The category has been deleted.', Response::HTTP_ACCEPTED);
-	    } else {
-		return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
-	    }
+            } else {
+                return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+            }
         }
         return new JsonResponse('Error while deleting the category.', Response::HTTP_SERVICE_UNAVAILABLE);
     }

@@ -22,5 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         res.status(200).json(data)
     } else {
         res.status(401)
+        res.end()
     }
 }
