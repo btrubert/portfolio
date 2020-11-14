@@ -43,7 +43,7 @@ class CategoryController extends AbstractController
 
             return new JsonResponse(json_decode($scategory));
         }
-        return new JsonResponse("No private categories available.", Response::HTTP_UNAUTHORIZED);
+        return new JsonResponse("No private categories available.", Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -124,9 +124,10 @@ class CategoryController extends AbstractController
                 $em->remove($category);
                 $em->flush();
                 return new JsonResponse('The category has been deleted.', Response::HTTP_ACCEPTED);
-            }
+	    } else {
+		return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+	    }
         }
-
         return new JsonResponse('Error while deleting the category.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
 }

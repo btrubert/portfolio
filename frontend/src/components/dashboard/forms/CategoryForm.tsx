@@ -70,7 +70,7 @@ export default function CategoryForm (props: Props) {
                 setMessageAlert(data)
                 setVariantAlert("success")
                 setShowAlert(true)
-                setTimeout(props.refresh, 3000)
+                setTimeout(props.refresh, 1000)
             })
         .catch(error =>  {
             actions.setSubmitting(false)

@@ -54,7 +54,7 @@ export default function Login(props: Props) {
             setMessageAlert("Connected")
             setVariantAlert("success")
             setShowAlert(true)
-            setTimeout(() => {router.push(data)}, 2000);
+            setTimeout(() => {window.location.assign(data)}, 1000);
         }).catch(error => {
             actions.setSubmitting(false)
             setVariantAlert("danger")

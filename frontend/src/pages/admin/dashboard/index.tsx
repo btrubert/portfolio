@@ -98,9 +98,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
         const token = await response.text()
         fetch("/smf/admin/" + entity + "/delete/" + item.id,
         {method: 'POST',
-        headers: {'Content-type': 'application/json'},
-        body: JSON.stringify({_token: token})}
-        ).then(response => {
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: new URLSearchParams({_token: token}).toString(),
+        }).then(response => {
             if (response.ok) {
                 handleRefresh()
             }
