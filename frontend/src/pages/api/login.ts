@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 type Data = string
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    const response = await fetch(process.env.SYMFONY_URL + "/login", {
+    const response = await fetch(process.env.SERVEUR_URL + "/smf/login", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

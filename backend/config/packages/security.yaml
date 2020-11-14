@@ -19,18 +19,9 @@ security:
         #     pattern: ^/(_(profiler|wdt)|css|images|js)/
         #     security: false
         main:
-            # lazy: true
-            # stateless: true
-            # json_login:
-            #     check_path:               /login
-            #     success_handler:          lexik_jwt_authentication.handler.authentication_success
-            #     failure_handler:          lexik_jwt_authentication.handler.authentication_failure
-            # entry_point: json_login
+            
             custom_authenticators:
                 - App\Security\CustomLoginFormAuthenticator
-            # guard:
-            #     authenticators:
-            #         - lexik_jwt_authentication.jwt_token_authenticator
             logout:
                 path: logout
                 csrf_token_generator: security.csrf.token_manager
@@ -55,4 +46,4 @@ security:
     access_control:
         - { path: ^/smf/login, roles: PUBLIC_ACCESS, requires_channel: '%env(SECURE_SCHEME)%' }
         - { path: ^/smf/admin, roles: ROLE_ADMIN, requires_channel: '%env(SECURE_SCHEME)%' }
-        - { path: ^/smf/profile, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%'}
+        - { path: ^/smf/profile/, roles: ROLE_USER, requires_channel: '%env(SECURE_SCHEME)%'}

@@ -34,8 +34,7 @@ services:
                 depends_on:
                         - php-fpm
                 environment:
-                        - BACKEND_URL=https://nginx
-                        - SYMFONY_URL=https://nginx/smf
+                        - SERVEUR_URL=https://nginx
                         - NODE_TLS_REJECT_UNAUTHORIZED=0
                 volumes:
                         - ../frontend/:/var/www

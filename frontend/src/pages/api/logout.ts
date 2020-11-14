@@ -5,7 +5,7 @@ type Data = {
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    const response = await fetch(process.env.SYMFONY_URL + "/logout", {
+    const response = await fetch(process.env.SERVEUR_URL + "/smf/logout", {
         method: 'POST',
         headers: {
             'Content-Type': "application/x-www-form-urlencoded",

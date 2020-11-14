@@ -15,7 +15,6 @@ interface Props {
     edit: boolean,
     refresh:  () => void,
     categories: Array<Category>,
-    adminUrl: string,
 }
 
 interface FormValues {

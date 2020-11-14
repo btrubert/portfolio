@@ -62,7 +62,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                         className="category-card-img"
                                         height="480"
                                         width="480"
-					                    unoptimized/>
+					                    />
                                 </Carousel.Item>)
                             } </Carousel>
 
@@ -82,7 +82,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const response = await fetch(process.env.SYMFONY_URL+"/categories")
+    const response = await fetch(process.env.SERVEUR_URL+"/smf/categories")
     const categories: Array<Category> =  await response.json()
     const play: Array<number> = Array(categories.length).fill(null)
     return {

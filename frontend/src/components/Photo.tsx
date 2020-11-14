@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Carousel from 'react-bootstrap/Carousel'
-import Image from 'next/image'
+import Image from 'react-bootstrap/Image'
 import {Container, Row, Col} from 'react-bootstrap/'
 import Collapse from 'react-bootstrap/Collapse'
 
@@ -11,14 +11,13 @@ interface Props {
     index: number,
     onHide: () => void,
     show: boolean,
-    imgBaseUrl: string,
 }
 
 export default function Photo(props: Props) {
-    const [currentPhoto, setCurrentPhoto] = useState(props.photos[props.index]);
+    const [currentPhoto, setCurrentPhoto] = useState<Photo>(props.photos[props.index]);
     // Exifs caption options
-    const [open, setOpen] = useState(false);
-    const [show, setShow] = useState('Show');
+    const [open, setOpen] = useState<boolean>(false);
+    const [show, setShow] = useState<'Show' | 'Hide'>('Show');
 
     const handleSlide = (selectedIndex: number) => {
         setCurrentPhoto(props.photos[selectedIndex]);
@@ -35,7 +34,7 @@ export default function Photo(props: Props) {
                 () => setCurrentPhoto(props.photos[props.index])
             }
             onHide={
-               props.onHide()
+               props.onHide
             }
 	    centered>
             <Modal.Header></Modal.Header>
@@ -50,8 +49,8 @@ export default function Photo(props: Props) {
                     wrap={true}>
                     {
                     props.photos.map((p, index) => <Carousel.Item key={index}>
-                        <Image className="carousel-photo"
-                            src={"/uploads/" + p.path} layout="fill" unoptimized/>
+                        <Image
+                            src={"/uploads/" + p.path}/>
                         <Carousel.Caption>
                             <Collapse in={open}>
                                 <Container className="exifs-info" id="collapse-exifs">

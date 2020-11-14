@@ -19,7 +19,7 @@ import Spinner from 'react-bootstrap/Spinner'
 type Item = Category | Photo | User
 type Entity = 'categories' | 'photos' | 'users'
 
-function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
+function Dashboard () {
     const [loading, setLoading] = useState<boolean>(true)
     // Entity lists managment
     const [categories, setCategories] = useState<Array<Category> | null>(null)
@@ -175,8 +175,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    users={users as Array<User>}
-                    adminUrl={props.adminApi}/>
+                    users={users as Array<User>}/>
             case 'photos':
                 return <PhotoForm photo={
                         currentItem as Photo
@@ -185,8 +184,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         formType === 'Edit'
                     }
                     refresh={() => handleRefresh()}
-                    categories={categories as Array<Category>}
-                    adminUrl={props.adminApi}/>
+                    categories={categories as Array<Category>}/>
             case 'users':
                 return <UserForm user={
                         currentItem as User
@@ -194,8 +192,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                     edit={
                         formType === 'Edit'
                     }
-                    refresh={() => handleRefresh()}
-                    adminUrl={props.adminApi}/>
+                    refresh={() => handleRefresh()}/>
             default:
                 return <></>;
         }
@@ -274,15 +271,6 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                 </Modal>
             </Container>
         )
-    }
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-    const imgBaseUrl: string = process.env.BACKEND_URL + '/uploads/'
-    const  adminApi: string = process.env.SYMFONY_URL + ''
-    return {
-        props: {imgBaseUrl, adminApi},
-        revalidate: 1,
     }
 }
 

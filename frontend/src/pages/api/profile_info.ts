@@ -2,11 +2,12 @@ import { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
     user: User,
+    admin: boolean,
     token: string,
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-    const response = await fetch(process.env.SYMFONY_URL + "/profile_info", {
+    const response = await fetch(process.env.SERVEUR_URL + "/smf/profile_info", {
         headers: {
             cookie: req.headers.cookie ?? ""
         }

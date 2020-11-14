@@ -7,7 +7,6 @@ import Photo from '../../components/Photo'
 
 
 function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
-    const imgBaseUrl = props.imgBaseUrl
     const photos = props.photos 
     const [show, setShow] = useState(false)
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -19,17 +18,17 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         lg={4}
                         key={index}>
                         <Image className="gallery-photo" src={"/uploads/" + p.path}
-                            width="480" height="480" unoptimized
+                            width="480" height="480"
                             onClick={() => {setCurrentIndex(index); setShow(true)}} />
                     </Col>)
                 } </Row>
-            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} imgBaseUrl={props.imgBaseUrl}/>
+            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show}/>
             </Container>
     );
 }
 
 export async function getStaticPaths() {
-    const response = await fetch(process.env.SYMFONY_URL+"/categories")
+    const response = await fetch(process.env.SERVEUR_URL+"/smf/categories")
     const categories = await response.json()
     const paths = categories.map((c: Category) => ({
         params: { category: c.name },
@@ -42,7 +41,7 @@ export async function getStaticPaths() {
   
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const response = await fetch(process.env.SYMFONY_URL+"/gallery/"+ context.params?.category)
+    const response = await fetch(process.env.SERVEUR_URL+"/smf/gallery/"+ context.params?.category)
     const photos: Array<Photo> = await response.json()
     return {
         props: {photos},
