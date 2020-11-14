@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Image from 'react-bootstrap/Image'
 import {Container, Row, Col} from 'react-bootstrap/'
 import Table from 'react-bootstrap/Table'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
@@ -39,7 +39,7 @@ export default function PhotosList (props: Props) {
                             overlay={
                                 <Popover id={index+''}>
                                 <Popover.Content>
-                                <Image src={"/smf/img/" + p.path} layout="fill" unoptimized />
+                                <Image src={"/smf/img/" + p.path} loading="lazy" fluid />
                                 </Popover.Content>
                                 </Popover>
                             }

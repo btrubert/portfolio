@@ -49,8 +49,8 @@ export default function Photo(props: Props) {
                     wrap={true}>
                     {
                     props.photos.map((p, index) => <Carousel.Item key={index}>
-                        <Image
-                            src={"/uploads/" + p.path}/>
+                        <Image loading="lazy"
+                            src={"/uploads/" + p.path} fluid/>
                         <Carousel.Caption>
                             <Collapse in={open}>
                                 <Container className="exifs-info" id="collapse-exifs">
