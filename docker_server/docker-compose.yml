@@ -33,8 +33,10 @@ services:
                         context: ./nextjs
                 depends_on:
                         - php-fpm
+                        - nginx
                 environment:
                         - SERVEUR_URL=https://nginx
+                        # Disable self-signed cert verification
                         - NODE_TLS_REJECT_UNAUTHORIZED=0
                 volumes:
                         - ../frontend/:/var/www
