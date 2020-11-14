@@ -18,7 +18,7 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         lg={4}
                         key={index}>
                         <Image className="gallery-photo" src={"/uploads/" + p.path}
-                            width="480" height="480"
+                            width="480" height="480" unoptimized
                             onClick={() => {setCurrentIndex(index); setShow(true)}} />
                     </Col>)
                 } </Row>

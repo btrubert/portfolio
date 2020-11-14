@@ -62,6 +62,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                         className="category-card-img"
                                         height="480"
                                         width="480"
+                                        unoptimized
 					                    />
                                 </Carousel.Item>)
                             } </Carousel>
