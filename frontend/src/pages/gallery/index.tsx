@@ -56,7 +56,8 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 controls={false}
                                 pause={false}>
                                 {
-                                c.photos.map((p, index: number) => <Carousel.Item key={index}>
+                                c.photos.sort((a, b) => {return (a.exifs.date < b.exifs.date) ? -1 : 1})
+                                .map((p, index: number) => <Carousel.Item key={index}>
                                     <Card.Img as={Image} src={"/uploads/" + p.path}
                                         alt="Card category's images"
                                         className="category-card-img"
@@ -88,7 +89,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const play: Array<number> = Array(categories.length).fill(null)
     return {
         props: {categories, play},
-        revalidate: 1,
+        revalidate: 60,
     }
 }
   

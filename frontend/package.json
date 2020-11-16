@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mdi/js": "^5.8.55",
+    "@mdi/react": "^1.4.0",
     "@types/yup": "^0.29.9",
     "bootstrap": "^4.5.3",
     "formik": "^2.2.1",

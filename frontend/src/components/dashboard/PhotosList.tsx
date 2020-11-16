@@ -1,34 +1,105 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import Image from 'react-bootstrap/Image'
 import {Container, Row, Col} from 'react-bootstrap/'
 import Table from 'react-bootstrap/Table'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Button from 'react-bootstrap/Button'
+import Icon from '@mdi/react'
+import {mdiImageFilterTiltShift , mdiFilterVariant} from '@mdi/js'
 
 interface Props {
     photos: Array<Photo> | null,
     editClicked: (item: Photo) => void,
     deleteClicked: (item: Photo) => void,
-    refresh:  () => void,
 }
 
+type Item = 'title' | 'category' | 'date' | ''
+
 export default function PhotosList (props: Props) {
+    const [sortBy, setSortBy] = useState<Item>('')
+    const [orderAsc, setOrderAsc] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(true)
+    const photos = props.photos
+
+    useEffect(() => {
+        if (photos) {
+            const asc = orderAsc? 1 : -1
+            switch (sortBy) {
+                case 'title': sortByTitle(photos, asc); break
+                case 'category': sortByCategory(photos, asc); break
+                case 'date': sortByDate(photos, asc); break
+            }
+            setLoading(false)
+        }
+    }, [loading])
+
+    useEffect(() => {
+        setOrderAsc(true)
+        setSortBy('')
+    }, [photos])
+
+    const sortByTitle = (cat: Array<Photo>, asc: number) => {
+        cat.sort((a, b) => {return (a.title < b.title)? -asc : asc})
+    }
+
+    const sortByCategory = (cat: Array<Photo>, asc: number) => {
+        cat.sort((a, b) => {return (a.category.name === b.category.name)? ((a.title < b.title)? -asc : asc) :
+            (a.category.name < b.category.name)? -asc : asc})
+    }
+
+    const sortByDate = (cat: Array<Photo>, asc: number) => {
+        cat.sort((a, b) => {return (a.exifs.date < b.exifs.date)? -asc : asc})
+    }
+
+    const filter = (item: Item) => {
+        if (item === sortBy){
+            setOrderAsc(!orderAsc)
+        }
+        else {
+            setSortBy(item)
+            setOrderAsc(true)
+        }
+        setLoading(true)  
+    }
+
+    const getCaret = (item: Item) => {
+        if (item === sortBy) {
+            return mdiFilterVariant
+        } else {
+            return mdiImageFilterTiltShift
+        }
+    }
 
     return (
         <Container className="main-content">
             <Table borderless hover striped responsive="lg" variant="dark">
                 <thead>
                     <tr>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Date taken</th>
+                        <th>Title <span className="filterButton" onClick={() => filter('title')}>
+                        <Icon path={getCaret('title')}
+                            size={.8}
+                            vertical={orderAsc}
+                            color="white"
+                        /></span></th>
+                        <th>Category <span className="filterButton" onClick={() => filter('category')}>
+                        <Icon path={getCaret('category')}
+                            size={.8}
+                            vertical={orderAsc}
+                            color="white"
+                        /></span></th>
+                        <th>Date taken <span className="filterButton" onClick={() => filter('date')}>
+                        <Icon path={getCaret('date')}
+                            size={.8}
+                            vertical={orderAsc}
+                            color="white"
+                        /></span></th>
                         <th>Preview</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>{props.photos &&
-                    props.photos.map((p, index: number) => <tr key={index}>
+                <tbody>{photos &&
+                    photos.map((p, index: number) => <tr key={index}>
                         <th>{p.title}</th>
                         <th>{p.category.name}</th>
                         <th>{p.exifs.date}</th>

@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import { useRouter } from 'next/router'
-import { GetStaticProps } from 'next'
-import { InferGetStaticPropsType } from 'next'
 import {useSession} from '../../../utils/SessionContext'
 import {Container, Row, Col} from 'react-bootstrap'
 import Navbar from 'react-bootstrap/Navbar'
@@ -142,22 +140,19 @@ function Dashboard () {
                         categories
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}
-                    refresh={handleRefresh}/>
+                    deleteClicked={deleteClicked}/>
             case 'photos':
                 return <PhotosList photos={
                         photos
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}
-                    refresh={handleRefresh}/>
+                    deleteClicked={deleteClicked}/>
             case 'users':
                 return <UsersList users={
                         users
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}
-                    refresh={handleRefresh}/>
+                    deleteClicked={deleteClicked}/>
             default:
                 return <Spinner animation="border" role="status" variant="success">
                     <span className="sr-only">Loading...</span>

@@ -1,15 +1,17 @@
 import React, {useState} from 'react'
-import { GetStaticProps } from 'next'
-import { InferGetStaticPropsType } from 'next'
+import { GetServerSideProps } from 'next'
+import { InferGetServerSidePropsType } from 'next'
 import Image from 'next/image'
 import {Container, Row, Col} from 'react-bootstrap/'
 import Photo from '../../components/Photo'
 
 
-function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
+function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const photos = props.photos 
-    const [show, setShow] = useState(false)
-    const [currentIndex, setCurrentIndex] = useState(0)
+    const [show, setShow] = useState<boolean>(false)
+    const [currentIndex, setCurrentIndex] = useState<number>(0)
+
+    
 
     return (<Container className="main-content">
                 <Row> {
@@ -27,25 +29,22 @@ function Photos (props: InferGetStaticPropsType<typeof getStaticProps>) {
     );
 }
 
-export async function getStaticPaths() {
-    const response = await fetch(process.env.SERVEUR_URL+"/smf/categories")
-    const categories = await response.json()
-    const paths = categories.map((c: Category) => ({
-        params: { category: c.name },
-      }))
-    return {
-      paths: paths,
-      fallback: 'blocking',
-    };
-  }
-  
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const response = await fetch(process.env.SERVEUR_URL+"/smf/gallery/"+ context.params?.category)
-    const photos: Array<Photo> = await response.json()
+    let photos: Array<Photo> | null = null
+    if (response.ok) {
+        photos = await response.json()
+        if (photos && photos.length > 0) {
+            photos.sort((a, b) => {return (a.exifs.date > b.exifs.date) ? -1 : 1})
+            return {
+                props: {photos},
+            }
+        }
+    }
     return {
         props: {photos},
-        revalidate: 1,
+        redirect: { destination: "/gallery", permanent: false }
     }
 }
 

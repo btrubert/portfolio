@@ -45,6 +45,6 @@ class CategoryVoter extends Voter
 
     private function canAccess(Category $category, User $user)
     {
-        return $category->getPublic() || $user->isAdmin() || $user === $category->getUser();
+        return $user->isAdmin() || $user === $category->getUser();
     }
 }
