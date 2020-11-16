@@ -31,6 +31,7 @@ export default function PhotoForm (props: Props) {
     const [showAlert, setShowAlert] = useState<boolean>(false)
     const [variantAlert, setVariantAlert] = useState<'warning' | 'success' | 'danger'>('warning')
     const [messageAlert, setMessageAlert] = useState<string>("")
+    const [submitting, setSubmitting] = useState<boolean>(false)
 
     const schema = yup.object({
         title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
@@ -39,7 +40,8 @@ export default function PhotoForm (props: Props) {
         path: yup.mixed().required("You must select a photo")
     })
 
-    const handleSubmitForm = async (values: FormValues, actions: any) => {
+    const handleSubmitForm = async (values: FormValues) => {
+        setSubmitting(true)
         if (!formRef.current){
             // if the form is not initialised do nothing
             return;
@@ -65,14 +67,14 @@ export default function PhotoForm (props: Props) {
                 throw new Error("verify your form info or try again later!")
             }
         }).then(data => {
-                actions.setSubmitting(false);
+                setSubmitting(false);
                 setMessageAlert(data);
                 setVariantAlert("success");
                 setShowAlert(true);
                 setTimeout(props.refresh, 1000);
             })
         .catch(error =>  {
-            actions.setSubmitting(false);
+            setSubmitting(false);
             setVariantAlert("danger");
             setMessageAlert(error+"");
             setShowAlert(true);
@@ -179,7 +181,7 @@ export default function PhotoForm (props: Props) {
                 <Col sm={4}>
                     <OverlayTrigger
                         key="savedPop"
-                        show={isSubmitting}
+                        show={isSubmitting || submitting}
                         placement="right"
                         overlay={
                             <Popover id="savedPop">
@@ -191,7 +193,7 @@ export default function PhotoForm (props: Props) {
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting}>Save Photo</Button>
+                        <Button type="submit" disabled={isSubmitting || submitting}>Save Photo</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>

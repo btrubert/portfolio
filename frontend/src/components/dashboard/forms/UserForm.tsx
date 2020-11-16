@@ -31,9 +31,10 @@ export default function UserForm (props: Props) {
 
     const formRef = useRef<HTMLFormElement>(null);
 
-    const [showAlert, setShowAlert] = useState(false)
+    const [showAlert, setShowAlert] = useState<boolean>(false)
     const [variantAlert, setVariantAlert] = useState<'warning' | 'success' | 'danger'>('warning')
     const [messageAlert, setMessageAlert] = useState<string>("")
+    const [submitting, setSubmitting] = useState<boolean>(false)
 
     const schema = yup.object({
         firstName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
@@ -46,7 +47,8 @@ export default function UserForm (props: Props) {
         passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
     });
 
-    const handleSubmitForm = async (values: FormValues, actions: any) => {
+    const handleSubmitForm = async (values: FormValues) => {
+        setSubmitting(false)
         if (!formRef.current){
             // if the form is not initialised do nothing
             return;
@@ -77,14 +79,14 @@ export default function UserForm (props: Props) {
                 throw new Error("verify your form info or try again later!");
             }
         }).then(data => {
-                actions.setSubmitting(false);
+                setSubmitting(false);
                 setMessageAlert(data);
                 setVariantAlert("success");
                 setShowAlert(true);
                 setTimeout(props.refresh, 1000);
             })
         .catch(error =>  {
-            actions.setSubmitting(false);
+            setSubmitting(false);
             setVariantAlert("danger");
             setMessageAlert(error+"");
             setShowAlert(true);
@@ -224,7 +226,7 @@ export default function UserForm (props: Props) {
                 <Col sm={4}>
                     <OverlayTrigger
                         key="savedPop"
-                        show={isSubmitting}
+                        show={isSubmitting || submitting}
                         placement="right"
                         overlay={
                             <Popover id="savedPop">
@@ -236,7 +238,7 @@ export default function UserForm (props: Props) {
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting}>Save User</Button>
+                        <Button type="submit" disabled={isSubmitting || submitting}>Save User</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>

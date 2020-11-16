@@ -1,14 +1,12 @@
 import React, {useState} from 'react'
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/'
-import {Formik} from 'formik'
+import {Formik, FormikHelpers} from 'formik'
 import * as yup from 'yup'
 import Spinner from 'react-bootstrap/Spinner'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
-import {useSession} from '../utils/SessionContext'
-import { useRouter } from 'next/router'
 
 interface Props {
     token: string,
@@ -22,15 +20,15 @@ interface FormValues {
 
 export default function Login(props: Props) {
 
-    const [showAlert, setShowAlert] = useState(false)
-    const [variantAlert, setVariantAlert] = useState("warning")
-    const [messageAlert, setMessageAlert] = useState("")
-    const [state, dispatch] = useSession()
-    const router = useRouter()
+    const [showAlert, setShowAlert] = useState<boolean>(false)
+    const [variantAlert, setVariantAlert] = useState<string>("warning")
+    const [messageAlert, setMessageAlert] = useState<string>("")
+    const [submitting, setSubmitting] = useState<boolean>(false)
 
     const schema = yup.object({username: yup.string().required("Required"), password: yup.string().required("Required"), _remember_me: yup.boolean()})
 
-    const handleSubmitForm = async (values: FormValues, actions: any) => {
+    const handleSubmitForm = async (values: FormValues) => {
+        setSubmitting(true)
         let token = props.token
         fetch("/api/login", {
             method: 'POST',
@@ -50,13 +48,13 @@ export default function Login(props: Props) {
                 throw new Error("Verify your login info or try again later!")
             }
         }).then(data => {
-            actions.setSubmitting(false)
+            setSubmitting(false)
             setMessageAlert("Connected")
             setVariantAlert("success")
             setShowAlert(true)
             setTimeout(() => {window.location.assign(data)}, 1000);
         }).catch(error => {
-            actions.setSubmitting(false)
+            setSubmitting(false)
             setVariantAlert("danger")
             setMessageAlert(error + "")
             setShowAlert(true)
@@ -80,7 +78,7 @@ export default function Login(props: Props) {
                     handleChange,
                     values,
                     errors,
-                    isSubmitting
+                    isSubmitting,
                 }) => <Form noValidate
                     onSubmit={handleSubmit}>
                     <Form.Group controlId="validationFormikUsername"
@@ -136,7 +134,7 @@ export default function Login(props: Props) {
                     <Col sm={4}>
                         <OverlayTrigger
                             key="login"
-                            show={isSubmitting}
+                            show={isSubmitting || submitting}
                             placement="right"
                             overlay={
                                 <Popover id="login">
@@ -148,7 +146,7 @@ export default function Login(props: Props) {
                                 </Popover>
                             }
                             >
-                            <Button type="submit" disabled={isSubmitting}>login</Button>
+                            <Button type="submit" disabled={isSubmitting || submitting}>login</Button>
                         </OverlayTrigger>
                     </Col>
                     <Col sm={8}>
