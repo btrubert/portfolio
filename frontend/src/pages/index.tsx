@@ -1,13 +1,13 @@
 import React from 'react'
 import {Container, Row, Col} from 'react-bootstrap/'
-import {useSession} from '../utils/SessionContext'
+import {useSession} from 'utils/SessionContext'
 import Media from 'react-bootstrap/Media'
 import Image from 'next/image'
 import Icon from '@mdi/react'
-import { mdiEmoticonExcited, mdiCameraIris, mdiCamera } from '@mdi/js';
+import {mdiEmoticonExcited, mdiCameraIris, mdiCamera} from '@mdi/js';
 
 
-export default function Home() {
+function Home() {
   const [state, dispatch] = useSession()
 
   const Iris = <Icon path={mdiCameraIris} color="white" size={1} />
@@ -18,12 +18,12 @@ export default function Home() {
   } else {
     return <Container>
     <Row>
-      <Col sm={{ span: 6, offset: 3 }}>
+      <Col lg={{ span: 6, offset: 3 }}>
         <h1 className="aboutTitle">Welcome traveller!</h1>
       </Col>
     </Row>
     <Row>
-      <Col sm={{ span: 8, offset: 2 }}>
+      <Col lg={{ span: 8, offset: 2 }}>
         <h3>About me.</h3>
         <p className="aboutMe">
         I am Benjamin Trubert a French photographer from the South of Brittany.
@@ -41,9 +41,9 @@ export default function Home() {
       </Col>
     </Row>
     <Row>
-    <Col sm={{ span: 8, offset: 2 }}>
+    <Col lg={{ span: 8, offset: 2 }}>
       <Media>
-        <Image src="/profile.jpg" width={360} height={240} className="align-self-start mr-3" alt="Autoportrait - stars gazer"/>
+        <Image src="/profile.jpg" unoptimized width={360} height={240} className="align-self-start mr-3" alt="Autoportrait - stars gazer"/>
         <Media.Body>
             <p className="aboutMe">
             Finland was really the best place for me to really get into photography.
@@ -55,7 +55,7 @@ export default function Home() {
         </Media.Body>
       </Media>
       </Col>
-      <Col sm={{ span: 8, offset: 2 }}>
+      <Col lg={{ span: 8, offset: 2 }}>
         <p className="aboutMe">
           After that, I moved to Switzerland, where I continued shooting landscape, falling in love mountains.
           The Swiss mountains are diversed and full of really good spots for hiking and bivouac and the panoramas are breathtaking.
@@ -67,7 +67,7 @@ export default function Home() {
       </Col>
     </Row>
     <Row>
-      <Col sm={{ span: 8, offset: 2 }}>
+      <Col lg={{ span: 8, offset: 2 }}>
         <h3>My gear.</h3>
           <ul className="aboutMe">
             <li>{Camera} Nikon D750</li>
@@ -85,3 +85,6 @@ export default function Home() {
       </Container>
   }
 }
+
+
+export default Home

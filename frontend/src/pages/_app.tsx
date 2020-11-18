@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '../styles/app.scss'
+import 'styles/app.scss'
 import Head from 'next/head'
-import React, {useState, useEffect} from 'react'
-import Menu from '../components/Menu'
+import React from 'react'
+import Menu from 'components/Menu'
 import Container from 'react-bootstrap/Container'
-import type { AppProps /*, AppContext */ } from 'next/app'
-import {SessionProvider} from '../utils/SessionContext'
+import type {AppProps /*, AppContext*/} from 'next/app'
+import {SessionProvider} from 'utils/SessionContext'
 
 function MyApp({Component, pageProps}: AppProps) {
     return <>
@@ -19,7 +19,8 @@ function MyApp({Component, pageProps}: AppProps) {
                     <Component {...pageProps}/>
                 </Container>
             </SessionProvider>
-        </>
+            </>
 }
 
-export default MyApp;
+
+export default MyApp

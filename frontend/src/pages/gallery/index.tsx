@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useSession} from '../../utils/SessionContext'
+import {useSession} from 'utils/SessionContext'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
 import {Container, Row, Col} from 'react-bootstrap/'

@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import {useSession} from '../../utils/SessionContext'
+import {useSession} from 'utils/SessionContext'
 import { GetServerSideProps } from 'next'
 import { InferGetServerSidePropsType } from 'next'
 import Image from 'next/image'
 import {Container, Row, Col} from 'react-bootstrap/'
-import Photo from '../../components/Photo'
+import Photo from 'components/Photo'
 
 
 function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) {

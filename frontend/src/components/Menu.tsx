@@ -4,7 +4,8 @@ import Link from 'next/link'
 import Container from 'react-bootstrap/Container'
 import Modal from 'react-bootstrap/Modal'
 import Login from './Login'
-import {useSession} from '../utils/SessionContext'
+import {useSession} from 'utils/SessionContext'
+
 
 function Menu () {
     const [state, dispatch] = useSession()
@@ -68,25 +69,22 @@ function Menu () {
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <Link href="/" passHref>
-                        <Navbar.Brand as={
-                                Nav.Link
-                            }
-                        >
+                        <Navbar.Brand as={Nav.Link}>
                             <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top" alt="logo"/>{' '}
-                            Benjamin Trubert - Photographie
+                            Benjamin Trubert - Photography
                         </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">
                         <Nav>
                             <Link href="/gallery" passHref>
-                                <Nav.Link eventKey="1">Gallery</Nav.Link>
+                                <Nav.Link>Gallery</Nav.Link>
                             </Link>
                             <Link href="/blog" passHref>
-                                <Nav.Link eventKey="2" disabled>Blog</Nav.Link>
+                                <Nav.Link disabled>Blog</Nav.Link>
                             </Link>
                             <Link href="/contact" passHref>
-                                <Nav.Link eventKey="3" disabled>Contact</Nav.Link>
+                                <Nav.Link disabled>Contact</Nav.Link>
                             </Link>
                         </Nav>
                         <Nav>
@@ -98,13 +96,13 @@ function Menu () {
                                 {
                                 state.admin ? <> {
                                     state.admin ? <Link href="/admin/dashboard" passHref>
-                                        <NavDropdown.Item eventKey="4">Dashboard</NavDropdown.Item>
+                                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
                                     </Link> : <Link href="/profile" passHref>
-                                        <NavDropdown.Item eventKey="4">Profile</NavDropdown.Item>
+                                        <NavDropdown.Item>Profile</NavDropdown.Item>
                                     </Link>
                                 }
                                     <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-                                </> : <NavDropdown.Item eventKey="4"
+                                </> : <NavDropdown.Item eventKey="login"
                                     onClick={() => setShowLogin(true)}>Login</NavDropdown.Item>
                             } </NavDropdown>
                         </Nav>
