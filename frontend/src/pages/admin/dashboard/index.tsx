@@ -18,7 +18,6 @@ type Item = Category | Photo | User
 type Entity = 'categories' | 'photos' | 'users'
 
 function Dashboard () {
-    const [loading, setLoading] = useState<boolean>(true)
     // Entity lists managment
     const [categories, setCategories] = useState<Array<Category> | null>(null)
     const [refreshCategories, setRefreshCategories] = useState<boolean>(true)
@@ -41,8 +40,6 @@ function Dashboard () {
         if (!state.loading) {
             if (!state.admin) {
                 router.push('/')
-            } else {
-                setLoading(false)
             }
         }
     }, [state.admin, state.loading])
@@ -194,7 +191,7 @@ function Dashboard () {
 
     }
 
-    if (loading) {
+    if (state.loading || !state.admin) {
         return <></>
     } else {
         return (

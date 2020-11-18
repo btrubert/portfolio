@@ -11,7 +11,7 @@ interface State {
 }
 
 interface Action {
-  type: 'setSession' | 'dropSession',
+  type: 'setSession' | 'dropSession' | 'setToken',
   payload: State,
 }
 
@@ -31,14 +31,14 @@ const reducer = (state: State, action: Action) => {
         token: action.payload.token,
         loading: false,
       }
-    case 'dropSession':
+    case 'setToken':
       return {
         username: initialState.username,
         firstName: initialState.firstName,
         lastName: initialState.lastName,
         email: initialState.email,
         admin: initialState.admin,
-        token: initialState.token,
+        token: action.payload.token,
         loading: false,
       }
     default:

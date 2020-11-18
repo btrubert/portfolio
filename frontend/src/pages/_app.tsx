@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/app.scss'
 import Head from 'next/head'
+import React, {useState, useEffect} from 'react'
 import Menu from '../components/Menu'
 import Container from 'react-bootstrap/Container'
 import type { AppProps /*, AppContext */ } from 'next/app'

@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {useSession} from '../utils/SessionContext'
 import Form from 'react-bootstrap/Form'
 import {Container, Row, Col, Button} from 'react-bootstrap/'
 import {Formik} from 'formik'
@@ -8,18 +9,14 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
 
-interface Props {
-    token: string,
-}
-
 interface FormValues {
     username: string,
     password: string,
     _remember_me: boolean,
 }
 
-export default function Login(props: Props) {
-
+export default function Login() {
+    const [state, dispatch] = useSession()
     const [showAlert, setShowAlert] = useState<boolean>(false)
     const [variantAlert, setVariantAlert] = useState<string>("warning")
     const [messageAlert, setMessageAlert] = useState<string>("")
@@ -29,7 +26,7 @@ export default function Login(props: Props) {
 
     const handleSubmitForm = async (values: FormValues) => {
         setSubmitting(true)
-        let token = props.token
+        let token = state.token
         fetch("/api/login", {
             method: 'POST',
             headers: {
