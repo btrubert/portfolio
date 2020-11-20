@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useEffect } from 'react'
+import React, { useReducer, useContext } from 'react'
 
 interface State {
   username: string,
@@ -11,7 +11,7 @@ interface State {
 }
 
 interface Action {
-  type: 'setSession' | 'dropSession' | 'setToken',
+  type: 'setSession' | 'setToken',
   payload: State,
 }
 

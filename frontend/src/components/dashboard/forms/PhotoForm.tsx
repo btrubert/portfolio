@@ -1,9 +1,10 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef } from 'react'
 import Form from 'react-bootstrap/Form'
-import {Formik} from 'formik'
+import { Formik } from 'formik'
 import * as yup from 'yup'
 import Button from 'react-bootstrap/Button'
-import {Container, Row, Col} from 'react-bootstrap/'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Spinner from 'react-bootstrap/Spinner'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
@@ -15,6 +16,7 @@ interface Props {
     edit: boolean,
     refresh:  () => void,
     categories: Array<Category>,
+    translation: {[key:string]: string},
 }
 
 interface FormValues {
@@ -32,12 +34,13 @@ export default function PhotoForm (props: Props) {
     const [variantAlert, setVariantAlert] = useState<'warning' | 'success' | 'danger'>('warning')
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const t = props.translation
 
     const schema = yup.object({
-        title: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
+        title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
         description: yup.string(),
-        category: yup.number().required().min(0, "You must choose a category"),
-        path: yup.mixed().required("You must select a photo")
+        category: yup.number().required().min(0, t._choose_category_error),
+        path: yup.mixed().required(t._select_photo_error)
     })
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -64,7 +67,7 @@ export default function PhotoForm (props: Props) {
             if (response.ok) {
                 return response.text()
             } else {
-                throw new Error("verify your form info or try again later!")
+                throw new Error(t._error_form)
             }
         }).then(data => {
                 setSubmitting(false);
@@ -108,7 +111,7 @@ export default function PhotoForm (props: Props) {
                 onSubmit={handleSubmit} ref={formRef}>
                     <Form.Group controlId="validationFormikTitle" as={Row}>
                         <Col>
-                        <Form.Control name="title" type="text" placeholder="Photo's title"
+                        <Form.Control name="title" type="text" placeholder={t._photo_title}
                             value={
                                 values.title
                             }
@@ -124,7 +127,7 @@ export default function PhotoForm (props: Props) {
                     </Form.Group>
                     <Form.Group controlId="validationFormikDescription" as={Row}>
                         <Col>
-                        <Form.Control name="description" type="text" placeholder="Description"
+                        <Form.Control name="description" type="text" placeholder={t._description}
                             value={
                                 values.description
                             }
@@ -161,7 +164,7 @@ export default function PhotoForm (props: Props) {
                                 !!errors.category
                             }
                             onChange={handleChange}>
-                            <option hidden value="-1">Choose a category</option>
+                            <option hidden value="-1">{t._choose_category}</option>
                             {
                             props.categories.map((c, index: number) => <option value={
                                 c.id
@@ -187,13 +190,13 @@ export default function PhotoForm (props: Props) {
                             <Popover id="savedPop">
                             <Popover.Content>
                                 <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">Loading...</span>
+                                    <span className="sr-only">{t._loading}</span>
                                 </Spinner>
                             </Popover.Content>
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting || submitting}>Save Photo</Button>
+                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_photo}</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>

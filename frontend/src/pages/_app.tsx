@@ -4,20 +4,22 @@ import Head from 'next/head'
 import React from 'react'
 import Menu from 'components/Menu'
 import Container from 'react-bootstrap/Container'
-import type {AppProps /*, AppContext*/} from 'next/app'
-import {SessionProvider} from 'utils/SessionContext'
+import type { AppProps /*, AppContext*/ } from 'next/app'
+import { SessionProvider } from 'utils/SessionContext'
+import { TranslationProvider } from 'utils/TranslationContext'
 
 function MyApp({Component, pageProps}: AppProps) {
     return <>
             <Head>
-                <title>Benjamin Trubert - Photographie</title>
                 <link rel="icon" href="/logo.svg"/>
             </Head>
             <SessionProvider>
-                <Menu/>
-                <Container className="main-content">
-                    <Component {...pageProps}/>
-                </Container>
+                <TranslationProvider>
+                    <Menu />
+                    <Container className="main-content">
+                        <Component {...pageProps}/>
+                    </Container>
+                </TranslationProvider>
             </SessionProvider>
             </>
 }

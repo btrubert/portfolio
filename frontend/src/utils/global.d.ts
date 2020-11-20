@@ -34,3 +34,5 @@ interface User {
     admin: boolean,
     password: string,
 }
+
+type Item = Category | Photo | User

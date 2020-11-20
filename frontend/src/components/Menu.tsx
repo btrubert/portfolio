@@ -1,14 +1,19 @@
-import React, {useState, useEffect} from 'react'
-import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
+import React, { useState, useEffect } from 'react'
+import Head from 'next/head'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+import NavDropdown from 'react-bootstrap/NavDropdown'
 import Link from 'next/link'
 import Container from 'react-bootstrap/Container'
 import Modal from 'react-bootstrap/Modal'
 import Login from './Login'
-import {useSession} from 'utils/SessionContext'
+import { useSession } from 'utils/SessionContext'
+import { useTranslation } from 'utils/TranslationContext'
 
 
 function Menu () {
     const [state, dispatch] = useSession()
+    const [trans, ] = useTranslation()
 
     const [showLogin, setShowLogin] = useState<boolean>(false)
 
@@ -61,49 +66,52 @@ function Menu () {
     }
 
     
-    if (state.loading) {
+    if (state.loading || !trans.commonTrans) {
         return <></>
     } else {
         return (
             <>
+            <Head>  
+                <title>{trans.common._title}</title>
+            </Head>
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <Link href="/" passHref>
                         <Navbar.Brand as={Nav.Link}>
                             <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top" alt="logo"/>{' '}
-                            Benjamin Trubert - Photography
+                            {trans.common._title}
                         </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">
                         <Nav>
                             <Link href="/gallery" passHref>
-                                <Nav.Link>Gallery</Nav.Link>
+                                <Nav.Link>{trans.common._gallery}</Nav.Link>
                             </Link>
                             <Link href="/blog" passHref>
-                                <Nav.Link disabled>Blog</Nav.Link>
+                                <Nav.Link disabled>{trans.common._blog}</Nav.Link>
                             </Link>
                             <Link href="/contact" passHref>
-                                <Nav.Link disabled>Contact</Nav.Link>
+                                <Nav.Link disabled>{trans.common._contact}</Nav.Link>
                             </Link>
                         </Nav>
                         <Nav>
                             <NavDropdown title={
-                                    state.username != "" ? "Signed in as: " + state.username : "Login"
+                                    state.username != "" ? trans.common._signed_in_as + state.username : trans.common._login
                                 }
                                 id="nav-dropdown"
                                 alignRight>
                                 {
                                 state.admin ? <> {
                                     state.admin ? <Link href="/admin/dashboard" passHref>
-                                        <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                                        <NavDropdown.Item>{trans.common._dashboard}</NavDropdown.Item>
                                     </Link> : <Link href="/profile" passHref>
-                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                        <NavDropdown.Item>{trans.common._profile}</NavDropdown.Item>
                                     </Link>
                                 }
-                                    <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={handleLogout}>{trans.common._logout}</NavDropdown.Item>
                                 </> : <NavDropdown.Item eventKey="login"
-                                    onClick={() => setShowLogin(true)}>Login</NavDropdown.Item>
+                                    onClick={() => setShowLogin(true)}>{trans.common._login}</NavDropdown.Item>
                             } </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -120,6 +128,5 @@ function Menu () {
         )
     }
 }
-
 
 export default Menu

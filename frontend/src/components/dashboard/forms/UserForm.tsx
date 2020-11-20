@@ -1,8 +1,10 @@
-import React, {useState, useRef} from "react";
+import React, { useState, useRef } from "react";
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import {Container, Row, Col, Button} from 'react-bootstrap/';
-import {Formik} from 'formik';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
+import { Formik } from 'formik';
 import * as yup from 'yup';
 import Spinner from 'react-bootstrap/Spinner';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -14,6 +16,7 @@ interface Props {
     user: User | null,
     edit: boolean,
     refresh:  () => void,
+    translation: {[key:string]: string},
 }
 
 interface FormValues {
@@ -35,16 +38,17 @@ export default function UserForm (props: Props) {
     const [variantAlert, setVariantAlert] = useState<'warning' | 'success' | 'danger'>('warning')
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const t = props.translation
 
     const schema = yup.object({
-        firstName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
-        lastName: yup.string().required("Required").matches(/^([a-zA-Z]+[ -_]?)+$/, 'Cannot contain numbers, special characters, or double space/dash'),
-        email: yup.string().required("Required").email("Email invalid"),
-        username: yup.string().required("Required").matches(/^[a-zA-Z0-9]+$/, 'Must contain only letters and numbers'),
+        firstName: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
+        lastName: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
+        email: yup.string().required(t._required).email("Email invalid"),
+        username: yup.string().required(t._required).matches(/^[a-zA-Z0-9]+$/, t._only_char_number_error),
         admin: yup.boolean(),
         modifyPassword: yup.boolean(),
-        password: yup.string().when("modifyPassword", {is: true, then : yup.string().required("Required").min(8, "Must be at least 8 characters long").max(32, "Must be at most 32 characters long"), otherwise: yup.string().nullable()}),
-        passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required("Required").oneOf([yup.ref("password")], "Passwords must match"), otherwise: yup.string().nullable()}),
+        password: yup.string().when("modifyPassword", {is: true, then : yup.string().required(t._required).min(8, t._min_password_error).max(32, t._max_password_error), otherwise: yup.string().nullable()}),
+        passwordConfirmation: yup.string().when("modifyPassword", {is: true, then: yup.string().required(t._required).oneOf([yup.ref("password")], t._matching_password_error), otherwise: yup.string().nullable()}),
     });
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -76,7 +80,7 @@ export default function UserForm (props: Props) {
             if (response.ok) {
                 return response.text()
             } else {
-                throw new Error("verify your form info or try again later!");
+                throw new Error(t._error_form);
             }
         }).then(data => {
                 setSubmitting(false);
@@ -121,7 +125,7 @@ export default function UserForm (props: Props) {
                 ref={formRef}>
                 <Form.Row>
                     <Form.Group controlId="validationFormikFirstName" as={Col}>
-                        <Form.Control required name="firstName" type="text" placeholder="First name"
+                        <Form.Control required name="firstName" type="text" placeholder={t._first_name}
                             value={
                                 values.firstName
                             }
@@ -132,7 +136,7 @@ export default function UserForm (props: Props) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="validationFormiklastName" as={Col}>
-                        <Form.Control required name="lastName" type="text" placeholder="Last name"
+                        <Form.Control required name="lastName" type="text" placeholder={t._last_name}
                             value={
                                 values.lastName
                             }
@@ -145,7 +149,7 @@ export default function UserForm (props: Props) {
                 </Form.Row>
                     <Form.Group controlId="validationFormikEmail" as={Row}>
                         <Col>
-                        <Form.Control required name="email" type="email" placeholder="Email"
+                        <Form.Control required name="email" type="email" placeholder={t._email}
                             value={
                                 values.email
                             }
@@ -162,7 +166,7 @@ export default function UserForm (props: Props) {
                         <InputGroup.Prepend>
                         <InputGroup.Text>@</InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Form.Control required name="username" type="text" placeholder="username"
+                        <Form.Control required name="username" type="text" placeholder={t._username}
                             value={
                                 values.username
                             }
@@ -176,7 +180,7 @@ export default function UserForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikModifyPassword" as={Row} hidden={!props.edit}>
                     <Col>
-                    <Form.Check type="switch" name="modifyPassword" label="Modify password"
+                    <Form.Check type="switch" name="modifyPassword" label={t._modify_password}
                         checked={
                             values.modifyPassword
                         }
@@ -187,7 +191,7 @@ export default function UserForm (props: Props) {
                         </Form.Group>
                    <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
                        <Col>
-                        <Form.Control required name="password" type="password" placeholder={props.edit? "Enter new password" : "Password"}
+                        <Form.Control required name="password" type="password" placeholder={props.edit? t._new_password : t._password}
                             value={
                                 values.password
                             }
@@ -200,7 +204,7 @@ export default function UserForm (props: Props) {
                     </Form.Group>
                    <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
                        <Col>
-                        <Form.Control required name="passwordConfirmation" type="password" placeholder="Confirm password"
+                        <Form.Control required name="passwordConfirmation" type="password" placeholder={t._confirm_password}
                             value={
                                 values.passwordConfirmation
                             }
@@ -213,7 +217,7 @@ export default function UserForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikAdmin" as={Row}>
                     <Col>
-                    <Form.Check type="switch" name="admin" label="Give this user admin rights ?"
+                    <Form.Check type="switch" name="admin" label={t._admin_right}
                         checked={
                             values.admin
                         }
@@ -232,13 +236,13 @@ export default function UserForm (props: Props) {
                             <Popover id="savedPop">
                             <Popover.Content>
                                 <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">Loading...</span>
+                                    <span className="sr-only">{t._loading}</span>
                                 </Spinner>
                             </Popover.Content>
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting || submitting}>Save User</Button>
+                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_user}</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>

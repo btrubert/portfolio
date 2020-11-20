@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Carousel from 'react-bootstrap/Carousel'
 import Image from 'react-bootstrap/Image'
-import {Container, Row, Col} from 'react-bootstrap/'
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
 import Collapse from 'react-bootstrap/Collapse'
 
 interface Props {

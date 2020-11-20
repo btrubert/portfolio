@@ -1,5 +1,5 @@
 import Icon from '@mdi/react'
-import {mdiAlertCircleOutline} from '@mdi/js'
+import { mdiAlertCircleOutline } from '@mdi/js'
 
 export default function Error() {
     return <>

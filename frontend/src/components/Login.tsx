@@ -1,13 +1,17 @@
-import React, {useState} from 'react'
-import {useSession} from 'utils/SessionContext'
+import React, { useState } from 'react'
+import { useSession } from 'utils/SessionContext'
 import Form from 'react-bootstrap/Form'
-import {Container, Row, Col, Button} from 'react-bootstrap/'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
 import {Formik} from 'formik'
 import * as yup from 'yup'
 import Spinner from 'react-bootstrap/Spinner'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
 import Alert from 'react-bootstrap/Alert'
+import { useTranslation } from 'utils/TranslationContext'
+
 
 interface FormValues {
     username: string,
@@ -16,13 +20,16 @@ interface FormValues {
 }
 
 export default function Login() {
-    const [state, dispatch] = useSession()
+    const [state, ] = useSession()
+    const [trans, ] = useTranslation()
     const [showAlert, setShowAlert] = useState<boolean>(false)
     const [variantAlert, setVariantAlert] = useState<string>("warning")
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
 
-    const schema = yup.object({username: yup.string().required("Required"), password: yup.string().required("Required"), _remember_me: yup.boolean()})
+    const schema = yup.object({username: yup.string().required(trans.common._required),
+        password: yup.string().required(trans.common._required),
+        _remember_me: yup.boolean()})
 
     const handleSubmitForm = async (values: FormValues) => {
         setSubmitting(true)
@@ -42,11 +49,11 @@ export default function Login() {
             if (response.ok) {
                 return response.text()
             } else {
-                throw new Error("Verify your login info or try again later!")
+                throw new Error(trans.common._verify_login)
             }
         }).then(data => {
             setSubmitting(false)
-            setMessageAlert("Connected")
+            setMessageAlert(trans.common._connected)
             setVariantAlert("success")
             setShowAlert(true)
             setTimeout(() => {window.location.assign(data)}, 1000);
@@ -81,7 +88,7 @@ export default function Login() {
                     <Form.Group controlId="validationFormikUsername"
                         as={Row}>
                         <Col>
-                            <Form.Control required name="username" type="text" placeholder="username" autoComplete="username"
+                            <Form.Control required name="username" type="text" placeholder={trans.common._username} autoComplete="username"
                                 value={
                                     values.username
                                 }
@@ -100,7 +107,7 @@ export default function Login() {
                     <Form.Group controlId="validationFormikPassword"
                         as={Row}>
                         <Col>
-                            <Form.Control required name="password" type="password" placeholder="password" autoComplete="password"
+                            <Form.Control required name="password" type="password" placeholder={trans.common._password} autoComplete="password"
                                 value={
                                     values.password
                                 }
@@ -118,7 +125,7 @@ export default function Login() {
                     </Form.Group>
                     <Form.Row>
                         <Col xs="12">
-                            <Form.Check type="checkbox" name="_remember_me" label="Remember me"
+                            <Form.Check type="checkbox" name="_remember_me" label={trans.common._remember_me}
                                 checked={
                                     values._remember_me
                                 }
@@ -137,13 +144,13 @@ export default function Login() {
                                 <Popover id="login">
                                 <Popover.Content>
                                     <Spinner animation="border" role="status" variant="success">
-                                        <span className="sr-only">Loading...</span>
+                                        <span className="sr-only">{trans.common._loading}</span>
                                     </Spinner>
                                 </Popover.Content>
                                 </Popover>
                             }
                             >
-                            <Button type="submit" disabled={isSubmitting || submitting}>login</Button>
+                            <Button type="submit" disabled={isSubmitting || submitting}>{trans.common._login}</Button>
                         </OverlayTrigger>
                     </Col>
                     <Col sm={8}>

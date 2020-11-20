@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
     ],
     "allowJs": true,
+    "alwaysStrict": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,8 +16,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
     "jsx": "preserve",
-    "baseUrl": "src"
+    "baseUrl": "src",
   },
   "include": [
     "next-env.d.ts",

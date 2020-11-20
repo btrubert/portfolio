@@ -1,7 +1,9 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef } from 'react'
 import Form from 'react-bootstrap/Form'
-import {Container, Row, Col, Button} from 'react-bootstrap/'
-import {Formik} from 'formik'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Button from 'react-bootstrap/Button'
+import { Formik } from 'formik'
 import * as yup from 'yup'
 import Spinner from 'react-bootstrap/Spinner'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
@@ -14,6 +16,7 @@ interface Props {
     edit: boolean,
     refresh:  () => void,
     users: Array<User>,
+    translation: {[key:string]: string},
 }
 
 interface FormValues {
@@ -30,11 +33,12 @@ export default function CategoryForm (props: Props) {
     const [variantAlert, setVariantAlert] = useState<'warning' | 'success' | 'danger'>('warning')
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const t = props.translation
 
     const schema = yup.object({
-        name: yup.string().required("Required").matches(/^([a-zA-Z0-9]+[ -_]?)+$/, 'Cannot contain special characters, or double space/dash'),
+        name: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
         public: yup.boolean(),
-        user: yup.number().when('public', {is: false, then:yup.number().required("Required").min(0, "Select a user"), otherwise: yup.number().nullable()}),
+        user: yup.number().when('public', {is: false, then:yup.number().required(t._required).min(0, t._select_user), otherwise: yup.number().nullable()}),
     });
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -64,7 +68,7 @@ export default function CategoryForm (props: Props) {
             if (response.ok) {
                 return response.text()
             } else {
-                throw new Error("verify your form info or try again later!")
+                throw new Error(t._error_form)
             }
         }).then(data => {
                 setSubmitting(false)
@@ -105,7 +109,7 @@ export default function CategoryForm (props: Props) {
                 ref={formRef}>
                     <Form.Group as={Row} controlId="validationFormikName">
                         <Col>
-                        <Form.Control required name="name" type="text" placeholder="Category's name"
+                        <Form.Control required name="name" type="text" placeholder={t._category_name}
                             value={
                                 values.name
                             }
@@ -118,7 +122,7 @@ export default function CategoryForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikIsPublic" as={Row}>
                     <Col>
-                    <Form.Check type="switch" name="public" label="Make this category public ?"
+                    <Form.Check type="switch" name="public" label={t._public}
                         checked={
                             values.public
                         }
@@ -137,7 +141,7 @@ export default function CategoryForm (props: Props) {
                                 !!errors.user
                             }
                             onChange={handleChange}>
-                            <option hidden value="-1">Choose a user</option>
+                            <option hidden value="-1">{t._choose_user}</option>
                             {
                             props.users.map((u, index: number) => <option value={u.id}
                                 key={index}>
@@ -161,13 +165,13 @@ export default function CategoryForm (props: Props) {
                             <Popover id="savedPop">
                             <Popover.Content>
                                 <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">Loading...</span>
+                                    <span className="sr-only">{t._loading}</span>
                                 </Spinner>
                             </Popover.Content>
                             </Popover>
                         }
                         >
-                        <Button type="submit" disabled={isSubmitting || submitting}>Save Category</Button>
+                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_category}</Button>
                     </OverlayTrigger>
                 </Col>
                 <Col sm={8}>

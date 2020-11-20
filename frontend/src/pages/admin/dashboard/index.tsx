@@ -1,23 +1,32 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import {useSession} from 'utils/SessionContext'
-import {Container, Row, Col} from 'react-bootstrap'
+import { useSession } from 'utils/SessionContext'
+import { useTranslation } from 'utils/TranslationContext'
+import { getTranslation } from 'utils/Translation'
+import { GetStaticProps } from 'next'
+import { InferGetStaticPropsType } from 'next'
+import Container from 'react-bootstrap/Container'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import {Button} from 'react-bootstrap'
+import Button from 'react-bootstrap/Button'
 import PhotosList from 'components/dashboard/PhotosList'
 import PhotoForm from 'components/dashboard/forms/PhotoForm'
 import UsersList from 'components/dashboard/UsersList'
 import UserForm from 'components/dashboard/forms/UserForm'
 import CategoriesList from 'components/dashboard/CategoriesList'
 import CategoryForm from 'components/dashboard/forms/CategoryForm'
-import {Modal} from 'react-bootstrap'
+import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 
-type Item = Category | Photo | User
+
 type Entity = 'categories' | 'photos' | 'users'
 
-function Dashboard () {
+function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
+    const router = useRouter()
+    const [state, dispatchS] = useSession()
+    const [trans, dispatch] = useTranslation()
+    const t = JSON.parse(props.dashboardT)
+
     // Entity lists managment
     const [categories, setCategories] = useState<Array<Category> | null>(null)
     const [refreshCategories, setRefreshCategories] = useState<boolean>(true)
@@ -29,12 +38,18 @@ function Dashboard () {
     // Form management
     const [activeTab, setActiveTab] = useState<Entity>('categories')
     const [showForm, setShowForm] = useState<boolean>(false)
-    const [activeForm, setActiveForm] = useState<'Category' | 'Photo' | 'User'>('Category')
-    const [formType, setFormType] = useState<'New' | 'Edit'>('New')
+    const [activeForm, setActiveForm] = useState<string>(t._category)
+    const [editForm, setEditForm] = useState<boolean>(false)
     const [currentItem, setCurrentIten] = useState<Category | Photo | User | null>(null)
 
-    const router = useRouter()
-    const [state, dispatch] = useSession()
+    useEffect(() => {
+        if (!trans.commonTrans) {
+            dispatch({
+                type: 'setCommon',
+                payload: JSON.parse(props.commonT),
+            })
+        }
+    })
 
     useEffect(() => {
         if (!state.loading) {
@@ -45,7 +60,7 @@ function Dashboard () {
     }, [state.admin, state.loading])
 
     const fetchEntity = async (entity: Entity) => {
-        const response = await fetch("/smf/admin/"+entity)
+        const response = await fetch(`/smf/admin/${entity}`)
         const data = await response.json()
         switch (entity) {
             case 'categories': setCategories(data); setRefreshCategories(false); break
@@ -67,9 +82,9 @@ function Dashboard () {
     }, [refreshUsers])
 
 
-    const handleShow = (type: 'New' | 'Edit') => {
+    const handleShow = (edit: boolean) => {
         if (!refreshCategories && !refreshPhotos && !refreshUsers) {
-            setFormType(type)
+            setEditForm(edit)
             setShowForm(true)
         }
     }
@@ -77,7 +92,7 @@ function Dashboard () {
     const handleEdit = (item: Item) => {
         if (!refreshCategories && !refreshPhotos && !refreshUsers) {
             setCurrentIten(item)
-            handleShow('Edit')
+            handleShow(true)
         }
     }
 
@@ -88,9 +103,9 @@ function Dashboard () {
             case 'photos': entity = 'photo'; break
             case 'users': entity = 'user'; break
         }
-        const response = await fetch("/smf/admin/" + entity + "/delete/" + item.id, {method: 'GET'})
+        const response = await fetch(`/smf/admin/${entity}/delete/${item.id}`, {method: 'GET'})
         const token = await response.text()
-        fetch("/smf/admin/" + entity + "/delete/" + item.id,
+        fetch(`/smf/admin/${entity}/delete/${item.id}`,
         {method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: new URLSearchParams({_token: token}).toString(),
@@ -105,13 +120,13 @@ function Dashboard () {
         if (tab != activeTab) {
             switch (tab) {
                 case 'photos':
-                    setActiveForm('Photo')
+                    setActiveForm(t._photo)
                     break
                 case 'categories':
-                    setActiveForm('Category')
+                    setActiveForm(t._category)
                     break
                 case 'users':
-                    setActiveForm('User')
+                    setActiveForm(t._user)
                     break
             }
             setActiveTab(tab)
@@ -137,19 +152,22 @@ function Dashboard () {
                         categories
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}/>
+                    deleteClicked={deleteClicked}
+                    translation={t}/>
             case 'photos':
                 return <PhotosList photos={
                         photos
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}/>
+                    deleteClicked={deleteClicked}
+                    translation={t}/>
             case 'users':
                 return <UsersList users={
                         users
                     }
                     editClicked={editClicked}
-                    deleteClicked={deleteClicked}/>
+                    deleteClicked={deleteClicked}
+                    translation={t}/>
             default:
                 return <Spinner animation="border" role="status" variant="success">
                     <span className="sr-only">Loading...</span>
@@ -163,28 +181,25 @@ function Dashboard () {
                 return <CategoryForm category={
                         currentItem as Category
                     }
-                    edit={
-                        formType === 'Edit'
-                    }
+                    edit={editForm}
                     refresh={() => handleRefresh()}
-                    users={users as Array<User>}/>
+                    users={users as Array<User>}
+                    translation={t}/>
             case 'photos':
                 return <PhotoForm photo={
                         currentItem as Photo
                     }
-                    edit={
-                        formType === 'Edit'
-                    }
+                    edit={editForm}
                     refresh={() => handleRefresh()}
-                    categories={categories as Array<Category>}/>
+                    categories={categories as Array<Category>}
+                    translation={t}/>
             case 'users':
                 return <UserForm user={
                         currentItem as User
                     }
-                    edit={
-                        formType === 'Edit'
-                    }
-                    refresh={() => handleRefresh()}/>
+                    edit={editForm}
+                    refresh={() => handleRefresh()}
+                    translation={t}/>
             default:
                 return <></>;
         }
@@ -194,9 +209,8 @@ function Dashboard () {
     if (state.loading || !state.admin) {
         return <></>
     } else {
-        return (
-            <Container className="main-content">
-                <h2>Dashboard</h2>
+        return <>
+                <h2>{t._dashboard}</h2>
                 <Navbar expand="md" variant="dark" collapseOnSelect>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -205,13 +219,13 @@ function Dashboard () {
                                 <Nav.Link eventKey="categories"
                                     onSelect={
                                         () => handleClick("categories")
-                                }>Categories</Nav.Link>
+                                }>{t._categories}</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link eventKey="photos"
                                     onSelect={
                                         () => handleClick("photos")
-                                }>Photos</Nav.Link>
+                                }>{t._photos}</Nav.Link>
                             </Nav.Item>
                             {/* <Nav.Item>
                                 <Nav.Link eventKey="posts" disabled
@@ -223,7 +237,7 @@ function Dashboard () {
                                 <Nav.Link eventKey="users"
                                     onSelect={
                                         () => handleClick("users")
-                                }>Users</Nav.Link>
+                                }>{t._users}</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
@@ -232,13 +246,13 @@ function Dashboard () {
                             <Button className="mr-2" variant="outline-success"
                                 onClick={
                                     handleRefresh
-                            }>Refresh</Button>
+                            }>{t._refresh}</Button>
                         </Nav.Item>
                         <Nav.Item>
                             <Button variant="outline-info"
                                 onClick={
-                                    () => handleShow("New")
-                            }>New</Button>
+                                    () => handleShow(false)
+                            }>{t._new}</Button>
                         </Nav.Item>
                     </Nav>
                 </Navbar>
@@ -254,15 +268,22 @@ function Dashboard () {
                         setShowForm(false); setCurrentIten(null)
                     }}>
                     <Modal.Header closeButton>
-                        {
-                        formType + " " + activeForm
-                    } </Modal.Header>
+                        {activeForm}
+                    </Modal.Header>
                     <Modal.Body> {
                         getForm()
                     } </Modal.Body>
                 </Modal>
-            </Container>
-        )
+        </>
+    }
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    const commonT = getTranslation('common', context.locale)
+    const dashboardT = getTranslation('dashboard', context.locale)
+    return {
+        props: {commonT, dashboardT},
+        revalidate: 60,
     }
 }
 

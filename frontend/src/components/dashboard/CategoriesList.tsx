@@ -1,17 +1,15 @@
-import React, {useState, useEffect} from "react"
-import {Container, Row, Col} from 'react-bootstrap/'
+import React, { useState, useEffect } from "react"
 import Link from 'next/link'
 import Table from 'react-bootstrap/Table'
-import Button from 'react-bootstrap/Button'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
+import ActionButtons from 'components/dashboard/ActionButtons'
 import Icon from '@mdi/react'
-import {mdiImageFilterTiltShift , mdiFilterVariant} from '@mdi/js'
+import { mdiImageFilterTiltShift , mdiFilterVariant } from '@mdi/js'
 
 interface Props {
     categories: Array<Category> | null,
     editClicked: (item: Category) => void,
     deleteClicked: (item: Category) => void,
+    translation: {[key:string]: string},
 }
 
 type Item = 'name' | 'user' | 'number' | ''
@@ -21,6 +19,7 @@ export default function CategoriesList (props: Props) {
     const [orderAsc, setOrderAsc] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(true)
     let categories = props.categories
+    const t = props.translation
 
     useEffect(() => {
         if (categories) {
@@ -76,25 +75,25 @@ export default function CategoriesList (props: Props) {
         <Table borderless hover striped responsive="lg" variant="dark">
             <thead>
                 <tr>
-                    <th>Name <span className="filterButton" onClick={() => filter('name')}>
+                    <th>{t._name} <span className="filterButton" onClick={() => filter('name')}>
                         <Icon path={getCaret('name')}
                             size={.8}
                             vertical={orderAsc}
                             color="white"
                         /></span></th>
-                    <th>Private (associated user) <span className="filterButton" onClick={() => filter('user')}>
+                    <th>{t._private_user} <span className="filterButton" onClick={() => filter('user')}>
                         <Icon path={getCaret('user')}
                             size={.8}
                             vertical={orderAsc}
                             color="white"
                         /></span></th>
-                    <th>Number of photos <span className="filterButton" onClick={() => filter('number')}>
+                    <th>{t._number_photos} <span className="filterButton" onClick={() => filter('number')}>
                         <Icon path={getCaret('number')}
                             size={.8}
                             vertical={orderAsc}
                             color="white"
                         /></span></th>
-                    <th>Action</th>
+                    <th>{t._action}</th>
                 </tr>
             </thead>
             <tbody>{categories &&
@@ -108,26 +107,14 @@ export default function CategoriesList (props: Props) {
                             c.public ? "Public" : "Private"
                         }
                             {
-                            c.user ? " (" + c.user.firstName + " " + c.user.lastName + ")" : ""
+                            c.user ? ` (  ${c.user.firstName} ${c.user.lastName} )` : ""
                         }</th>
                         <th>{
                             c.photos.length
                         }</th>
-                        <th><Button className="mr-2" variant="outline-info" onClick={() => props.editClicked(c)}>Edit</Button>
-                        <OverlayTrigger trigger={"focus"}
-                            key={'d'+c.id}
-                            placement="top"
-                            overlay={
-                                <Popover id={'d'+c.id}>
-                                <Popover.Content>
-                                    <Button className="mr-2" variant="success" onClick={() => props.deleteClicked(c)}>Confirm</Button>
-                                    <Button variant="warning">Cancel</Button>
-                                </Popover.Content>
-                                </Popover>
-                            }
-                            >
-                            <Button  variant="outline-danger">Delete</Button>
-                        </OverlayTrigger></th>
+                        <th>
+                            <ActionButtons item={c} editClicked={() => props.editClicked(c)} deleteClicked={() => props.deleteClicked(c)} translation={t} />
+                        </th>
                     </tr>
                 ))
             }</tbody>
