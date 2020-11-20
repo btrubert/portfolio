@@ -14,5 +14,6 @@
     "_username": "nom d'utilisateur",
     "_password": "mot de passe",
     "_remember_me": "Se souvenir de moi",
-    "_loading": "Chargement..."
+    "_loading": "Chargement...",
+    "_change_language": "English"
 }

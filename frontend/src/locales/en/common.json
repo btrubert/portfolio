@@ -14,5 +14,6 @@
     "_username": "username",
     "_password": "password",
     "_remember_me": "Remember me",
-    "_loading": "Loading..."
+    "_loading": "Loading...",
+    "_change_language": "Français"
 }

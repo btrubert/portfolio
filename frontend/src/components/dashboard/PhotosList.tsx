@@ -108,6 +108,7 @@ export default function PhotosList (props: Props) {
                         <th>{p.exifs.date}</th>
                         <th>
                         <OverlayTrigger trigger={["hover", "focus"]}
+                            delay={200}
                             key={index}
                             placement="top"
                             overlay={

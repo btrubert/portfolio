@@ -14,7 +14,7 @@ export default function ActionButtons (props: Props) {
 
     return <>
     <Button className="mr-2" variant="outline-info" onClick={() => props.editClicked()}>{t._edit}</Button>
-    <OverlayTrigger trigger={"focus"}
+    <OverlayTrigger trigger="focus"
         key={'d'+props.item.id}
         placement="top"
         overlay={

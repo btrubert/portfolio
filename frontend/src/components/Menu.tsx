@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
@@ -9,11 +10,16 @@ import Modal from 'react-bootstrap/Modal'
 import Login from './Login'
 import { useSession } from 'utils/SessionContext'
 import { useTranslation } from 'utils/TranslationContext'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import Icon from '@mdi/react'
+import { mdiEarth } from '@mdi/js'
 
 
 function Menu () {
     const [state, dispatch] = useSession()
-    const [trans, ] = useTranslation()
+    const [trans, dispatchT] = useTranslation()
+    const router = useRouter()
 
     const [showLogin, setShowLogin] = useState<boolean>(false)
 
@@ -65,6 +71,16 @@ function Menu () {
         })
     }
 
+    const changeLanguage = () => {
+        if (router.locale === 'en') {
+            dispatchT({type: 'reset'})
+            router.push(router.pathname, router.pathname, {locale: 'fr'})
+        } else {
+            dispatchT({type: 'reset'})
+            router.push(router.pathname, router.pathname, {locale: 'en'})
+        }
+    }
+
     
     if (state.loading || !trans.commonTrans) {
         return <></>
@@ -113,6 +129,18 @@ function Menu () {
                                 </> : <NavDropdown.Item eventKey="login"
                                     onClick={() => setShowLogin(true)}>{trans.common._login}</NavDropdown.Item>
                             } </NavDropdown>
+                        </Nav>
+                        <Nav>
+                            <OverlayTrigger trigger={['focus', 'hover']}
+                                placement="auto-start"
+                                overlay={
+                                <Tooltip id="language">
+                                    {trans.common._change_language}
+                                </Tooltip>}>
+                                    <div onClick={changeLanguage}>
+                                    <Icon path={mdiEarth} color="white" size={1} />
+                                    </div>
+                            </OverlayTrigger>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
