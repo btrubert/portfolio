@@ -4,6 +4,7 @@ import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
 import { GetServerSideProps } from 'next'
 import { InferGetServerSidePropsType } from 'next'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -13,6 +14,7 @@ import Photo from 'components/Photo'
 function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [state, dispatchS] = useSession()
     const [trans, dispatch] = useTranslation()
+    const router = useRouter()
 
     const photos = props.photos 
     const [show, setShow] = useState<boolean>(false)
@@ -25,7 +27,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                 payload: JSON.parse(props.commonT),
             })
         }
-      })
+      }, [router.locale])
 
     
     if (state.loading) {
@@ -49,7 +51,9 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const commonT = getTranslation('common', context.locale)
+    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
+    const locale = context.locale? context.locale : defaultLocale
+    const commonT = getTranslation('common', locale)
     const response = await fetch(`${process.env.SERVEUR_URL}/smf/gallery/${context.params?.category}`)
     let photos: Array<Photo> | null = null
     if (response.ok) {

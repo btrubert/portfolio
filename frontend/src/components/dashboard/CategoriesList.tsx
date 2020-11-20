@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useLayoutEffect } from "react"
 import Link from 'next/link'
 import Table from 'react-bootstrap/Table'
 import ActionButtons from 'components/dashboard/ActionButtons'
@@ -12,58 +12,58 @@ interface Props {
     translation: {[key:string]: string},
 }
 
-type Item = 'name' | 'user' | 'number' | ''
+type Field = 'name' | 'user' | 'number' | ''
 
 export default function CategoriesList (props: Props) {
-    const [sortBy, setSortBy] = useState<Item>('')
-    const [orderAsc, setOrderAsc] = useState<boolean>(true)
+    const [sortBy, setSortBy] = useState<Field>('')
+    const [orderAsc, setOrderAsc] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
-    let categories = props.categories
+    const categories = props.categories
     const t = props.translation
 
     useEffect(() => {
-        if (categories) {
-            const asc = orderAsc? 1 : -1
-            switch (sortBy) {
-                case 'name': sortByName(categories, asc); break
-                case 'user': sortByUser(categories, asc); break
-                case 'number': sortByNumber(categories, asc); break
-            }
-            setLoading(false)
+        const asc = orderAsc? 1 : -1
+        switch (sortBy) {
+            case 'name': sortByName(asc); break
+            case 'user': sortByUser(asc); break
+            case 'number': sortByNumber(asc); break
         }
+        setLoading(false)
     }, [loading])
 
     useEffect(() => {
-        setOrderAsc(true)
+        setOrderAsc(false)
         setSortBy('')
     }, [categories])
 
-    const sortByName = (cat: Array<Category>, asc: number) => {
-        cat.sort((a, b) => {return (a.name < b.name)? -asc : asc})
+    const sortByName = (asc: number) => {
+        categories?.sort((a, b) => {return (a.name < b.name)? -asc : asc})
     }
 
-    const sortByUser = (cat: Array<Category>, asc: number) => {
-        cat.sort((a, b) => {return (a.user ? b.user ? (a.user.lastName < b.user.lastName? -asc : asc)
+    const sortByUser = (asc: number) => {
+        categories?.sort((a, b) => {return (a.user ? b.user ? (a.user.lastName < b.user.lastName? -asc : asc)
                                                 : asc
                                         : -asc)})
     }
 
-    const sortByNumber = (cat: Array<Category>, asc: number) => {
-        cat.sort((a, b) => {return (a.photos.length - b.photos.length)*asc})
+    const sortByNumber = (asc: number) => {
+        categories?.sort((a, b) => {return (a.photos.length - b.photos.length)*asc})
     }
 
-    const filter = (item: Item) => {
-        if (item === sortBy){
-            setOrderAsc(!orderAsc)
-        }
-        else {
-            setSortBy(item)
-            setOrderAsc(true)
-        }
-        setLoading(true)  
+    const filter = (item: Field) => {
+        if(!loading){
+            if (item === sortBy){
+                setOrderAsc(!orderAsc)
+            }
+            else {
+                setSortBy(item)
+                setOrderAsc(true)
+            }
+            setLoading(true)
+        }   
     }
 
-    const getCaret = (item: Item) => {
+    const getCaret = (item: Field) => {
         if (item === sortBy) {
             return mdiFilterVariant
         } else {
@@ -71,8 +71,7 @@ export default function CategoriesList (props: Props) {
         }
     }
 
-    return (
-        <Table borderless hover striped responsive="lg" variant="dark">
+    return <Table borderless hover striped responsive="lg" variant="dark">
             <thead>
                 <tr>
                     <th>{t._name} <span className="filterButton" onClick={() => filter('name')}>
@@ -119,5 +118,4 @@ export default function CategoriesList (props: Props) {
                 ))
             }</tbody>
         </Table>
-    );
 }

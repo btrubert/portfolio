@@ -23,7 +23,7 @@ const reducer = (state: State, action: Action) => {
         }
     case 'reset':
         return {
-            common: initialState.common,
+            common: state.common,
             commonTrans: initialState.commonTrans,
         }
     default:

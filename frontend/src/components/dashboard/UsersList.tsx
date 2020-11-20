@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Table from 'react-bootstrap/Table'
 import ActionButtons from 'components/dashboard/ActionButtons'
-import Button from 'react-bootstrap/Button'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
 import Icon from '@mdi/react'
 import { mdiImageFilterTiltShift , mdiFilterVariant } from '@mdi/js'
 
@@ -14,26 +11,24 @@ interface Props {
     translation: {[key:string]: string},
 }
 
-type Item = 'username' | 'name' | 'email' | 'role' | ''
+type Field = 'username' | 'name' | 'email' | 'role' | ''
 
 export default function UsersList (props: Props) {
-    const [sortBy, setSortBy] = useState<Item>('')
+    const [sortBy, setSortBy] = useState<Field>('')
     const [orderAsc, setOrderAsc] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(true)
     const users = props.users
     const t = props.translation
 
     useEffect(() => {
-        if (users) {
-            const asc = orderAsc? 1 : -1
-            switch (sortBy) {
-                case 'username': sortByUsername(users, asc); break
-                case 'name': sortByName(users, asc); break
-                case 'email': sortByEmail(users, asc); break
-                case 'role': sortByRole(users, asc); break
-            }
-            setLoading(false)
+        const asc = orderAsc? 1 : -1
+        switch (sortBy) {
+            case 'username': sortByUsername(asc); break
+            case 'name': sortByName(asc); break
+            case 'email': sortByEmail(asc); break
+            case 'role': sortByRole(asc); break
         }
+        setLoading(false)
     }, [loading])
 
     useEffect(() => {
@@ -41,36 +36,38 @@ export default function UsersList (props: Props) {
         setSortBy('')
     }, [users])
 
-    const sortByUsername = (cat: Array<User>, asc: number) => {
-        cat.sort((a, b) => {return (a.username < b.username)? -asc : asc})
+    const sortByUsername = (asc: number) => {
+        users?.sort((a, b) => {return (a.username < b.username)? -asc : asc})
     }
 
-    const sortByName = (cat: Array<User>, asc: number) => {
-        cat.sort((a, b) => {return (a.lastName === b.lastName)? (a.firstName < b.firstName? -asc : asc)
+    const sortByName = (asc: number) => {
+        users?.sort((a, b) => {return (a.lastName === b.lastName)? (a.firstName < b.firstName? -asc : asc)
             : (a.lastName < b.lastName)? -asc : asc})
     }
 
-    const sortByEmail = (cat: Array<User>, asc: number) => {
-        cat.sort((a, b) => {return (a.email < b.email)? -asc : asc})
+    const sortByEmail = (asc: number) => {
+        users?.sort((a, b) => {return (a.email < b.email)? -asc : asc})
     }
 
-    const sortByRole = (cat: Array<User>, asc: number) => {
-        cat.sort((a, b) => {return (a.admin === b.admin)? ((a.username < b.username)? -1 : 1) :
-            (a.username)? asc : -asc})
+    const sortByRole = (asc: number) => {
+        users?.sort((a, b) => {return (a.admin === b.admin)? ((a.username < b.username)? -1 : 1) :
+            (a.admin)? asc : -asc})
     }
 
-    const filter = (item: Item) => {
-        if (item === sortBy){
-            setOrderAsc(!orderAsc)
+    const filter = (item: Field) => {
+        if (!loading) {
+            if (item === sortBy){
+                setOrderAsc(!orderAsc)
+            }
+            else {
+                setSortBy(item)
+                setOrderAsc(true)
+            }
+            setLoading(true)  
         }
-        else {
-            setSortBy(item)
-            setOrderAsc(true)
-        }
-        setLoading(true)  
     }
 
-    const getCaret = (item: Item) => {
+    const getCaret = (item: Field) => {
         if (item === sortBy) {
             return mdiFilterVariant
         } else {

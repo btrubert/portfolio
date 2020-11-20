@@ -16,25 +16,23 @@ interface Props {
     translation: {[key:string]: string},
 }
 
-type Item = 'title' | 'category' | 'date' | ''
+type Field = 'title' | 'category' | 'date' | ''
 
 export default function PhotosList (props: Props) {
-    const [sortBy, setSortBy] = useState<Item>('')
+    const [sortBy, setSortBy] = useState<Field>('')
     const [orderAsc, setOrderAsc] = useState<boolean>(true)
     const [loading, setLoading] = useState<boolean>(true)
     const photos = props.photos
     const t = props.translation
 
     useEffect(() => {
-        if (photos) {
-            const asc = orderAsc? 1 : -1
-            switch (sortBy) {
-                case 'title': sortByTitle(photos, asc); break
-                case 'category': sortByCategory(photos, asc); break
-                case 'date': sortByDate(photos, asc); break
-            }
-            setLoading(false)
+        const asc = orderAsc? 1 : -1
+        switch (sortBy) {
+            case 'title': sortByTitle(asc); break
+            case 'category': sortByCategory( asc); break
+            case 'date': sortByDate(asc); break
         }
+        setLoading(false)
     }, [loading])
 
     useEffect(() => {
@@ -42,31 +40,33 @@ export default function PhotosList (props: Props) {
         setSortBy('')
     }, [photos])
 
-    const sortByTitle = (cat: Array<Photo>, asc: number) => {
-        cat.sort((a, b) => {return (a.title < b.title)? -asc : asc})
+    const sortByTitle = (asc: number) => {
+        photos?.sort((a, b) => {return (a.title < b.title)? -asc : asc})
     }
 
-    const sortByCategory = (cat: Array<Photo>, asc: number) => {
-        cat.sort((a, b) => {return (a.category.name === b.category.name)? ((a.title < b.title)? -asc : asc) :
+    const sortByCategory = (asc: number) => {
+        photos?.sort((a, b) => {return (a.category.name === b.category.name)? ((a.title < b.title)? -asc : asc) :
             (a.category.name < b.category.name)? -asc : asc})
     }
 
-    const sortByDate = (cat: Array<Photo>, asc: number) => {
-        cat.sort((a, b) => {return (a.exifs.date < b.exifs.date)? -asc : asc})
+    const sortByDate = (asc: number) => {
+        photos?.sort((a, b) => {return (a.exifs.date < b.exifs.date)? -asc : asc})
     }
 
-    const filter = (item: Item) => {
-        if (item === sortBy){
-            setOrderAsc(!orderAsc)
+    const filter = (item: Field) => {
+        if(!loading) {
+            if (item === sortBy){
+                setOrderAsc(!orderAsc)
+            }
+            else {
+                setSortBy(item)
+                setOrderAsc(true)
+            }
+            setLoading(true) 
         }
-        else {
-            setSortBy(item)
-            setOrderAsc(true)
-        }
-        setLoading(true)  
     }
 
-    const getCaret = (item: Item) => {
+    const getCaret = (item: Field) => {
         if (item === sortBy) {
             return mdiFilterVariant
         } else {

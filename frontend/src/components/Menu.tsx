@@ -71,18 +71,18 @@ function Menu () {
         })
     }
 
-    const changeLanguage = () => {
+    const changeLanguage = async () => {
         if (router.locale === 'en') {
             dispatchT({type: 'reset'})
-            router.push(router.pathname, router.pathname, {locale: 'fr'})
+            router.push(router.pathname, router.asPath, {locale: 'fr'})
         } else {
             dispatchT({type: 'reset'})
-            router.push(router.pathname, router.pathname, {locale: 'en'})
+            router.push(router.pathname, router.asPath, {locale: 'en'})
         }
     }
 
     
-    if (state.loading || !trans.commonTrans) {
+    if (state.loading) {
         return <></>
     } else {
         return (

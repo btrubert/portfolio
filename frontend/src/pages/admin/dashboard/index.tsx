@@ -49,13 +49,11 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                 payload: JSON.parse(props.commonT),
             })
         }
-    })
+    }, [router.locale])
 
     useEffect(() => {
-        if (!state.loading) {
-            if (!state.admin) {
-                router.push('/')
-            }
+        if (!state.loading && !state.admin) {
+            router.push('/')
         }
     }, [state.admin, state.loading])
 
@@ -63,9 +61,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
         const response = await fetch(`/smf/admin/${entity}`)
         const data = await response.json()
         switch (entity) {
-            case 'categories': setCategories(data); setRefreshCategories(false); break
-            case 'photos': setPhotos(data); setRefreshPhotos(false); break
-            case 'users': setUsers(data); setRefreshUsers(false); break
+            case 'categories': setCategories(data); break
+            case 'photos': setPhotos(data); break
+            case 'users': setUsers(data); break
         }
     }
 
@@ -83,14 +81,14 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
 
 
     const handleShow = (edit: boolean) => {
-        if (!refreshCategories && !refreshPhotos && !refreshUsers) {
+        if (categories !== null && photos !== null && users !== null) {
             setEditForm(edit)
             setShowForm(true)
         }
     }
 
     const handleEdit = (item: Item) => {
-        if (!refreshCategories && !refreshPhotos && !refreshUsers) {
+        if (categories !== null && photos !== null && users !== null) {
             setCurrentIten(item)
             handleShow(true)
         }
@@ -137,9 +135,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
         setShowForm(false)
         setCurrentIten(null)
         switch (activeTab) {
-            case 'categories': setRefreshCategories(true); break
-            case 'photos': setRefreshPhotos(true); break
-            case 'users': setRefreshUsers(true); break
+            case 'categories': setRefreshCategories(!refreshCategories); break
+            case 'photos': setRefreshPhotos(!refreshPhotos); break
+            case 'users': setRefreshUsers(!refreshUsers); break
         }
     }
 
@@ -279,8 +277,10 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const commonT = getTranslation('common', context.locale)
-    const dashboardT = getTranslation('dashboard', context.locale)
+    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
+    const locale = context.locale? context.locale : defaultLocale
+    const commonT = getTranslation('common', locale)
+    const dashboardT = getTranslation('dashboard', locale)
     return {
         props: {commonT, dashboardT},
         revalidate: 60,

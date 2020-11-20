@@ -6,6 +6,7 @@ import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
+import { useRouter } from 'next/router'
 import Media from 'react-bootstrap/Media'
 import Image from 'next/image'
 import Icon from '@mdi/react'
@@ -15,6 +16,7 @@ import { mdiEmoticonExcited, mdiCameraIris, mdiCamera } from '@mdi/js';
 function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
   const [state, dispatchS] = useSession()
   const [trans, dispatch] = useTranslation()
+  const router = useRouter()
 
   useEffect(() => {
     if (!trans.commonTrans) {
@@ -23,7 +25,7 @@ function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
             payload: JSON.parse(props.commonT),
         })
     }
-  })
+  }, [router.locale])
 
   const Iris = <Icon path={mdiCameraIris} color="white" size={1} />
   const Camera = <Icon path={mdiCamera} color="white" size={1} />
@@ -102,7 +104,9 @@ function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const commonT = getTranslation('common', context.locale)
+  const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
+  const locale = context.locale? context.locale : defaultLocale
+  const commonT = getTranslation('common', locale)
   return {
       props: {commonT},
       revalidate: 60,

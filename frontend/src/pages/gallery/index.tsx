@@ -4,6 +4,7 @@ import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
 import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
+import { useRouter } from 'next/router'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Card from 'react-bootstrap/Card'
@@ -18,6 +19,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
     const categories = props.categories
     const [play, setPlay] = useState(props.play)
     const [trans, dispatch] = useTranslation()
+    const router = useRouter()
 
     useEffect(() => {
         if (!trans.commonTrans) {
@@ -26,7 +28,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                 payload: JSON.parse(props.commonT),
             })
         }
-    })
+    }, [router.locale])
     
     
 
@@ -106,7 +108,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const response = await fetch(process.env.SERVEUR_URL+"/smf/categories")
     const categories: Array<Category> =  await response.json()
     const play: Array<number> = Array(categories.length).fill(null)
-    const commonT = getTranslation('common', context.locale)
+    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
+    const locale = context.locale? context.locale : defaultLocale
+    const commonT = getTranslation('common', locale)
     return {
         props: {categories, play, commonT},
         revalidate: 60,
