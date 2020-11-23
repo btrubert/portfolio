@@ -1,6 +1,6 @@
 
 function Post () {
-    return;
+    return <></>
 }
 
 export default Post

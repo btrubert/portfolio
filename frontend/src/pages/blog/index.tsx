@@ -1,6 +1,6 @@
 
 function Blog () {
-    return;
+    return <></>
 }
 
 export default Blog
