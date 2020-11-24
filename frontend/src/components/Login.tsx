@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useSession } from 'utils/SessionContext'
+import { useRouter } from 'next/router'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -26,6 +27,7 @@ export default function Login() {
     const [variantAlert, setVariantAlert] = useState<string>("warning")
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const router = useRouter()
 
     const schema = yup.object({username: yup.string().required(trans.common._required),
         password: yup.string().required(trans.common._required),
@@ -52,11 +54,12 @@ export default function Login() {
                 throw new Error(trans.common._verify_login)
             }
         }).then(data => {
+            const prefix = router.locale === 'fr'? '/fr': ''
             setSubmitting(false)
             setMessageAlert(trans.common._connected)
             setVariantAlert("success")
             setShowAlert(true)
-            setTimeout(() => {window.location.assign(data)}, 1000);
+            setTimeout(() => {window.location.assign(prefix+data)}, 1000);
         }).catch(error => {
             setSubmitting(false)
             setVariantAlert("danger")

@@ -66,15 +66,29 @@ class FileUploader
             $new_width = 1024 * $ratio;
             $new_height = 1024;
 
+            // Open image
+            $type = exif_imagetype($this->getTargetDirectory() . $originalFilename);
+            switch ($type) {
+                case 2: // jpg
+                    $image = imageCreateFromJpeg($this->getTargetDirectory() . $originalFilename);
+                    break;
+                case 3: // png
+                    $image = imageCreateFromPng($this->getTargetDirectory() . $originalFilename);
+                    break;
+                default: // format not supported
+                    return null;
+            }
+
             // Resample
             $image_low = imagecreatetruecolor($new_width, $new_height);
-            $image = imagecreatefromjpeg($this->getTargetDirectory() . $originalFilename);
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            imagepalettecopy($image, $image_low);
             imagedestroy($image);
             imagewebp($image_low, $this->getTargetDirectory() . $fileName . '.webp', 100);
             imagedestroy($image_low);
+
         } catch (Exception $e) {
-            //$this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
+            $this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return null;
         }
         return  $fileName . '.webp';
@@ -87,8 +101,6 @@ class FileUploader
             $this->logger->critical('Error: Unable to read exif headers');
             return [];
         }
-
-        $exifs = [];
 
         $exifs['shutter'] = isset($values['ExposureTime']) ? $this->getFloatValue($values['ExposureTime']) . 's' : "n/a";
         $exifs['aperture'] = isset($values['FNumber']) ? 'f/' . $this->getFloatValue($values['FNumber']) : "n/a";

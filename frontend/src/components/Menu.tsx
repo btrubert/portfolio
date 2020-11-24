@@ -137,7 +137,7 @@ function Menu () {
                                 <Tooltip id="language">
                                     {trans.common._change_language}
                                 </Tooltip>}>
-                                    <div onClick={changeLanguage}>
+                                    <div onClick={changeLanguage} className="language">
                                     <Icon path={mdiEarth} color="white" size={1} />
                                     </div>
                             </OverlayTrigger>
