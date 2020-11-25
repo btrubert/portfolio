@@ -105,9 +105,8 @@ class CategoryController extends AbstractController
                     [$origin, $destination] = $category->getPublic()? [$this->getParameter("img_prot_base_dir"), $this->getParameter("img_base_dir")]
                     : [$this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir")];
                     foreach ($category->getPhotos() as $photo) {
-                        $path = $photo->getOriginalPath();
-                        $logger->critical("MOVE : ".$origin);
-                        if ($path) {
+			$path = $photo->getOriginalPath();
+			if ($path) {
                             rename($origin . $path, $destination . $path);
                         }
                         $path = $photo->getPath();
