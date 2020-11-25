@@ -54,7 +54,8 @@ class PhotoController extends AbstractController
 
         if ($photo->getCategory()->getPublic() || $this->isGranted('view', $photo)) {
             $response = new Response();
-            $path = $this->getParameter("img_base_dir") . $photo->getPath();
+            $base_dir = $photo->getCategory()->getPublic()? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+            $path = $base_dir . $photo->getPath();
             $response->headers->set("Content-type", mime_content_type($path));
             $response->headers->set("Content-Length", filesize($path));
             $response->setContent(readfile($path));
@@ -93,8 +94,8 @@ class PhotoController extends AbstractController
             $file = $request->files->get("path");
             $quality = $request->request->get("quality");
             $original = $request->request->get("original");
-
-            $savedFile = $fileUploader->upload($file, $quality, $original);
+            $protected = !$photo->getCategory()->getPublic();
+            $savedFile = $fileUploader->upload($file, $quality, $protected, $original);
             if ($savedFile) {
                 [$originalFilename, $photoFileName, $exifs] = $savedFile;
                 $photo->setPath($photoFileName);
@@ -131,7 +132,8 @@ class PhotoController extends AbstractController
                 if ($request->request->has("quality") && $path) {
                     $quality = $request->request->get("quality");
                     $path = $photo->getOriginalPath();
-                    $fileUploader->saveLowerRes($path, pathinfo($path)['filename'], $quality);
+                    $directory =  $photo->getCategory()->getPublic()? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+                    $fileUploader->saveLowerRes($path, pathinfo($path)['filename'], $directory, $quality);
                 }
                 $original = $request->request->get("original");
                 if (!$original && $path) {
@@ -178,15 +180,16 @@ class PhotoController extends AbstractController
     private function deleteFile($photo, $onlyOriginal=false)
     {
         try {
+            $base_dir = $photo->getCategory()->getPublic()? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
             if ($onlyOriginal) {
-                $path = $this->getParameter("img_base_dir") . $photo->getOriginalPath();
+                $path = $base_dir . $photo->getOriginalPath();
                 unlink(realpath($path));
                 return true;
             } else {
-                unlink(realpath($this->getParameter("img_base_dir") . $photo->getPath()));
+                unlink(realpath($base_dir . $photo->getPath()));
                 $path = $photo->getOriginalPath();
                 if ($path) {
-                    unlink(realpath($this->getParameter("img_base_dir") . $path));
+                    unlink(realpath($base_dir . $path));
                 }
                 return true;
             }

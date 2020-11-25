@@ -87,7 +87,7 @@ class CategoryController extends AbstractController
     /**
      * @Route("/admin/category/edit/{id}", methods={"GET", "POST"}, name="edit_category")
      */
-    public function editCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
+    public function editCategory(Request $request, CsrfTokenManagerInterface $csrf_token, $id, LoggerInterface $logger)
     {
         if ($request->isMethod("GET")) {
             return new Response($csrf_token->getToken("category_item"));
@@ -95,11 +95,25 @@ class CategoryController extends AbstractController
         $category = $this->getDoctrine()->getRepository(Category::class)->find($id);
 
         if ($category) {
+            $public = $category->getPublic();
             $form = $this->createForm(CategoryType::class, $category);
             $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $category = $form->getData();
+                if ($public != $category->getPublic()) {
+                    [$origin, $destination] = $category->getPublic()? [$this->getParameter("img_prot_base_dir"), $this->getParameter("img_base_dir")]
+                    : [$this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir")];
+                    foreach ($category->getPhotos() as $photo) {
+                        $path = $photo->getOriginalPath();
+                        $logger->critical("MOVE : ".$origin);
+                        if ($path) {
+                            rename($origin . $path, $destination . $path);
+                        }
+                        $path = $photo->getPath();
+                        rename($origin . $path, $destination . $path);
+                    }
+                }
                 $em->persist($category);
                 $em->flush();
 

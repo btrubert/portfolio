@@ -10,25 +10,27 @@ use Psr\Log\LoggerInterface;
 class FileUploader
 {
 
-    public function __construct($targetDirectory, LoggerInterface $logger)
+    public function __construct($targetDirectory, $targetProtectedDirectory, LoggerInterface $logger)
     {
         $this->targetDirectory = $targetDirectory;
+        $this->targetProtectedDirectory = $targetProtectedDirectory;
         $this->logger = $logger;
     }
 
-    public function upload(UploadedFile $file, $quality, $original=true)
+    public function upload(UploadedFile $file, $quality, $protected, $original=true)
     {
         try {
             if (!in_array($file->guessExtension(), ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"])) {
                 throw new Exception("Only Jpeg and PNG are supported.");
             }
+            $directory = $protected? $this->targetProtectedDirectory : $this->targetDirectory;
             $fileName = uniqid("IMG_", true);
             $originalFilename =  'original/' . $fileName . '.' . $file->guessExtension();
-            $file->move($this->getTargetDirectory() . 'original/', $fileName . '.' . $file->guessExtension());
-            $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
-            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName, $quality);
+            $file->move($directory . 'original/', $fileName . '.' . $file->guessExtension());
+            $exifs = $this->extractExifs($directory . $originalFilename);
+            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName, $directory, $quality);
             if (!$original) {
-                unlink(realpath($this->getTargetDirectory() . $originalFilename));
+                unlink(realpath($directory . $originalFilename));
                 $originalFilename = "";
             }
             return [$originalFilename, $lowerResFilename, $exifs];
@@ -45,11 +47,12 @@ class FileUploader
     {
         $fileName = uniqid("IMG_", true);
         $originalFilename =  'original/' . $fileName . '.jpg';
+        $directory = $this->targetProtectedDirectory;
 
         try {
-            copy($file, $this->getTargetDirectory() . $originalFilename);
-            $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
-            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName);
+            copy($file, $directory . $originalFilename);
+            $exifs = $this->extractExifs($directory . $originalFilename);
+            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName, $directory);
             return [$originalFilename, $lowerResFilename, $exifs];
         } catch (FileException $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
@@ -57,27 +60,23 @@ class FileUploader
         }
     }
 
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
-    }
-
-    public function saveLowerRes($originalFilename, $fileName, $quality=100)
+    public function saveLowerRes($originalFilename, $fileName, $directory, $quality=100)
     {
         try {
-            list($width, $height) = getimagesize($this->getTargetDirectory() . $originalFilename);
+
+            list($width, $height) = getimagesize($directory . $originalFilename);
             $ratio = $width / $height;
             $new_width = 1024 * $ratio;
             $new_height = 1024;
 
             // Open image
-            $type = exif_imagetype($this->getTargetDirectory() . $originalFilename);
+            $type = exif_imagetype($directory . $originalFilename);
             switch ($type) {
                 case 2: // jpg
-                    $image = imageCreateFromJpeg($this->getTargetDirectory() . $originalFilename);
+                    $image = imageCreateFromJpeg($directory . $originalFilename);
                     break;
                 case 3: // png
-                    $image = imageCreateFromPng($this->getTargetDirectory() . $originalFilename);
+                    $image = imageCreateFromPng($directory . $originalFilename);
                     break;
                 default: // format not supported
                     return null;
@@ -88,7 +87,7 @@ class FileUploader
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
             imagepalettecopy($image, $image_low);
             imagedestroy($image);
-            imagewebp($image_low, $this->getTargetDirectory() . $fileName . '.webp', $quality);
+            imagewebp($image_low, $directory . $fileName . '.webp', $quality);
             imagedestroy($image_low);
 
         } catch (Exception $e) {

@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     img_base_dir: '%kernel.project_dir%/public/uploads/'
+    img_prot_base_dir: '%kernel.project_dir%/public/protected/'
 
 services:
     # default configuration for services in *this* file
@@ -33,6 +34,7 @@ services:
     App\Service\FileUploader:
         arguments:
             $targetDirectory: '%kernel.project_dir%/public/uploads/'
+            $targetProtectedDirectory: '%kernel.project_dir%/public/protected/'
 
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
 

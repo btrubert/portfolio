@@ -105,7 +105,7 @@ export default function PhotoForm (props: Props) {
                     description: props.photo ? props.photo.description || "" : "",
                     category: props.photo && props.photo.category.id? props.photo.category.id : -1,
                     path: props.photo? props.photo.path : "",
-                    quality: 80,
+                    quality: 100,
                     changeQuality: !props.edit,
                     original: originalFile,
                 }
