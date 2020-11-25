@@ -26,7 +26,7 @@ class CategoryController extends AbstractController
     public function categories(ObjectEncoder $objectEncoder)
     {
         $categories = $this->getDoctrine()->getRepository(Category::class)->findPublic();
-        $scategories = $objectEncoder->encodeObjectToJson($categories);
+        $scategories = $objectEncoder->encodeObjectToJson($categories, ['id', 'user']);
 
         return new JsonResponse(json_decode($scategories));
     }
@@ -40,7 +40,7 @@ class CategoryController extends AbstractController
         $category = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['user' => $user->getId()]);
         if ($category) {
             if ($this->isGranted("access", $category)) {
-                $scategory = $objectEncoder->encodeObjectToJson($category);
+                $scategory = $objectEncoder->encodeObjectToJson($category, ['id']);
                 return new JsonResponse(json_decode($scategory));
             } else {
                 return new JsonResponse("Access denied.", Response::HTTP_UNAUTHORIZED);

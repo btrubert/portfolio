@@ -1,5 +1,5 @@
 interface Category {
-    id: number,
+    id?: number,
     name: string,
     public: boolean,
     user?: User,
@@ -17,22 +17,23 @@ interface Exifs {
 }
 
 interface Photo {
-    id: number,
+    id?: number,
     title: string,
     description: string,
     category: Category,
     path: string,
     exifs: Exifs,
+    originalPath?: string,
 }
 
 interface User {
-    id: number,
+    id?: number,
     firstName: string,
     lastName: string,
     email: string,
     username: string,
     admin: boolean,
-    password: string,
+    password?: string,
 }
 
 type Item = Category | Photo | User

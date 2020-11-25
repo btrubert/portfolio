@@ -32,7 +32,7 @@ class PhotoController extends AbstractController
         if ($category && ($category->getPublic() || $this->isGranted("access", $category))) {
             $photos = $category->getPhotos();
 
-            $sphotos = $objectEncoder->encodeObjectToJson($photos);
+            $sphotos = $objectEncoder->encodeObjectToJson($photos, ['originalPath', 'id', 'created_at']);
             return new JsonResponse(json_decode($sphotos));
         } else {
             return new JsonResponse("This category does not exit.", Response::HTTP_NOT_FOUND);
@@ -91,8 +91,10 @@ class PhotoController extends AbstractController
             $photo = $form->getData();
 
             $file = $request->files->get("path");
+            $quality = $request->request->get("quality");
+            $original = $request->request->get("original");
 
-            $savedFile = $fileUploader->upload($file);
+            $savedFile = $fileUploader->upload($file, $quality, $original);
             if ($savedFile) {
                 [$originalFilename, $photoFileName, $exifs] = $savedFile;
                 $photo->setPath($photoFileName);
@@ -113,7 +115,7 @@ class PhotoController extends AbstractController
     /**
      * @Route("/admin/photo/edit/{id}", methods={"GET", "POST"}, name="edit_photo")
      */
-    public function editPhoto(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
+    public function editPhoto(Request $request, FileUploader $fileUploader, CsrfTokenManagerInterface $csrf_token, $id)
     {
         if ($request->isMethod("GET")) {
             return new Response($csrf_token->getToken("photo_item"));
@@ -125,6 +127,17 @@ class PhotoController extends AbstractController
             $form->submit($request->request->all());
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
+                $path = $photo->getOriginalPath();
+                if ($request->request->has("quality") && $path) {
+                    $quality = $request->request->get("quality");
+                    $path = $photo->getOriginalPath();
+                    $fileUploader->saveLowerRes($path, pathinfo($path)['filename'], $quality);
+                }
+                $original = $request->request->get("original");
+                if (!$original && $path) {
+                    $this->deleteFile($photo, true);
+                    $photo->setOriginalPath("");
+                }
                 $photo = $form->getData();
                 $em->persist($photo);
                 $em->flush();
@@ -150,6 +163,7 @@ class PhotoController extends AbstractController
             $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
             if ($photo) {
                 $em = $this->getDoctrine()->getManager();
+                $this->deleteFile($photo);
                 $em->remove($photo);
                 $em->flush();
                 return new JsonResponse('The photo has been deleted.', Response::HTTP_ACCEPTED);
@@ -160,4 +174,24 @@ class PhotoController extends AbstractController
 
         return new JsonResponse('Error while deleting the photo.', Response::HTTP_SERVICE_UNAVAILABLE);
     }
+
+    private function deleteFile($photo, $onlyOriginal=false)
+    {
+        try {
+            if ($onlyOriginal) {
+                $path = $this->getParameter("img_base_dir") . $photo->getOriginalPath();
+                unlink(realpath($path));
+                return true;
+            } else {
+                unlink(realpath($this->getParameter("img_base_dir") . $photo->getPath()));
+                $path = $photo->getOriginalPath();
+                if ($path) {
+                    unlink(realpath($this->getParameter("img_base_dir") . $path));
+                }
+                return true;
+            }
+        } catch (Exception $e){
+            return false;
+        }  
+    } 
 }

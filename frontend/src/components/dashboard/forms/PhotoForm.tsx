@@ -2,13 +2,9 @@ import React, { useState, useRef } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Spinner from 'react-bootstrap/Spinner'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
-import Alert from 'react-bootstrap/Alert'
+import FormButtons from './FormButtons'
 
 
 interface Props {
@@ -24,6 +20,9 @@ interface FormValues {
     description: string,
     category: number,
     path: any,
+    quality: number,
+    changeQuality: boolean,
+    original: boolean,
 }
 
 export default function PhotoForm (props: Props) {
@@ -35,12 +34,16 @@ export default function PhotoForm (props: Props) {
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
     const t = props.translation
+    const originalFile = props.photo ? props.photo.originalPath !== "": true
 
     const schema = yup.object({
         title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
         description: yup.string(),
         category: yup.number().required().min(0, t._choose_category_error),
-        path: yup.mixed().required(t._select_photo_error)
+        path: yup.mixed().required(t._select_photo_error),
+        changeQuality: yup.boolean(),
+        quality: yup.number().when("changeQuality", {is: true, then: yup.number().required().min(50).max(100), otherwise: yup.number().nullable()}),
+        original: yup.boolean().required(),
     })
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -55,6 +58,10 @@ export default function PhotoForm (props: Props) {
             props.edit && props.photo ? "edit/" + props.photo.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
+        if (!values.changeQuality) {
+            formData.delete("quality")
+        }
+        formData.delete("changeQuality")
         fetch("/smf/admin/photo/" + (
         props.edit && props.photo ? "edit/" + props.photo.id : "new"
     ), {
@@ -96,13 +103,17 @@ export default function PhotoForm (props: Props) {
                 {
                     title: props.photo ? props.photo.title : "",
                     description: props.photo ? props.photo.description || "" : "",
-                    category: props.photo ? props.photo.category.id : -1,
+                    category: props.photo && props.photo.category.id? props.photo.category.id : -1,
                     path: props.photo? props.photo.path : "",
+                    quality: 80,
+                    changeQuality: !props.edit,
+                    original: originalFile,
                 }
         }>
             {({
                 handleSubmit,
                 handleChange,
+                handleReset,
                 setFieldValue,
                 values,
                 errors,
@@ -154,6 +165,41 @@ export default function PhotoForm (props: Props) {
                         } </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
+                    <Form.Group controlId="validationFormikOriginal" as={Row}>
+                        <Col>
+                        <Form.Check type="switch" name="original" label={t._keep_original}
+                            checked={
+                                values.original
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            disabled={props.edit && !originalFile}/>
+                            </Col>
+                    </Form.Group>
+                    <Form.Group controlId="validationFormikChangeQuality" as={Row} hidden={!props.edit}>
+                        <Col>
+                        <Form.Check type="switch" name="changeQuality" label={t._change_quality}
+                            checked={
+                                values.changeQuality
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            disabled={props.edit && !originalFile}/>
+                            </Col>
+                    </Form.Group>
+                    <Form.Group controlId="validationFormikQuality" as={Row} hidden={!values.changeQuality}>
+                        <Col sm={2}>
+                            <Form.Label>{t._quality} : {values.quality}</Form.Label>
+                        </Col>
+                        <Col sm={10}>
+                            <Form.Control name="quality" type="range"
+                            min="50" max="100" step="10"
+                            onChange={handleChange}
+                            value={values.quality}/>
+                        </Col>
+                    </Form.Group>
                     <Form.Group controlId="validationFormikCategory" as={Row}>
                         <Col>
                         <Form.Control name="category" as="select" custom
@@ -181,27 +227,14 @@ export default function PhotoForm (props: Props) {
                         </Col>
                     </Form.Group>
                 <Form.Row>
-                <Col sm={4}>
-                    <OverlayTrigger
-                        key="savedPop"
-                        show={isSubmitting || submitting}
-                        placement="right"
-                        overlay={
-                            <Popover id="savedPop">
-                            <Popover.Content>
-                                <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">{t._loading}</span>
-                                </Spinner>
-                            </Popover.Content>
-                            </Popover>
-                        }
-                        >
-                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_photo}</Button>
-                    </OverlayTrigger>
-                </Col>
-                <Col sm={8}>
-                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
-                </Col>
+                <FormButtons isSubmitting={isSubmitting}
+                            submitting={submitting}
+                            showAlert={showAlert}
+                            messageAlert={messageAlert}
+                            variantAlert={variantAlert}
+                            handleReset={handleReset}
+                            translation={t}
+                            type='photo'/>
                 </Form.Row>
             </Form>}
         </Formik>

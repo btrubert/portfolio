@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Link from 'next/link'
 import Table from 'react-bootstrap/Table'
-import ActionButtons from 'components/dashboard/ActionButtons'
+import ActionButtons from './ActionButtons'
 import Icon from '@mdi/react'
 import { mdiImageFilterTiltShift , mdiFilterVariant } from '@mdi/js'
 

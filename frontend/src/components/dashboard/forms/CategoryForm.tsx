@@ -2,13 +2,9 @@ import React, { useState, useRef } from 'react'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Button from 'react-bootstrap/Button'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import Spinner from 'react-bootstrap/Spinner'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Popover from 'react-bootstrap/Popover'
-import Alert from 'react-bootstrap/Alert'
+import FormButtons from './FormButtons'
 
 
 interface Props {
@@ -101,6 +97,7 @@ export default function CategoryForm (props: Props) {
         }>{({
             handleSubmit,
             handleChange,
+            handleReset,
             values,
             errors,
             isSubmitting
@@ -156,27 +153,14 @@ export default function CategoryForm (props: Props) {
                         </Col>
                     </Form.Group>
                 <Form.Row>
-                <Col sm={4}>
-                    <OverlayTrigger
-                        key="savedPop"
-                        show={isSubmitting || submitting}
-                        placement="right"
-                        overlay={
-                            <Popover id="savedPop">
-                            <Popover.Content>
-                                <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">{t._loading}</span>
-                                </Spinner>
-                            </Popover.Content>
-                            </Popover>
-                        }
-                        >
-                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_category}</Button>
-                    </OverlayTrigger>
-                </Col>
-                <Col sm={8}>
-                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
-                </Col>
+                <FormButtons isSubmitting={isSubmitting}
+                            submitting={submitting}
+                            showAlert={showAlert}
+                            messageAlert={messageAlert}
+                            variantAlert={variantAlert}
+                            handleReset={handleReset}
+                            translation={t}
+                            type='category'/>
                 </Form.Row>
             </Form>}
         </Formik>

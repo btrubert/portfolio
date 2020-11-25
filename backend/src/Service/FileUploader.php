@@ -16,7 +16,7 @@ class FileUploader
         $this->logger = $logger;
     }
 
-    public function upload(UploadedFile $file)
+    public function upload(UploadedFile $file, $quality, $original=true)
     {
         try {
             if (!in_array($file->guessExtension(), ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG"])) {
@@ -26,7 +26,11 @@ class FileUploader
             $originalFilename =  'original/' . $fileName . '.' . $file->guessExtension();
             $file->move($this->getTargetDirectory() . 'original/', $fileName . '.' . $file->guessExtension());
             $exifs = $this->extractExifs($this->getTargetDirectory() . $originalFilename);
-            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName);
+            $lowerResFilename = $this->saveLowerRes($originalFilename, $fileName, $quality);
+            if (!$original) {
+                unlink(realpath($this->getTargetDirectory() . $originalFilename));
+                $originalFilename = "";
+            }
             return [$originalFilename, $lowerResFilename, $exifs];
         } catch (Exception $e) {
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
@@ -58,7 +62,7 @@ class FileUploader
         return $this->targetDirectory;
     }
 
-    public function saveLowerRes($originalFilename, $fileName)
+    public function saveLowerRes($originalFilename, $fileName, $quality=100)
     {
         try {
             list($width, $height) = getimagesize($this->getTargetDirectory() . $originalFilename);
@@ -84,7 +88,7 @@ class FileUploader
             imagecopyresampled($image_low, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
             imagepalettecopy($image, $image_low);
             imagedestroy($image);
-            imagewebp($image_low, $this->getTargetDirectory() . $fileName . '.webp', 100);
+            imagewebp($image_low, $this->getTargetDirectory() . $fileName . '.webp', $quality);
             imagedestroy($image_low);
 
         } catch (Exception $e) {

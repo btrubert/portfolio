@@ -9,7 +9,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class PhotoType extends AbstractType
 {
@@ -19,6 +21,13 @@ class PhotoType extends AbstractType
             ->add('title', TextType::class)
             ->add('description', TextType::class)
             ->add('path', FileType::class, [
+                'required' => false,
+                'mapped' => false,
+            ])
+            ->add('original', CheckboxType::class, [
+                'mapped' => false,
+            ])
+            ->add('quality', NumberType::class, [
                 'required' => false,
                 'mapped' => false,
             ])

@@ -49,5 +49,10 @@
     "_password": "Password",
     "_confirm_password": "Confirm password",
     "_admin_right": "Give this user admin rights ?",
-    "_save_user": "Save User"
+    "_save_user": "Save User",
+    "_quality": "Quality",
+    "_reset": "Reset",
+    "_save": "Save",
+    "_change_quality": "Modify the quality.",
+    "_keep_original": "Save the original."
 }

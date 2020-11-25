@@ -1,15 +1,11 @@
-import React, { useState, useRef } from "react";
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
+import React, { useState, useRef } from "react"
+import Form from 'react-bootstrap/Form'
+import InputGroup from 'react-bootstrap/InputGroup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Button from 'react-bootstrap/Button'
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import Spinner from 'react-bootstrap/Spinner';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
-import Alert from 'react-bootstrap/Alert'
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import FormButtons from './FormButtons'
 
 
 interface Props {
@@ -117,6 +113,7 @@ export default function UserForm (props: Props) {
         }>{({
             handleSubmit,
             handleChange,
+            handleReset,
             values,
             errors,
             isSubmitting
@@ -188,33 +185,33 @@ export default function UserForm (props: Props) {
                             handleChange
                         }/>
                         </Col>
-                        </Form.Group>
-                   <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
-                       <Col>
-                        <Form.Control required name="password" type="password" placeholder={props.edit? t._new_password : t._password}
-                            value={
-                                values.password
-                            }
-                            isInvalid={!!errors.password}
-                            onChange={handleChange}/>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.password}
-                        </Form.Control.Feedback>
-                        </Col>
-                    </Form.Group>
-                   <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
-                       <Col>
-                        <Form.Control required name="passwordConfirmation" type="password" placeholder={t._confirm_password}
-                            value={
-                                values.passwordConfirmation
-                            }
-                            isInvalid={!!errors.passwordConfirmation}
-                            onChange={handleChange}/>
-                        <Form.Control.Feedback type="invalid">
-                            {errors.passwordConfirmation}
-                        </Form.Control.Feedback>
-                        </Col>
-                    </Form.Group>
+                </Form.Group>
+                <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
+                    <Col>
+                    <Form.Control required name="password" type="password" placeholder={props.edit? t._new_password : t._password}
+                        value={
+                            values.password
+                        }
+                        isInvalid={!!errors.password}
+                        onChange={handleChange}/>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.password}
+                    </Form.Control.Feedback>
+                    </Col>
+                </Form.Group>
+                <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
+                    <Col>
+                    <Form.Control required name="passwordConfirmation" type="password" placeholder={t._confirm_password}
+                        value={
+                            values.passwordConfirmation
+                        }
+                        isInvalid={!!errors.passwordConfirmation}
+                        onChange={handleChange}/>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.passwordConfirmation}
+                    </Form.Control.Feedback>
+                    </Col>
+                </Form.Group>
                 <Form.Group controlId="validationFormikAdmin" as={Row}>
                     <Col>
                     <Form.Check type="switch" name="admin" label={t._admin_right}
@@ -227,27 +224,14 @@ export default function UserForm (props: Props) {
                         </Col>
                         </Form.Group>
                 <Form.Row>
-                <Col sm={4}>
-                    <OverlayTrigger
-                        key="savedPop"
-                        show={isSubmitting || submitting}
-                        placement="right"
-                        overlay={
-                            <Popover id="savedPop">
-                            <Popover.Content>
-                                <Spinner animation="border" role="status" variant="success">
-                                    <span className="sr-only">{t._loading}</span>
-                                </Spinner>
-                            </Popover.Content>
-                            </Popover>
-                        }
-                        >
-                        <Button type="submit" disabled={isSubmitting || submitting}>{t._save_user}</Button>
-                    </OverlayTrigger>
-                </Col>
-                <Col sm={8}>
-                    <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
-                </Col>
+                <FormButtons isSubmitting={isSubmitting}
+                            submitting={submitting}
+                            showAlert={showAlert}
+                            messageAlert={messageAlert}
+                            variantAlert={variantAlert}
+                            handleReset={handleReset}
+                            translation={t}
+                            type='user'/>
                 </Form.Row>
             </Form>}
             </Formik>

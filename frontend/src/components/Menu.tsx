@@ -95,7 +95,7 @@ function Menu () {
                     <Link href="/" passHref>
                         <Navbar.Brand as={Nav.Link}>
                             <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top" alt="logo"/>{' '}
-                            {trans.common._title}
+                            <Nav.Item className="d-none d-md-inline">{trans.common._title}</Nav.Item>
                         </Navbar.Brand>
                     </Link>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
