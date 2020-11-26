@@ -89,12 +89,11 @@ class FileUploader
             imagedestroy($image);
             imagewebp($image_low, $directory . $fileName . '.webp', $quality);
             imagedestroy($image_low);
-
+            return  $fileName . '.webp';
         } catch (Exception $e) {
             $this->logger->critical('Caught exception while saving the low res photo : ' .  $e->getMessage());
             return null;
         }
-        return  $fileName . '.webp';
     }
 
     public function extractExifs($path): array

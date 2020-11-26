@@ -156,7 +156,7 @@ export default function Login() {
                             <Button type="submit" disabled={isSubmitting || submitting}>{trans.common._login}</Button>
                         </OverlayTrigger>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={{ span: 7, offset: 1 }}>
                         <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
                     </Col>
                     </Form.Row>

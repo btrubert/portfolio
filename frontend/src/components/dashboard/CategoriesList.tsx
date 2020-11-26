@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import Link from 'next/link'
 import Table from 'react-bootstrap/Table'
 import ActionButtons from './ActionButtons'
 import Icon from '@mdi/react'
@@ -98,10 +97,7 @@ export default function CategoriesList (props: Props) {
             <tbody>{categories &&
                 categories.map((c, index: number) => (
                     <tr key={index}>
-                        <th><Link href={"/gallery/"+c.name}>{
-                            c.name
-                        }</Link>
-                        </th>
+                        <th>{c.name}</th>
                         <th>{
                             c.public ? "Public" : "Private"
                         }

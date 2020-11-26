@@ -28,6 +28,18 @@ body {
     cursor: pointer;
 }
 
+.alert {
+    margin-bottom: 0;
+}
+
+.toast {
+    background-color: #343a40;
+    max-width: 100%;
+    margin-bottom: 0 !important;
+    color: red;
+    text-align: center;
+}
+
 /* Category */
 @import 'category';
 

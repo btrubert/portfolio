@@ -12,6 +12,7 @@ import { useSession } from 'utils/SessionContext'
 import { useTranslation } from 'utils/TranslationContext'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+import Toast from 'react-bootstrap/Toast'
 import Icon from '@mdi/react'
 import { mdiEarth } from '@mdi/js'
 
@@ -19,6 +20,7 @@ import { mdiEarth } from '@mdi/js'
 function Menu () {
     const [state, dispatch] = useSession()
     const [trans, dispatchT] = useTranslation()
+    const [showError, setShowError] = useState<boolean>(false)
     const router = useRouter()
 
     const [showLogin, setShowLogin] = useState<boolean>(false)
@@ -26,7 +28,14 @@ function Menu () {
 
     useEffect(() => {
         fetch("/api/profile_info")
-        .then(response => {return response.json()})
+        .then(response => {
+            if (response.ok) {
+                return response.json()
+            } else { // if the user was already connected using a remember me token
+                setShowError(true)
+                return {'token': ''}
+            }
+        })
         .then(data => {
             if (data.user) {
                 dispatch({
@@ -90,6 +99,11 @@ function Menu () {
             <Head>  
                 <title>{trans.common._title}</title>
             </Head>
+            <Toast show={showError} onClose={() => setShowError(false)}>
+                <Toast.Body>
+                    <strong className="mr-auto">{trans.common._server_error}</strong>
+                </Toast.Body>
+            </Toast>
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
                 <Container>
                     <Link href="/" passHref>

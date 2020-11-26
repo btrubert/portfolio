@@ -15,5 +15,6 @@
     "_password": "mot de passe",
     "_remember_me": "Se souvenir de moi",
     "_loading": "Chargement...",
-    "_change_language": "English"
+    "_change_language": "English",
+    "_server_error": "Le serveur est actuellement indisponible. Certaines fonctionnalités peuvent ne pas fonctionner, veuillez réessayer plus tard."
 }

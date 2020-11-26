@@ -106,8 +106,12 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const response = await fetch(process.env.SERVEUR_URL+"/smf/categories")
-    const categories: Array<Category> =  await response.json()
-    const play: Array<number> = Array(categories.length).fill(null)
+    let categories: Array<Category> = []
+    let play: Array<number> = []
+    if (response.ok) {
+        categories =  await response.json()
+        play = Array(categories.length).fill(null)
+    }
     const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
     const locale = context.locale? context.locale : defaultLocale
     const commonT = getTranslation('common', locale)
