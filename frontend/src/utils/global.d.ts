@@ -36,4 +36,20 @@ interface User {
     password?: string,
 }
 
-type Item = Category | Photo | User
+interface DateObject {
+    timestamp: number,
+    offset: number,
+}
+
+interface Post {
+    id?: number,
+    title: string,
+    published: boolean,
+    content: string,
+    author: string,
+    category: Category,
+    createdAt: DateObject,
+    updatedContent: DateObject,
+}
+
+type Item = Category | Photo | User | Post

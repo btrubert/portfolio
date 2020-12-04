@@ -26,7 +26,7 @@
     "_select_user": "Sélectionner un utilisateur",
     "_error_form": "Vérifier les informations ou re-essayer plutart",
     "_category_name": "Nom de la catégorie",
-    "_public": "Rendre cette catégorie publique ?",
+    "_public_choice": "Rendre cette catégorie publique ?",
     "_choose_user": "Choisir un utilisateur",
     "_loading": "Chargement...",
     "_save_category": "Sauvegarder la categorie",
@@ -54,5 +54,14 @@
     "_reset": "Réinitialiser",
     "_save": "Sauvegarder",
     "_change_quality": "Modifier la qualité.",
-    "_keep_original": "Sauvegarder l'originale."
+    "_keep_original": "Sauvegarder l'originale.",
+    "_post_title": "Titre",
+    "_post_author": "Auteur.e",
+    "_posts": "Posts",
+    "_date_update": "Créer le (dernière mise à jour)",
+    "_published": "En ligne",
+    "_post": "Post",
+    "_save_post": "Créer le post",
+    "_public": "Publique",
+    "_private": "Privée"
 }

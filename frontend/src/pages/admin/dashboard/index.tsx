@@ -15,11 +15,13 @@ import UsersList from 'components/dashboard/UsersList'
 import UserForm from 'components/dashboard/forms/UserForm'
 import CategoriesList from 'components/dashboard/CategoriesList'
 import CategoryForm from 'components/dashboard/forms/CategoryForm'
+import PostsList from 'components/dashboard/PostsList'
+import PostForm from 'components/dashboard/forms/PostForm'
 import Modal from 'react-bootstrap/Modal'
 import Spinner from 'react-bootstrap/Spinner'
 
 
-type Entity = 'categories' | 'photos' | 'users'
+type Entity = 'categories' | 'photos' | 'users' | 'posts'
 
 function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter()
@@ -34,13 +36,15 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const [refreshPhotos, setRefreshPhotos] = useState<boolean>(true)
     const [users, setUsers] = useState<Array<User> | null>(null)
     const [refreshUsers, setRefreshUsers] = useState<boolean>(true)
+    const [posts, setPosts] = useState<Array<Post> | null>(null)
+    const [refreshPosts, setRefreshPosts] = useState<boolean>(true)
 
     // Form management
     const [activeTab, setActiveTab] = useState<Entity>('categories')
     const [showForm, setShowForm] = useState<boolean>(false)
     const [activeForm, setActiveForm] = useState<string>(t._category)
     const [editForm, setEditForm] = useState<boolean>(false)
-    const [currentItem, setCurrentIten] = useState<Category | Photo | User | null>(null)
+    const [currentItem, setCurrentIten] = useState<Item | null>(null)
 
     useEffect(() => {
         if (!trans.commonTrans) {
@@ -64,6 +68,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             case 'categories': setCategories(data); break
             case 'photos': setPhotos(data); break
             case 'users': setUsers(data); break
+            case 'posts': setPosts(data); break
         }
     }
 
@@ -78,6 +83,10 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     useEffect(() => {
         fetchEntity('users')
     }, [refreshUsers])
+
+    useEffect(() => {
+        fetchEntity('posts')
+    }, [refreshPosts])
 
 
     const handleShow = (edit: boolean) => {
@@ -100,6 +109,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             case 'categories':  entity = 'category'; break
             case 'photos': entity = 'photo'; break
             case 'users': entity = 'user'; break
+            case 'posts': entity = 'post'; break
         }
         const response = await fetch(`/smf/admin/${entity}/delete/${item.id}`, {method: 'GET'})
         const token = await response.text()
@@ -126,6 +136,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                 case 'users':
                     setActiveForm(t._user)
                     break
+                case 'posts':
+                    setActiveForm(t._post)
+                    break
             }
             setActiveTab(tab)
         }
@@ -138,6 +151,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
             case 'categories': setRefreshCategories(!refreshCategories); break
             case 'photos': setRefreshPhotos(!refreshPhotos); break
             case 'users': setRefreshUsers(!refreshUsers); break
+            case 'posts': setRefreshPosts(!refreshPosts); break
         }
     }
 
@@ -164,6 +178,10 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         users
                     }
                     editClicked={editClicked}
+                    deleteClicked={deleteClicked}
+                    translation={t}/>
+            case 'posts':
+                return <PostsList posts={posts}
                     deleteClicked={deleteClicked}
                     translation={t}/>
             default:
@@ -198,6 +216,10 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                     edit={editForm}
                     refresh={() => handleRefresh()}
                     translation={t}/>
+            case 'posts':
+                return <PostForm users={users as Array<User>}
+                        translation={t}
+                        refresh={() => handleRefresh()}/>
             default:
                 return <></>;
         }
@@ -225,12 +247,12 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                                         () => handleClick("photos")
                                 }>{t._photos}</Nav.Link>
                             </Nav.Item>
-                            {/* <Nav.Item>
-                                <Nav.Link eventKey="posts" disabled
+                            <Nav.Item>
+                                <Nav.Link eventKey="posts"
                                     onSelect={
                                         () => handleClick("posts")
-                                }>Posts</Nav.Link>
-                            </Nav.Item> */}
+                                }>{t._posts}</Nav.Link>
+                            </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link eventKey="users"
                                     onSelect={

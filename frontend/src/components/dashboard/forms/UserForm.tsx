@@ -94,8 +94,7 @@ export default function UserForm (props: Props) {
         });
     }
 
-   return (
-       <Formik validationSchema={schema}
+   return <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
             validateOnBlur={false}
             validateOnChange={false}
@@ -234,6 +233,5 @@ export default function UserForm (props: Props) {
                             type='user'/>
                 </Form.Row>
             </Form>}
-            </Formik>
-        );
+        </Formik>
 }

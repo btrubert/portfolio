@@ -62,6 +62,7 @@ class CategoryRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
         ->andWhere('c.public = true')
+        ->andWhere('c.blog = false')
         ->getQuery()
         ->getResult()
         ;

@@ -56,6 +56,11 @@ class BlogPost
      */
     private $published;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class)
+     */
+    private $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -120,6 +125,18 @@ class BlogPost
     public function setPublished(bool $published): self
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

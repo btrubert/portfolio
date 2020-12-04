@@ -22,7 +22,6 @@ use Doctrine\DBAL\Exception\ConnectionException;
 class PhotoController extends AbstractController
 {
 
-
     /**
      * @Route("/gallery/{catName}", name="api_photos")
      */
@@ -162,7 +161,8 @@ class PhotoController extends AbstractController
                     }
                     $original = $request->request->get("original");
                     if (!$original && $path) {
-                        if ($this->deleteFile($photo, true)) {
+                        $base_dir = $photo->getCategory()->getPublic() ? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+                        if ($this->deleteFile($photo, $base_dir, true)) {
                             $photo->setOriginalPath("");
                         }
                     }
@@ -198,7 +198,8 @@ class PhotoController extends AbstractController
                 $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
                 if ($photo) {
                     $em = $this->getDoctrine()->getManager();
-                    if (!$this->deleteFile($photo)) {
+                    $base_dir = $photo->getCategory()->getPublic() ? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+                    if (!$this->deleteFile($photo, $base_dir)) {
                         throw new Exception("Error while deleting a file.");
                     }
                     $em->remove($photo);
@@ -217,10 +218,9 @@ class PhotoController extends AbstractController
         }
     }
 
-    private function deleteFile($photo, $onlyOriginal = false)
+    public static function deleteFile($photo, $base_dir, $onlyOriginal = false)
     {
         try {
-            $base_dir = $photo->getCategory()->getPublic() ? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
             if ($onlyOriginal) {
                 $path = $base_dir . $photo->getOriginalPath();
                 unlink(realpath($path));

@@ -26,7 +26,7 @@
     "_select_user": "Select a user",
     "_error_form": "Verify your form info or try again later!",
     "_category_name": "Category's name",
-    "_public": "Make this category public ?",
+    "_public_choice": "Make this category public ?",
     "_choose_user": "Choose a user",
     "_loading": "Loading...",
     "_save_category": "Save Category",
@@ -54,5 +54,14 @@
     "_reset": "Reset",
     "_save": "Save",
     "_change_quality": "Modify the quality.",
-    "_keep_original": "Save the original."
+    "_keep_original": "Save the original.",
+    "_post_title": "Title",
+    "_post_author": "Author",
+    "_posts": "Posts",
+    "_date_update": "Created on the (last update)",
+    "_published": "Published",
+    "_post": "Post",
+    "_save_post": "Create the post",
+    "_public": "Public",
+    "_private": "Private"
 }

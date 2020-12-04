@@ -23,6 +23,7 @@ export default function FormButtons (props: Props) {
         case 'category': save = t._save_category; break
         case 'photo': save = t._save_photo; break
         case 'user': save = t._save_user; break
+        case 'post': save = t._save_post; break
     }
 
     return <>

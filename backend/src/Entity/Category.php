@@ -40,6 +40,11 @@ class Category
      */
     private $user;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $blog;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
@@ -113,6 +118,18 @@ class Category
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getBlog(): ?bool
+    {
+        return $this->blog;
+    }
+
+    public function setBlog(bool $blog): self
+    {
+        $this->blog = $blog;
 
         return $this;
     }

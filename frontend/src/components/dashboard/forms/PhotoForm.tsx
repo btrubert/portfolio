@@ -94,8 +94,7 @@ export default function PhotoForm (props: Props) {
     }
 
 
-    return (
-        <Formik validationSchema={schema}
+    return <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
             validateOnBlur={false}
             validateOnChange={false}
@@ -238,5 +237,4 @@ export default function PhotoForm (props: Props) {
                 </Form.Row>
             </Form>}
         </Formik>
-    );
 }

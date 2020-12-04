@@ -171,9 +171,6 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.0.4"
     },
-    "lcobucci/jwt": {
-        "version": "3.3.3"
-    },
     "league/uri": {
         "version": "6.3.0"
     },
@@ -183,38 +180,8 @@
     "league/uri-parser": {
         "version": "1.4.1"
     },
-    "lexik/jwt-authentication-bundle": {
-        "version": "2.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
-        },
-        "files": [
-            "./config/packages/lexik_jwt_authentication.yaml"
-        ]
-    },
-    "limenius/liform": {
-        "version": "v0.17.0"
-    },
-    "limenius/liform-bundle": {
-        "version": "v0.17.0"
-    },
-    "limenius/react-bundle": {
-        "version": "v5.0.3"
-    },
-    "limenius/react-renderer": {
-        "version": "v5.0.2"
-    },
     "monolog/monolog": {
         "version": "2.1.1"
-    },
-    "nacmartin/phpexecjs": {
-        "version": "v3.0.0"
-    },
-    "namshi/jose": {
-        "version": "7.2.3"
     },
     "nikic/php-parser": {
         "version": "v4.7.0"
@@ -264,18 +231,6 @@
             "./config/packages/sensio_framework_extra.yaml"
         ]
     },
-    "symfony/apache-pack": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "71599f5b0fdeeeec0fb90e9b17c85e6f5e1350c1"
-        },
-        "files": [
-            "./public/.htaccess"
-        ]
-    },
     "symfony/asset": {
         "version": "v5.1.3"
     },
@@ -302,9 +257,6 @@
         "files": [
             "./bin/console"
         ]
-    },
-    "symfony/contracts": {
-        "version": "v1.1.0"
     },
     "symfony/css-selector": {
         "version": "v5.1.3"

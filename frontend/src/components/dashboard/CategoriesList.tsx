@@ -99,7 +99,7 @@ export default function CategoriesList (props: Props) {
                     <tr key={index}>
                         <th>{c.name}</th>
                         <th>{
-                            c.public ? "Public" : "Private"
+                            c.public ? t._public : t._private
                         }
                             {
                             c.user ? ` (  ${c.user.firstName} ${c.user.lastName} )` : ""

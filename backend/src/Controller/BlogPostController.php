@@ -5,181 +5,118 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\BlogPost;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Category;
 use Exception;
 use App\Form\BlogPostType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Service\ObjectEncoder;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use App\Controller\PhotoController;
 
 
+/**
+ * @Route("/smf")
+ */
 class BlogPostController extends AbstractController
 {
 
     /**
-     * @Route("/blog/{post}", name="blog", defaults={"post": null})
+     * @Route("/admin/posts", name="posts_list")
      */
-    public function blog($post)
-    {
-        if (!$post || ($post && $this->getDoctrine()->getRepository(Category::class)->findFromId($post))) {
-            return $this->render('default/index.html.twig');
-        } else {
-            return $this->redirectToRoute('blog');
-        }
-    }
-
-
-    /**
-     * @Route("/new", name="new_post")
-     */
-    public function new(Request $request)
-    {
-        $blogPost = new BlogPost();
-        $blogPost->setTitle('Write a blog post');
-        $blogPost->setContent("LoremIpsum");
-
-        $form = $this->createForm(BlogPostType::class, $blogPost);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $blogPost = $form->getData();
-
-            $this->_createPost($blogPost);
-
-            return $this->redirectToRoute('list_post');
-        }
-
-        return $this->render('category/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/edit/{id}", name="edit_post")
-     */
-    public function edit(Request $request, $id)
-    {
-        $blogPost = $this->_getPost($id);
-
-        $form = $this->createForm(BlogPostType::class, $blogPost);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
-            $newPost = $form->getData();
-            $this->_updatePost($id, $newPost);
-
-            return $this->redirectToRoute('list_post');
-        }
-
-        return $this->render('blog_post/new.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/delete/{id}", name="delete_post")
-     */
-    public function delete($id)
-    {
-        $this->_deletePost($id);
-        return $this->redirectToRoute('list_post');
-    }
-
-    public function _createPost($post): BlogPost
+    public function listPosts(ObjectEncoder $objectEncoder)
     {
         try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-
-            //Commit the new entry to the DB
-            $entityManager->persist($post);
-            $entityManager->flush();
+            $posts = $this->getDoctrine()->getRepository(BlogPost::class)->findAll();
+            $sposts = $objectEncoder->encodeObjectToJson($posts, ['category', 'updatedAt', 'content']);
+            return new JsonResponse(json_decode($sposts));
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {
-            echo 'Caught exception while creating a new blog post : ',  $e->getMessage(), "\n";
-            return null;
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $post;
     }
 
-    public function _updatePost($id, $newPost): bool
+    /**
+     * @Route("/admin/post/new", methods={"GET", "POST"}, name="new_post")
+     */
+    public function newPost(Request $request, CsrfTokenManagerInterface $csrf_token)
     {
         try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-            //Retrieve the blog post
-            $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
+            if ($request->isMethod("GET")) {
+                return new Response($csrf_token->getToken("post_item"));
+            }
+            $post = new BlogPost();
+            $form = $this->createForm(BlogPostType::class, $post);
+            $form->submit($request->request->all());
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $post = $form->getData();
+                $post->setContent("---\nauthor: ".$post->getAuthor()."\ntitle: ".$post->getTitle()."\n---");
+                $post->setPublished(false);
 
-            if (!$blogPost) //if the blog post could not be retrieved
-            {
-                return false;
+                $category = new Category();
+                $category->setName("_blog_".$post->getTitle());
+                $category->setPublic(false);
+                $category->setBlog(true);
+                $post->setCategory($category);
+
+                $em->persist($post);
+                $em->persist($category);
+                $em->flush();
+
+                $response = new JSONResponse("The post has been created.", Response::HTTP_CREATED);
+                return $response;
             }
 
-            //Update the author field of the post
-            $blogPost->setAuthor($newPost->getAuthor());
-            //Update the title field of the post
-            $blogPost->setTitle($newPost->getTitle());
-            //Update the content field of the post
-            $blogPost->setContent($newPost->getContent());
-
-            //Commit the updated entry to the DB
-            $entityManager->flush();
+            return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Error while creating the new post.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {
-            echo 'Caught exception while updating a post : ',  $e->getMessage(), "\n";
-            return false;
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return true;
     }
 
-    public function _deletePost($id): bool
+    /**
+     * @Route("/admin/post/delete/{id}", methods={"GET", "POST"}, name="delete_post")
+     */
+    public function deletePost(Request $request, CsrfTokenManagerInterface $csrf_token, $id)
     {
         try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-            //Retrieve the blog post
-            $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
-
-            if (!$blogPost) {
-                return false;
+            if ($request->isMethod("GET")) {
+                return new Response($csrf_token->getToken("delete_post_" . $id));
             }
 
-            //Delete the blog post
-            $entityManager->remove($blogPost);
+            $submittedToken = $request->request->get('_token');
+            if ($this->isCsrfTokenValid("delete_post_" . $id, $submittedToken)) {
 
-            //Commit the updated entry to the DB
-            $entityManager->flush();
+                $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
+                if ($post) {
+                    $em = $this->getDoctrine()->getManager();
+                    $category = $post->getCategory();
+                    if ($category) {
+                        foreach ($category->getPhotos() as $photo) {
+                            $base_dir = $photo->getCategory()->getPublic() ? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+                            PhotoController::deleteFile($photo, $base_dir);
+                            $em->remove($photo);
+                        }
+                        $em->remove($category);
+                    }
+                    $em->remove($post);
+                    $em->flush();
+                    return new JsonResponse('The post has been deleted.', Response::HTTP_ACCEPTED);
+                } else {
+                    return new JsonResponse('Category not found.', Response::HTTP_NOT_FOUND);
+                }
+            }
+            return new JsonResponse('Error while deleting the category.', Response::HTTP_EXPECTATION_FAILED);
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Error while creating the new category.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {
-            echo 'Caught exception while updating the content : ',  $e->getMessage(), "\n";
-            return false;
+            return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return true;
     }
 
-    public function _getPost($id): BlogPost
-    {
-        try {
-            //Get the DB manager
-            $entityManager = $this->getDoctrine()->getManager();
-            //Retrieve the blog post
-            $blogPost = $entityManager->getRepository(BlogPost::class)->find($id);
-        } catch (Exception $e) {
-            echo 'Caught exception while fetching a post : ',  $e->getMessage(), "\n";
-            return null;
-        }
-        return $blogPost;
-    }
-
-    public function _getListPosts($offset = 0, $limit = 0): array
-    {
-        try {
-            $listPosts = $this->getDoctrine()->getRepository(BlogPost::class)->findManyFromOffset($offset, $limit);
-        } catch (Exception $e) {
-            echo 'Caught exception while fetching a list of posts : ',  $e->getMessage(), "\n";
-            return null;
-        }
-        return $listPosts;
-    }
 }

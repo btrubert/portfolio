@@ -8,20 +8,17 @@ import FormButtons from './FormButtons'
 
 
 interface Props {
-    category: Category | null,
-    edit: boolean,
-    refresh:  () => void,
     users: Array<User>,
+    refresh:  () => void,
     translation: {[key:string]: string},
 }
 
 interface FormValues {
-    name: string,
-    public: boolean,
-    user?: number,
+    title: string,
+    author: string,
 }
 
-export default function CategoryForm (props: Props) {
+export default function PostForm (props: Props) {
 
     const formRef = useRef<HTMLFormElement>(null)
 
@@ -32,9 +29,8 @@ export default function CategoryForm (props: Props) {
     const t = props.translation
 
     const schema = yup.object({
-        name: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
-        public: yup.boolean(),
-        user: yup.number().when('public', {is: false, then:yup.number().required(t._required).min(0, t._select_user), otherwise: yup.number().nullable()}),
+        title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
+        author: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]*)+$/, t._required),
     });
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -44,17 +40,12 @@ export default function CategoryForm (props: Props) {
             return;
         }
         let formData = new FormData(formRef.current)
-        if (values.public){
-            formData.delete("user")
-        }
         let token = "";
-        await fetch("/smf/admin/category/" + (
-            props.edit && props.category ? "edit/" + props.category.id : "new"
-        ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
+        await fetch("/smf/admin/post/new",
+        {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        fetch("/smf/admin/category/" + (
-            props.edit && props.category ? "edit/" + props.category.id : "new"
-        ), {
+        fetch("/smf/admin/post/new",
+        {
             method:'POST',
             headers: {
                 enctype: "multipart/form-data",
@@ -71,7 +62,7 @@ export default function CategoryForm (props: Props) {
                 setMessageAlert(data)
                 setVariantAlert("success")
                 setShowAlert(true)
-                setTimeout(props.refresh, 1000)
+                setTimeout(props.refresh, 1000);
             })
         .catch(error =>  {
             setSubmitting(false)
@@ -89,9 +80,8 @@ export default function CategoryForm (props: Props) {
             validateOnChange={false}
             initialValues={
                 {
-                    name: props.category ? props.category.name : "",
-                    public: props.category ? props.category.public : false,
-                    user: props.category && props.category.user ? props.category.user.id : -1,
+                    title: "",
+                    author: "~author",
                 }
         }>{({
             handleSubmit,
@@ -105,41 +95,30 @@ export default function CategoryForm (props: Props) {
                 ref={formRef}>
                     <Form.Group as={Row} controlId="validationFormikName">
                         <Col>
-                        <Form.Control required name="name" type="text" placeholder={t._category_name}
+                        <Form.Control required name="title" type="text" placeholder={t._post_title}
                             value={
-                                values.name
+                                values.title
                             }
-                            isInvalid={!!errors.name}
+                            isInvalid={!!errors.title}
                             onChange={handleChange}/>
                         <Form.Control.Feedback type="invalid">
-                            {errors.name}
+                            {errors.title}
                         </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
-                <Form.Group controlId="validationFormikIsPublic" as={Row}>
-                    <Col>
-                    <Form.Check type="switch" name="public" label={t._public_choice}
-                        checked={
-                            values.public
-                        }
-                        onChange={
-                            handleChange
-                        }/>
-                        </Col>
-                </Form.Group>
-                <Form.Group controlId="validationFormikUser" as={Row} hidden={values.public}>
+                <Form.Group controlId="validationFormikUser" as={Row}>
                         <Col>
-                        <Form.Control name="user" as="select" custom
+                        <Form.Control name="author" as="select" custom
                             value={
-                                values.user
+                                values.author
                             }
                             isInvalid={
-                                !!errors.user
+                                !!errors.author
                             }
                             onChange={handleChange}>
-                            <option hidden value="-1">{t._choose_user}</option>
+                            <option hidden value="~author">{t._post_author}</option>
                             {
-                            props.users.map((u, index: number) => <option value={u.id}
+                            props.users.map((u, index: number) => <option value={u.firstName + ' ' + u.lastName}
                                 key={index}>
                                 {
                                 u.username
@@ -147,7 +126,7 @@ export default function CategoryForm (props: Props) {
                         } </Form.Control>
                         <Form.Control.Feedback type="invalid">
                             {
-                            errors.user
+                            errors.author
                         } </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
@@ -159,7 +138,7 @@ export default function CategoryForm (props: Props) {
                             variantAlert={variantAlert}
                             handleReset={handleReset}
                             translation={t}
-                            type='category'/>
+                            type='post'/>
                 </Form.Row>
             </Form>}
         </Formik>
