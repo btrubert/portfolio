@@ -5,7 +5,11 @@ type Data = Array<Photo>
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const {
         query: { cat },
-      } = req
+    } = req
+    if (typeof(cat) !== 'string') {
+        res.status(400)
+        res.end()
+    }
 
     const response = await fetch(process.env.SERVEUR_URL + "/smf/gallery/" + cat, {
         headers: {

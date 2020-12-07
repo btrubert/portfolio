@@ -54,7 +54,7 @@ class BlogPostController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $post = $form->getData();
-                $post->setContent("---\nauthor: ".$post->getAuthor()."\ntitle: ".$post->getTitle()."\n---");
+                $post->setContent("---\nauthor: ".$post->getAuthor()."\ntitle: ".$post->getTitle()."\n---\n");
                 $post->setPublished(false);
 
                 $category = new Category();
@@ -116,6 +116,43 @@ class BlogPostController extends AbstractController
             return new JsonResponse("Error while creating the new category.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {
             return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @Route("/admin/blog/edit/{id}", methods={"GET", "POST"}, name="edit_blog")
+     */
+    public function editUser(Request $request, CsrfTokenManagerInterface $csrf_token, ObjectEncoder $objectEncoder, $id)
+    {
+        try {
+            if ($request->isMethod("GET")) {
+                $token = $csrf_token->getToken("user_item");
+                $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
+                $spost = $objectEncoder->encodeObjectToJson($post, ['id', 'createdAt', 'updatedAt', 'contentUpdated', 'author', 'title']);
+                return new JsonResponse(['token' => $token, 'content' => json_decode($spost)]);
+            }
+
+            $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
+
+            if ($post) {
+                $form = $this->createForm(BlogPostType::class, $post);
+                $form->submit($request->request->all());
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em = $this->getDoctrine()->getManager();
+                    $post = $form->getData();
+                    $em->persist($post);
+                    $em->flush();
+
+                    $response = new JSONResponse("The post has been edited.", Response::HTTP_CREATED);
+                    return $response;
+                }
+                return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
+            }
+            return new JsonResponse("Error while editing the post.", Response::HTTP_NOT_FOUND);
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
