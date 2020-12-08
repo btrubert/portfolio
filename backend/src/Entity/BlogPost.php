@@ -61,6 +61,11 @@ class BlogPost
      */
     private $category;
 
+    /**
+     * @ORM\Column(type="string", length=3)
+     */
+    private $locale;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -137,6 +142,18 @@ class BlogPost
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(string $locale): self
+    {
+        $this->locale = $locale;
 
         return $this;
     }

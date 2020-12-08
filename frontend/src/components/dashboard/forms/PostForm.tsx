@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -16,6 +17,7 @@ interface Props {
 interface FormValues {
     title: string,
     author: string,
+    locale: string,
 }
 
 export default function PostForm (props: Props) {
@@ -27,10 +29,13 @@ export default function PostForm (props: Props) {
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
     const t = props.translation
+    const router = useRouter()
+
 
     const schema = yup.object({
         title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
         author: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]*)+$/, t._required),
+        locale: yup.string().required(),
     });
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -82,6 +87,7 @@ export default function PostForm (props: Props) {
                 {
                     title: "",
                     author: "~author",
+                    locale:  router.locale ?? 'en',
                 }
         }>{({
             handleSubmit,
@@ -128,6 +134,24 @@ export default function PostForm (props: Props) {
                             {
                             errors.author
                         } </Form.Control.Feedback>
+                        </Col>
+                    </Form.Group>
+                    <Form.Group controlId="validationFormikLocale" as={Row}>
+                        <Col>
+                        <Form.Label>{t._choose_language}</Form.Label>
+                        <Form.Control name="locale" as="select" custom
+                            value={
+                                values.locale
+                            }
+                            onChange={handleChange}>
+                            {router.locales ?
+                            router.locales.map((l, index: number) => <option value={l}
+                                key={index}>
+                                {
+                                l
+                            }</option>)
+                            : <option value={router.locale ?? 'en'}>{router.locale ?? 'en'}</option>
+                        } </Form.Control>
                         </Col>
                     </Form.Group>
                 <Form.Row>

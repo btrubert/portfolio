@@ -58,7 +58,7 @@ class BlogPostController extends AbstractController
                 $post->setPublished(false);
 
                 $category = new Category();
-                $category->setName("_blog_".$post->getTitle());
+                $category->setName("_blog_".$post->getTitle()."_".uniqid());
                 $category->setPublic(false);
                 $category->setBlog(true);
                 $post->setCategory($category);
@@ -128,7 +128,7 @@ class BlogPostController extends AbstractController
             if ($request->isMethod("GET")) {
                 $token = $csrf_token->getToken("user_item");
                 $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
-                $spost = $objectEncoder->encodeObjectToJson($post, ['id', 'createdAt', 'updatedAt', 'contentUpdated', 'author', 'title']);
+                $spost = $objectEncoder->encodeObjectToJson($post, ['createdAt', 'updatedAt', 'contentUpdated', 'author', 'title']);
                 return new JsonResponse(['token' => $token, 'content' => json_decode($spost)]);
             }
 

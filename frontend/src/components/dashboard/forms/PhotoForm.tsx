@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import FormButtons from './FormButtons'
+import Alert from 'react-bootstrap/Alert'
 
 
 interface Props {
@@ -35,6 +36,7 @@ export default function PhotoForm (props: Props) {
     const [submitting, setSubmitting] = useState<boolean>(false)
     const t = props.translation
     const originalFile = props.photo ? props.photo.originalPath !== "": true
+    const categoryChoice = props.categories.length === 1
 
     const schema = yup.object({
         title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
@@ -58,6 +60,9 @@ export default function PhotoForm (props: Props) {
             props.edit && props.photo ? "edit/" + props.photo.id : "new"
         ), {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
+        if (!formData.get("category")) {
+            formData.set("category", values.category+'')
+        }
         if (!values.changeQuality) {
             formData.delete("quality")
         }
@@ -93,7 +98,9 @@ export default function PhotoForm (props: Props) {
 
     }
 
-
+    if (props.categories.length < 1) {
+        return <Alert show={true} variant="danger">{t._missing_category}</Alert>
+    }
     return <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
             validateOnBlur={false}
@@ -102,7 +109,7 @@ export default function PhotoForm (props: Props) {
                 {
                     title: props.photo ? props.photo.title : "",
                     description: props.photo ? props.photo.description || "" : "",
-                    category: props.photo && props.photo.category.id? props.photo.category.id : -1,
+                    category: categoryChoice?  (props.categories[0].id ?? -1) : (props.photo && props.photo.category.id? props.photo.category.id : -1),
                     path: props.photo? props.photo.path : "",
                     quality: 100,
                     changeQuality: !props.edit,
@@ -202,6 +209,7 @@ export default function PhotoForm (props: Props) {
                     <Form.Group controlId="validationFormikCategory" as={Row}>
                         <Col>
                         <Form.Control name="category" as="select" custom
+                            disabled={categoryChoice}
                             value={
                                 values.category
                             }

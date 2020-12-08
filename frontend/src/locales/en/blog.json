@@ -1,5 +1,11 @@
 {
     "_new_title": "Insert title",
     "_author": "Author name",
-    "_title": "Title"
+    "_title": "Title",
+    "_image_selection": "Image selection",
+    "_add_new_image": "Add new...",
+    "_url_link": "https://",
+    "_url_text": "Text (optional)",
+    "_url_hover": "Description (optional)",
+    "_photo": "Photo",
 }

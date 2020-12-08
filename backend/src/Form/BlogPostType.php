@@ -14,7 +14,8 @@ class BlogPostType extends AbstractType
     {
         $builder
             ->add('author', TextType::class)
-            ->add('title', TextType::class);
+            ->add('title', TextType::class)
+            ->add('locale', TextType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

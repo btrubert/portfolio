@@ -73,7 +73,6 @@ export default function PostsList (props: Props) {
     }
 
     const timestampToString = (ts: number) => {
-        console.log(ts)
         let d = new Date(ts*1000)
         console.log(d)
         return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
@@ -107,7 +106,7 @@ export default function PostsList (props: Props) {
             <tbody>{posts &&
                 posts.map((p, index: number) => (
                     <tr key={index}>
-                        <th>{p.title}</th>
+                        <th>{p.title}  ({p.locale})</th>
                         <th>{p.author}</th>
                         <th>{timestampToString(p.createdAt.timestamp)}{p.updatedContent? ` (${timestampToString(p.updatedContent.timestamp)})` : ''}</th>
                         <th>{p.published? t._published : t._private}</th>

@@ -75,8 +75,7 @@ export default function UsersList (props: Props) {
         }
     }
 
-    return (
-        <Table borderless hover striped responsive="lg" variant="dark">
+    return <Table borderless hover striped responsive="lg" variant="dark">
             <thead>
                 <tr>
                     <th>{t._username} <span className="filterButton" onClick={() => filter('username')}>
@@ -127,5 +126,4 @@ export default function UsersList (props: Props) {
                 ))
             }</tbody>
         </Table>
-    )
 }

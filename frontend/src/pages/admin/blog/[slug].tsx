@@ -51,18 +51,19 @@ function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProp
     if (state.loading || !state.admin || !content) {
         return <></>
     } else {
-        return <Editor translation={t} initialContent={content} refresh={() => setSavedContent(!savedContent)}/>
+        return <Editor translation={t} formTrans={props.dashboardT} initialContent={content} refresh={() => setSavedContent(!savedContent)} />
     }
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
-    const locale = context.locale? context.locale : defaultLocale
+    const defaultLocale = context.defaultLocale ?? 'en'
+    const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     const blogT = getTranslation('blog', locale)
+    const dashboardT = getTranslation('dashboard', locale)
     const id = context.params?.slug
     return {
-        props: {commonT, blogT, id},
+        props: {commonT, blogT, dashboardT, id},
     }
 }
 

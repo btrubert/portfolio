@@ -63,5 +63,7 @@
     "_post": "Post",
     "_save_post": "Créer le post",
     "_public": "Publique",
-    "_private": "Privée"
+    "_private": "Privée",
+    "_choose_language": "Choisissez la langue :",
+    "_missing_category": "Veillez créer une catégorie !"
 }

@@ -74,9 +74,7 @@ export default function PhotosList (props: Props) {
         }
     }
 
-    return (
-        <Container className="main-content">
-            <Table borderless hover striped responsive="lg" variant="dark">
+    return <Table borderless hover striped responsive="lg" variant="dark">
                 <thead>
                     <tr>
                         <th>{t._title} <span className="filterButton" onClick={() => filter('title')}>
@@ -128,6 +126,4 @@ export default function PhotosList (props: Props) {
                     </tr>)
                 }</tbody>
             </Table>
-        </Container>
-    );  
 }

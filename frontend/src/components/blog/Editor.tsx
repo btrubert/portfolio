@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
@@ -8,17 +8,20 @@ import * as yup from 'yup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
+import Modal from 'react-bootstrap/Modal'
+import PhotoForm from 'components/dashboard/forms/PhotoForm'
 import Icon from '@mdi/react'
 import { mdiFormatSize, mdiNumeric1Box , mdiNumeric2Box, mdiNumeric3Box, mdiNumeric4Box } from '@mdi/js'
 import { mdiFormatBold, mdiFormatItalic, mdiCodeTags, mdiFormatQuoteClose } from '@mdi/js'
 import { mdiFormatListBulleted, mdiFormatListNumbered, mdiKeyboardTab } from '@mdi/js'
-import { mdiLink } from '@mdi/js'
+import { mdiLink, mdiImageMultipleOutline } from '@mdi/js'
 
 
 interface Props {
     initialContent: {content: string, published: boolean, category: Category},
     translation: {[key:string]: string},
     refresh: () => void,
+    formTrans: string,
 }
 
 interface FormValues {
@@ -26,19 +29,19 @@ interface FormValues {
 }
 
 function Editor (props: Props) {
-    /* list buttons
-    - lien [text](url "text optional")
-    - image ![text](url "text optional")
-    */
     const formRef = useRef<HTMLFormElement>(null)
     const textRef = useRef<HTMLTextAreaElement>(null)
     const t = props.translation
+
+    const [showForm, setShowForm] = useState<boolean>(false)
+    const category = props.initialContent.category
+    const [showImage, setShowImage] = useState<boolean>(false)
 
     const schema = yup.object({
         content: yup.string().required(),
     })
 
-    const handleSubmitForm = () => {
+    const handleSubmitForm = (values: FormValues) => {
             alert("error author/title: cancel/proceed with previous values")
     }
 
@@ -94,11 +97,24 @@ function Editor (props: Props) {
             if (formData.get('url') !== '') {
                 const url = formData.get("url")
                 const text = formData.get("text") !== ''? formData.get("text") : formData.get("url")
-                const alt = formData.get("alt") !== ''? `"${formData.get("text")}"` : ''
+                const alt = formData.get("alt") !== ''? `"${formData.get("alt")}"` : ''
                 modifyText(` [${text}](${url} ${alt}) `)
-                textRef.current.focus()
             }
         }
+    }
+
+    const imageClicked = (p: Photo) => {
+        if (textRef.current && textRef.current.selectionStart === textRef.current.selectionEnd) {
+            const url = "/uploads/" + p.path
+            const text = p.title
+            const alt = p.description !== ''? `"${p.description}"` : ''
+            modifyText(` ![${text}](${url} ${alt}) `)
+        }
+    }
+
+    const handleAddImage = () => {
+        setShowImage(false)
+        setShowForm(true)
     }
 
     return <>
@@ -150,16 +166,17 @@ function Editor (props: Props) {
         </div>
         <OverlayTrigger
         trigger="click"
+        rootClose
         key="link"
         placement="bottom"
         overlay={
             <Popover id="link">
             <Popover.Content>
             <Form onSubmit={linkClicked}>
-                <Form.Control type="text" placeholder="url" name="url" className="mr-2" />
-                <Form.Control type="text" placeholder="showed text (optional)" name="text" className="mr-2" />
-                <Form.Control type="text" placeholder="hover text (optional)" name="alt" className="mr-2" />
-                <Form.Control type="submit" value="Insert" />
+                <Form.Control type="text" placeholder={t._url_link} name="url" className="mr-2" />
+                <Form.Control type="text" placeholder={t._url_text} name="text" className="mr-2" />
+                <Form.Control type="text" placeholder={t._url_hover} name="alt" className="mr-2" />
+                <Form.Control type="submit" value="Insert"/>
             </Form>
             </Popover.Content>
             </Popover>
@@ -169,7 +186,28 @@ function Editor (props: Props) {
             <Icon path={mdiLink} size={1} color="white" rotate={90} />
         </div>
         </OverlayTrigger>
-
+        <OverlayTrigger
+        trigger="click"
+        show={showImage}
+        onToggle={() => setShowImage(!showImage)}
+        rootClose
+        key="image"
+        placement="bottom"
+        overlay={
+            <Popover id="image">
+            <Popover.Title>
+            {t._image_selection} <span className="addImage" onClick={handleAddImage}>{t._add_new_image}</span>
+            </Popover.Title>
+            <Popover.Content>
+            
+            </Popover.Content>
+            </Popover>
+        }
+        >
+        <div className="editButton mr-1" onClick={imageClicked}>
+            <Icon path={mdiImageMultipleOutline} size={1} color="white" />
+        </div>
+        </OverlayTrigger>
     </Row>
     <Formik validationSchema={schema}
             onSubmit={handleSubmitForm}
@@ -206,6 +244,16 @@ function Editor (props: Props) {
                     </Row>
                 </Form>}
         </Formik>
+        <Modal className="custom-form" size="lg"
+            show={showForm}
+            onHide={() => {setShowForm(false)}}>
+            <Modal.Header closeButton>
+                {t._photo}
+            </Modal.Header>
+            <Modal.Body>
+                <PhotoForm photo={null} edit={false} refresh={() => setShowForm(false)} categories={[category]} translation={JSON.parse(props.formTrans)}/>
+            </Modal.Body>
+        </Modal>
     </>
 }
 

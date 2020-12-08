@@ -1,3 +1,16 @@
 .editButton {
     border: 1px solid whitesmoke;
 }
+
+.popover-header {
+    color: black;
+}
+
+.addImage {
+    cursor: pointer;
+    color: blue;
+}
+
+.addImage:hover {
+    text-decoration: underline;
+}

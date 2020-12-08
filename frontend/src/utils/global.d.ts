@@ -50,6 +50,7 @@ interface Post {
     category: Category,
     createdAt: DateObject,
     updatedContent: DateObject,
+    locale: string,
 }
 
 type Item = Category | Photo | User | Post

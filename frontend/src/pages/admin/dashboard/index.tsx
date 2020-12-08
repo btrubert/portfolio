@@ -42,9 +42,9 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     // Form management
     const [activeTab, setActiveTab] = useState<Entity>('categories')
     const [showForm, setShowForm] = useState<boolean>(false)
-    const [activeForm, setActiveForm] = useState<string>(t._category)
     const [editForm, setEditForm] = useState<boolean>(false)
     const [currentItem, setCurrentIten] = useState<Item | null>(null)
+    const activeForm = {categories: t._category, photos: t._photo, users: t._user, posts: t._post}
 
     useEffect(() => {
         if (!trans.commonTrans) {
@@ -126,20 +126,6 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
 
     const handleClick = (tab: Entity) => {
         if (tab != activeTab) {
-            switch (tab) {
-                case 'photos':
-                    setActiveForm(t._photo)
-                    break
-                case 'categories':
-                    setActiveForm(t._category)
-                    break
-                case 'users':
-                    setActiveForm(t._user)
-                    break
-                case 'posts':
-                    setActiveForm(t._post)
-                    break
-            }
             setActiveTab(tab)
         }
     }
@@ -288,7 +274,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
                         setShowForm(false); setCurrentIten(null)
                     }}>
                     <Modal.Header closeButton>
-                        {activeForm}
+                        {activeForm[activeTab]}
                     </Modal.Header>
                     <Modal.Body> {
                         getForm()
@@ -299,8 +285,8 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
-    const locale = context.locale? context.locale : defaultLocale
+    const defaultLocale = context.defaultLocale ?? 'en'
+    const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     const dashboardT = getTranslation('dashboard', locale)
     return {

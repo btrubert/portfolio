@@ -112,8 +112,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
         categories =  await response.json()
         play = Array(categories.length).fill(null)
     }
-    const defaultLocale = context.defaultLocale? context.defaultLocale : 'en'
-    const locale = context.locale? context.locale : defaultLocale
+    const defaultLocale = context.defaultLocale ?? 'en'
+    const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     return {
         props: {categories, play, commonT},
