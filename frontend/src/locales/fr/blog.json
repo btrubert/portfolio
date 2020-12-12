@@ -7,5 +7,10 @@
     "_url_link": "https://",
     "_url_text": "Texte (facultatif)",
     "_url_hover": "Description (facultatif)",
-    "_photo": "Photo"
+    "_photo": "Photo",
+    "_save": "Sauvegarder",
+    "_publish": "Publier",
+    "_unpublish": "Retirer l'article",
+    "_saved": "Sauvegarde réussie !",
+    "_error_saved": "Erreur lors de la sauvegarde !"
 }

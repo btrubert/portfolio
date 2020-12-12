@@ -82,20 +82,19 @@ export default function PhotoForm (props: Props) {
                 throw new Error(t._error_form)
             }
         }).then(data => {
-                setSubmitting(false);
-                setMessageAlert(data);
-                setVariantAlert("success");
-                setShowAlert(true);
-                setTimeout(props.refresh, 1000);
+                setSubmitting(false)
+                setMessageAlert(data)
+                setVariantAlert("success")
+                setShowAlert(true)
+                setTimeout(props.refresh, 1000)
             })
         .catch(error =>  {
-            setSubmitting(false);
-            setVariantAlert("danger");
-            setMessageAlert(error+"");
-            setShowAlert(true);
-            setTimeout(()=>setShowAlert(false),3000);
+            setSubmitting(false)
+            setVariantAlert("danger")
+            setMessageAlert(error+"")
+            setShowAlert(true)
+            setTimeout(()=>setShowAlert(false),3000)
         })
-
     }
 
     if (props.categories.length < 1) {
@@ -122,8 +121,7 @@ export default function PhotoForm (props: Props) {
                 handleReset,
                 setFieldValue,
                 values,
-                errors,
-                isSubmitting
+                errors
             }) => <Form noValidate
                 onSubmit={handleSubmit} ref={formRef}>
                     <Form.Group controlId="validationFormikTitle" as={Row}>
@@ -234,8 +232,7 @@ export default function PhotoForm (props: Props) {
                         </Col>
                     </Form.Group>
                 <Form.Row>
-                <FormButtons isSubmitting={isSubmitting}
-                            submitting={submitting}
+                <FormButtons submitting={submitting}
                             showAlert={showAlert}
                             messageAlert={messageAlert}
                             variantAlert={variantAlert}

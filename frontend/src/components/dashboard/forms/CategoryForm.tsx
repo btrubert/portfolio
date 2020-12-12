@@ -98,8 +98,7 @@ export default function CategoryForm (props: Props) {
             handleChange,
             handleReset,
             values,
-            errors,
-            isSubmitting
+            errors
         }) => <Form noValidate
                 onSubmit={handleSubmit}
                 ref={formRef}>
@@ -152,8 +151,7 @@ export default function CategoryForm (props: Props) {
                         </Col>
                     </Form.Group>
                 <Form.Row>
-                <FormButtons isSubmitting={isSubmitting}
-                            submitting={submitting}
+                <FormButtons submitting={submitting}
                             showAlert={showAlert}
                             messageAlert={messageAlert}
                             variantAlert={variantAlert}

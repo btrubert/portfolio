@@ -6,8 +6,7 @@ import Alert from 'react-bootstrap/Alert'
 import Col from 'react-bootstrap/Col'
 
 interface Props {
-    handleReset: () => void,
-    isSubmitting: boolean,
+    handleReset: () => void
     submitting: boolean,
     showAlert: boolean,
     variantAlert: string,
@@ -30,7 +29,7 @@ export default function FormButtons (props: Props) {
     <Col md={4}>
         <OverlayTrigger
             key="savedPop"
-            show={props.isSubmitting || props.submitting}
+            show={props.submitting}
             placement="right"
             overlay={
                 <Popover id="savedPop">
@@ -42,10 +41,10 @@ export default function FormButtons (props: Props) {
                 </Popover>
             }
             >
-            <Button type="submit" disabled={props.isSubmitting || props.submitting}>{save}</Button>
+            <Button type="submit" disabled={props.submitting}>{save}</Button>
         </OverlayTrigger>
     </Col>
-    <Col className="text-right" md={{span: 4, offset: 4}} hidden={props.isSubmitting || props.submitting || props.showAlert}>
+    <Col className="text-right" md={{span: 4, offset: 4}} hidden={props.submitting || props.showAlert}>
         <Button type="button" onClick={props.handleReset}>{t._reset}</Button>
     </Col>
     <Col sm={8}>

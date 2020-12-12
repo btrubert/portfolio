@@ -10,8 +10,10 @@ import Editor from 'components/blog/Editor'
 function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [trans, dispatch] = useTranslation()
     const [state, dispatchS] = useSession()
-    const [savedContent, setSavedContent] = useState<boolean>(true)
-    const [content, setContent] = useState<{content: string, published: boolean, category: Category}>()
+    const [post, setPost] = useState<Post>()
+    const [token, setToken] = useState<string>('')
+    const [addedPhoto, setAddedPhoto] = useState<boolean>(false)
+    const [photos, setPhotos] = useState<Array<Photo> | null>(null)
     const router = useRouter()
     const t = JSON.parse(props.blogT)
 
@@ -31,10 +33,12 @@ function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProp
     }, [state.admin, state.loading])
 
     const fetchContent = async (id: string) => {
-        const response = await fetch("/smf/admin/blog/edit/"+id)
+        const response = await fetch("/smf/admin/blog/edit/" + id)
         const data = await response.json()
         if (data.content) {
-            setContent(data.content)
+            setPost(data.content)
+            setToken(data.token)
+            setAddedPhoto(!addedPhoto)
         } else {
             router.push('/')
         }
@@ -46,12 +50,29 @@ function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProp
         } else {
             router.push('/')
         }
-    }, [savedContent])
+    }, [])
 
-    if (state.loading || !state.admin || !content) {
+    const fectchImages = async () => {
+        if (post?.category) {
+            const response = await fetch("/smf/gallery/" + post.category.name)
+            const data = await response.json()
+            setPhotos(data)
+        }
+    }
+
+    useEffect(() => {
+        fectchImages()
+    }, [addedPhoto])
+
+    if (state.loading || !state.admin || !post) {
         return <></>
     } else {
-        return <Editor translation={t} formTrans={props.dashboardT} initialContent={content} refresh={() => setSavedContent(!savedContent)} />
+        return <Editor translation={t}
+                formTrans={props.dashboardT}
+                post={post}
+                token={token}
+                updatePhotos={() => setAddedPhoto(!addedPhoto)}
+                photos={photos}/>
     }
 }
 

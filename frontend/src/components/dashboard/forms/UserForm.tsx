@@ -76,21 +76,21 @@ export default function UserForm (props: Props) {
             if (response.ok) {
                 return response.text()
             } else {
-                throw new Error(t._error_form);
+                throw new Error(t._error_form)
             }
         }).then(data => {
-                setSubmitting(false);
-                setMessageAlert(data);
-                setVariantAlert("success");
-                setShowAlert(true);
-                setTimeout(props.refresh, 1000);
+                setSubmitting(false)
+                setMessageAlert(data)
+                setVariantAlert("success")
+                setShowAlert(true)
+                setTimeout(props.refresh, 1000)
             })
         .catch(error =>  {
-            setSubmitting(false);
-            setVariantAlert("danger");
-            setMessageAlert(error+"");
-            setShowAlert(true);
-            setTimeout(()=>setShowAlert(false),3000);
+            setSubmitting(false)
+            setVariantAlert("danger")
+            setMessageAlert(error+"")
+            setShowAlert(true)
+            setTimeout(()=>setShowAlert(false),3000)
         });
     }
 
@@ -114,8 +114,7 @@ export default function UserForm (props: Props) {
             handleChange,
             handleReset,
             values,
-            errors,
-            isSubmitting
+            errors
         }) => <Form noValidate
                 onSubmit={handleSubmit}
                 ref={formRef}>
@@ -223,8 +222,7 @@ export default function UserForm (props: Props) {
                         </Col>
                         </Form.Group>
                 <Form.Row>
-                <FormButtons isSubmitting={isSubmitting}
-                            submitting={submitting}
+                <FormButtons submitting={submitting}
                             showAlert={showAlert}
                             messageAlert={messageAlert}
                             variantAlert={variantAlert}

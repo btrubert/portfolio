@@ -8,4 +8,9 @@
     "_url_text": "Text (optional)",
     "_url_hover": "Description (optional)",
     "_photo": "Photo",
+    "_save": "Save",
+    "_publish": "Publish",
+    "_unpublish": "Unpublish",
+    "_saved": "Saved !",
+    "_error_saved": "Error, not saved !"
 }

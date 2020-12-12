@@ -49,6 +49,7 @@ export default function PostForm (props: Props) {
         await fetch("/smf/admin/post/new",
         {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
+        formData.append("content", `# ${values.title}\n## ${values.author}\n\n`)
         fetch("/smf/admin/post/new",
         {
             method:'POST',
@@ -67,7 +68,7 @@ export default function PostForm (props: Props) {
                 setMessageAlert(data)
                 setVariantAlert("success")
                 setShowAlert(true)
-                setTimeout(props.refresh, 1000);
+                setTimeout(props.refresh, 1000)
             })
         .catch(error =>  {
             setSubmitting(false)
@@ -94,8 +95,7 @@ export default function PostForm (props: Props) {
             handleChange,
             handleReset,
             values,
-            errors,
-            isSubmitting
+            errors
         }) => <Form noValidate
                 onSubmit={handleSubmit}
                 ref={formRef}>
@@ -155,8 +155,7 @@ export default function PostForm (props: Props) {
                         </Col>
                     </Form.Group>
                 <Form.Row>
-                <FormButtons isSubmitting={isSubmitting}
-                            submitting={submitting}
+                <FormButtons submitting={submitting}
                             showAlert={showAlert}
                             messageAlert={messageAlert}
                             variantAlert={variantAlert}
