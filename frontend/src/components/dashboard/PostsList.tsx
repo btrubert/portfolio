@@ -22,7 +22,7 @@ export default function PostsList (props: Props) {
 
     const router = useRouter()
     const prefix = router.locale === 'fr'? '/fr': ''
-    const editClicked = (p: Post) => window.location.assign(`${prefix}/admin/blog/${p.id}`)
+    const editClicked = (p: Post) => router.push(`${prefix}/admin/blog/${p.id}`)
 
     useEffect(() => {
         const asc = orderAsc? 1 : -1

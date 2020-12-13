@@ -3,8 +3,6 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Layout from './Layout'
-import { Formik } from 'formik'
-import * as yup from 'yup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
@@ -29,13 +27,11 @@ interface Props {
     updatePhotos: () => void,
 }
 
-interface FormValues {
-    content: string,
-}
 
 function Editor (props: Props) {
     const formRef = useRef<HTMLFormElement>(null)
     const textRef = useRef<HTMLTextAreaElement>(null)
+    const [content, setContent] = useState<string>(props.post.content)
     const t = props.translation
     const published = props.post.published
     const [showAlert, setShowAlert] = useState<boolean>(false)
@@ -43,16 +39,24 @@ function Editor (props: Props) {
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [showForm, setShowForm] = useState<boolean>(false)
     const category = props.post.category
+    const [showLink, setShowLink] = useState<boolean>(false)
+    const [showImage, setShowImage] = useState<boolean>(false)
 
     const [submitting, setSubmitting] = useState<boolean>(false)
-    const schema = yup.object({
-        content: yup.string().required(),
-    })
+    
+    const handleChange = () => {
+        if (textRef.current) {
+            console.log('test')
+            setContent(textRef.current.value)
+        }
+    }
 
-    const handleSubmitForm = (values: FormValues) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         setSubmitting(true)
-        if (!formRef.current){
+        if (!formRef.current || !textRef.current){
             // if the form is not initialised do nothing
+            setSubmitting(false)
             return;
         }
         let formData = new FormData(formRef.current)
@@ -101,6 +105,7 @@ function Editor (props: Props) {
                 }
                 text += suffixe
                 textRef.current.setRangeText(text)
+                handleChange()
             }
     }
 
@@ -128,6 +133,7 @@ function Editor (props: Props) {
             let text = '  '
             text += textRef.current.value.slice(textRef.current.selectionStart, textRef.current.selectionEnd).replace('\n', "\n  ")
             textRef.current.setRangeText(text)
+            setContent(textRef.current.value)
         }
     }
 
@@ -143,6 +149,7 @@ function Editor (props: Props) {
         if (textRef.current && textRef.current.selectionStart === textRef.current.selectionEnd) {
             const formData = new FormData(event.currentTarget)
             if (formData.get('url') !== '') {
+                setShowLink(false)
                 const url = formData.get("url")
                 const text = formData.get("text") !== ''? formData.get("text") : formData.get("url")
                 const alt = formData.get("alt") !== ''? `"${formData.get("alt")}"` : ''
@@ -153,6 +160,7 @@ function Editor (props: Props) {
 
     const imageClicked = (p: Photo) => {
         if (textRef.current && textRef.current.selectionStart === textRef.current.selectionEnd) {
+            setShowImage(false)
             const url = "/uploads/" + p.path
             const text = `"${p.title}"`
             const alt = p.description && p.description !== ''? p.description : ''
@@ -161,6 +169,7 @@ function Editor (props: Props) {
     }
 
     const handleAddImage = () => {
+        setShowImage(false)
         setShowForm(true)
     }
 
@@ -212,98 +221,84 @@ function Editor (props: Props) {
                 <Icon path={mdiKeyboardTab} size={.8} color="white" horizontal />
             </div>
             <OverlayTrigger
-            trigger="click"
-            rootClose
-            key="link"
-            placement="bottom"
-            overlay={
-                <Popover id="link">
-                <Popover.Content>
-                <Form onSubmit={linkClicked}>
-                    <Form.Control type="text" placeholder={t._url_link} name="url" className="mr-2" />
-                    <Form.Control type="text" placeholder={t._url_text} name="text" className="mr-2" />
-                    <Form.Control type="text" placeholder={t._url_hover} name="alt" className="mr-2" />
-                    <Form.Control type="submit" value="Insert"/>
-                </Form>
-                </Popover.Content>
-                </Popover>
-            }
-            >
-            <div className="editButton">
-                <Icon path={mdiLink} size={.8} color="white" rotate={90} />
-            </div>
+                trigger="click"
+                key="link"
+                show={showLink}
+                onToggle={() => setShowLink(!showLink)}
+                placement="bottom"
+                overlay={
+                    <Popover id="link">
+                    <Popover.Content>
+                    <Form onSubmit={linkClicked}>
+                        <Form.Control type="text" placeholder={t._url_link} name="url" className="mr-2" />
+                        <Form.Control type="text" placeholder={t._url_text} name="text" className="mr-2" />
+                        <Form.Control type="text" placeholder={t._url_hover} name="alt" className="mr-2" />
+                        <Form.Control type="submit" value="Insert"/>
+                    </Form>
+                    </Popover.Content>
+                    </Popover>
+                }
+                >
+                <div className="editButton">
+                    <Icon path={mdiLink} size={.8} color="white" rotate={90} />
+                </div>
             </OverlayTrigger>
             <OverlayTrigger
-            trigger="click"
-            rootClose
-            key="image"
-            placement="bottom"
-            overlay={
-                <Popover id="image">
-                <Popover.Title>
-                {t._image_selection} <span className="addImage" onClick={handleAddImage}>{t._add_new_image}</span>
-                </Popover.Title>
-                <Popover.Content>
-                    <Row>
-                    {props.photos && 
-                    props.photos.map((p, index:number) => 
-                        <Col key={index} sm={6} md={6} lg={4}>
-                            <Image src={`/smf/img/${p.path}`}
-                                width="128" height="128" unoptimized
-                                onClick={() => imageClicked(p)} />
-                        </Col>
-                    )}
-                    </Row>
-                </Popover.Content>
-                </Popover>
-            }
-            >
-            <div className="editButton">
-                <Icon path={mdiImageMultipleOutline} size={.8} color="white" />
-            </div>
+                trigger="click"
+                show={showImage}
+                onToggle={() => setShowImage(!showImage)}
+                key="image"
+                placement="bottom"
+                overlay={
+                    <Popover id="image">
+                    <Popover.Title>
+                    {t._image_selection} <span className="addImage" onClick={handleAddImage}>{t._add_new_image}</span>
+                    </Popover.Title>
+                    <Popover.Content>
+                        <Row>
+                        {props.photos && 
+                        props.photos.map((p, index:number) => 
+                            <Col key={index} sm={6} md={6} lg={4}>
+                                <Image src={`/smf/img/${p.path}`}
+                                    width="128" height="128" unoptimized
+                                    onClick={() => imageClicked(p)} />
+                            </Col>
+                        )}
+                        </Row>
+                    </Popover.Content>
+                    </Popover>
+                }
+                >
+                <div className="editButton">
+                    <Icon path={mdiImageMultipleOutline} size={.8} color="white" />
+                </div>
             </OverlayTrigger>
             <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
         </Row>
-        <Formik validationSchema={schema}
-                onSubmit={handleSubmitForm}
-                validationOnBlur={false}
-                validationOnChange={false}
-                initialValues={
-                    {
-                        content: props.post.content,
-                    }
-                }>{({
-                    handleSubmit,
-                    handleChange,
-                    values,
-                    errors
-                }) => <Form noValidate
-                        onSubmit={handleSubmit}
-                        ref={formRef}>
-                        <Row>
-                            <Col>
-                                <Form.Group controlId="validationFormikContent">
-                                    <Form.Control required as="textarea"
-                                        name="content"
-                                        value={values.content}
-                                        onChange={handleChange}
-                                        rows={23}
-                                        ref={textRef}>
-                                    </Form.Control>
-                                </Form.Group>
-                            </Col>
-                            <Col>
-                                <Layout content={values.content} />
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col className="text-right" sm={6}>
-                                <Button className="mr-2" variant="outline-success" type="submit" disabled={submitting}>{t._save}</Button>
-                                <Button variant="outline-info" onClick={handlePublish} disabled={submitting}>{published? t._unpublish : t._publish}</Button>
-                            </Col>
-                        </Row>
-                    </Form>}
-            </Formik>
+        <Form noValidate
+            onSubmit={handleSubmit}
+            ref={formRef}>
+            <Row>
+                <Col>
+                    <Form.Group controlId="validationFormikContent">
+                        <Form.Control required as="textarea"
+                            name="content"
+                            value={content}
+                            onChange={handleChange}
+                            rows={23}
+                            ref={textRef}>
+                        </Form.Control>
+                    </Form.Group>
+                    <div className="text-right">
+                        <Button className="mr-2" variant="outline-success" type="submit" disabled={submitting}>{t._save}</Button>
+                        <Button variant="outline-info" onClick={handlePublish} disabled={submitting}>{published? t._unpublish : t._publish}</Button>
+                    </div>
+                </Col>
+                <Col>
+                    <Layout content={content} />
+                </Col>
+            </Row>
+        </Form>
         <Modal className="custom-form" size="lg"
             show={showForm}
             onHide={() => {setShowForm(false)}}>
