@@ -74,7 +74,6 @@ export default function PostsList (props: Props) {
 
     const timestampToString = (ts: number) => {
         let d = new Date(ts*1000)
-        console.log(d)
         return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
     }
 

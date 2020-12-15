@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
+import { Router, useRouter } from 'next/router'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
@@ -41,12 +42,44 @@ function Editor (props: Props) {
     const category = props.post.category
     const [showLink, setShowLink] = useState<boolean>(false)
     const [showImage, setShowImage] = useState<boolean>(false)
-
+    const [saved, setSaved] = useState<boolean>(true)
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const router = useRouter()
+
+    const handleWindowUnload = (e: BeforeUnloadEvent) => {
+        if (!saved) {
+            e.preventDefault()
+            return (e.returnValue = t._leave_without_saving)
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('beforeunload', handleWindowUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleWindowUnload);
+        }
+    })
+
+    useEffect(() => {
+        const askConfirmation = () => {
+            if (saved) return;
+            if (confirm(t._leave_without_saving)) {
+                setSaved(true)
+            } else {
+                router.events.emit('routeChangeError')
+                throw 'routeChange aborted.'
+            }
+        }
+       Router.events.on('beforeHistoryChange', askConfirmation)
+       return () => Router.events.off('beforeHistoryChange', askConfirmation)
+    }, [saved])
+
+    
     
     const handleChange = () => {
         if (textRef.current) {
-            console.log('test')
+            setSaved(false)
             setContent(textRef.current.value)
         }
     }
@@ -79,6 +112,7 @@ function Editor (props: Props) {
             }
         }).then(data => {
                 setSubmitting(false)
+                setSaved(true)
                 setMessageAlert(t._saved)
                 setVariantAlert("success")
                 setShowAlert(true)

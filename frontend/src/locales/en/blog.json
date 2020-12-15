@@ -12,5 +12,6 @@
     "_publish": "Publish",
     "_unpublish": "Unpublish",
     "_saved": "Saved !",
-    "_error_saved": "Error, not saved !"
+    "_error_saved": "Error, not saved !",
+    "_leave_without_saving": "Are you sure you want to leave this page ?\n Unsaved modifications will be lost !"
 }
