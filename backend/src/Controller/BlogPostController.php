@@ -127,7 +127,7 @@ class BlogPostController extends AbstractController
             if ($request->isMethod("GET")) {
                 $token = $csrf_token->getToken("post_item")->getValue();
                 $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
-                $spost = $objectEncoder->encodeObjectToJson($post, ['createdAt', 'updatedAt', 'contentUpdated', 'author', 'title']);
+                $spost = $objectEncoder->encodeObjectToJson($post, ['createdAt', 'updatedAt', 'contentUpdated']);
                 return new JsonResponse(['token' => $token, 'content' => json_decode($spost)]);
             }
 

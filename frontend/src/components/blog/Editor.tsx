@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Router, useRouter } from 'next/router'
+import { useSession } from 'utils/SessionContext'
+import matter from 'gray-matter'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
@@ -32,6 +34,7 @@ interface Props {
 function Editor (props: Props) {
     const formRef = useRef<HTMLFormElement>(null)
     const textRef = useRef<HTMLTextAreaElement>(null)
+    const [session, dispatch] = useSession()
     const [content, setContent] = useState<string>(props.post.content)
     const t = props.translation
     const published = props.post.published
@@ -63,7 +66,7 @@ function Editor (props: Props) {
 
     useEffect(() => {
         const askConfirmation = () => {
-            if (saved) return;
+            if (saved || !session.admin) return;
             if (confirm(t._leave_without_saving)) {
                 setSaved(true)
             } else {
@@ -71,11 +74,24 @@ function Editor (props: Props) {
                 throw 'routeChange aborted.'
             }
         }
+        // beforeHistoryChange instead of routeChangeStart > wrong url if cancelled
        Router.events.on('beforeHistoryChange', askConfirmation)
        return () => Router.events.off('beforeHistoryChange', askConfirmation)
     }, [saved])
 
-    
+    const saveShortcut = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault()
+            handleSubmit()
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('keydown', saveShortcut)
+        return () => {
+            window.removeEventListener('keydown', saveShortcut)
+        }
+    })
     
     const handleChange = () => {
         if (textRef.current) {
@@ -84,19 +100,40 @@ function Editor (props: Props) {
         }
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const verifyMetadata = (content: string): [string, string, string] => {
+        const endPosition = content.search(/\n---/)
+        let header = content.slice(0, endPosition)
+        header = header.replace(/title:/, "title: ")
+        header = header.replace(/author:/, "author: ")
+        header = header.replace(/locale:/, "locale: ")
+        header = header.replace(/  /g, " ")
+        console.log(header)
+        if (textRef.current) {
+            textRef.current.setRangeText(header, 0, endPosition)
+            setContent(textRef.current.value)
+        }
+        const metadata  = matter(header).data
+        const author = metadata.author ? metadata.author : props.post.author
+        const title = metadata.title ? metadata.title : props.post.title
+        const locale = router.locales?.includes(metadata.locale) ? metadata.locale : props.post.locale
+        console.log([author, title, locale])
+        return [author, title, locale]
+    }
+
+    const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+        e?.preventDefault()
         setSubmitting(true)
         if (!formRef.current || !textRef.current){
             // if the form is not initialised do nothing
             setSubmitting(false)
             return;
         }
+        const [author, title, locale] = verifyMetadata(textRef.current.value)
         let formData = new FormData(formRef.current)
         formData.append("_token", props.token)
-        formData.append("author", props.post.author)
-        formData.append("title", props.post.title)
-        formData.append("locale", props.post.locale)
+        formData.append("author", author)
+        formData.append("title", title)
+        formData.append("locale", locale)
         fetch("/smf/admin/blog/edit/" + props.post.id,
         {
             method: 'POST',
@@ -267,7 +304,7 @@ function Editor (props: Props) {
                         <Form.Control type="text" placeholder={t._url_link} name="url" className="mr-2" />
                         <Form.Control type="text" placeholder={t._url_text} name="text" className="mr-2" />
                         <Form.Control type="text" placeholder={t._url_hover} name="alt" className="mr-2" />
-                        <Form.Control type="submit" value="Insert"/>
+                        <Form.Control type="submit" value={t._insert} />
                     </Form>
                     </Popover.Content>
                     </Popover>

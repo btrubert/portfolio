@@ -41,6 +41,16 @@ const reducer = (state: State, action: Action) => {
         token: action.payload.token,
         loading: false,
       }
+    case 'logout':
+      return {
+        username: initialState.username,
+        firstName: initialState.firstName,
+        lastName: initialState.lastName,
+        email: initialState.email,
+        admin: initialState.admin,
+        token: initialState.token,
+        loading: false,
+      }
     default:
       throw new Error(`Unhandled action type: ${action.type}`)
   }

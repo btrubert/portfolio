@@ -7,11 +7,13 @@
     "_url_link": "https://",
     "_url_text": "Texte (facultatif)",
     "_url_hover": "Description (facultatif)",
+    "_insert": "Ajouter",
     "_photo": "Photo",
     "_save": "Sauvegarder",
     "_publish": "Publier",
     "_unpublish": "Retirer l'article",
     "_saved": "Sauvegarde réussie !",
     "_error_saved": "Erreur lors de la sauvegarde !",
-    "_leave_without_saving": "\tEtes-vous sûr de vouloir quitter cette page ?\n Toutes modifications non enregistrées seront perdues !"
+    "_leave_without_saving": "\tEtes-vous sûr de vouloir quitter cette page ?\n Toutes modifications non enregistrées seront perdues !",
+    "_auto_save": "Sauvegarde auto"
 }

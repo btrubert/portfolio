@@ -70,6 +70,9 @@ function Menu () {
         })
         .then(response => {
             if (response.ok) {
+                dispatch({
+                    type: 'logout'
+                })
                 window.location.assign('/')
             } else {
                 throw new Error("Error while trying to logout.")

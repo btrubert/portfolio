@@ -49,7 +49,7 @@ export default function PostForm (props: Props) {
         await fetch("/smf/admin/post/new",
         {method: "GET"}).then(response => {return response.text()}).then(data => {token = data})
         formData.append("_token", token)
-        formData.append("content", `# ${values.title}\n## ${values.author}\n\n`)
+        formData.append("content", `---\ntitle: ${values.title}\nauthor: ${values.author}\n---\n`)
         fetch("/smf/admin/post/new",
         {
             method:'POST',

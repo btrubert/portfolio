@@ -7,11 +7,13 @@
     "_url_link": "https://",
     "_url_text": "Text (optional)",
     "_url_hover": "Description (optional)",
+    "_insert": "Insert",
     "_photo": "Photo",
     "_save": "Save",
     "_publish": "Publish",
     "_unpublish": "Unpublish",
     "_saved": "Saved !",
     "_error_saved": "Error, not saved !",
-    "_leave_without_saving": "Are you sure you want to leave this page ?\n Unsaved modifications will be lost !"
+    "_leave_without_saving": "Are you sure you want to leave this page ?\n Unsaved modifications will be lost !",
+    "_auto_save": "Auto Save"
 }
