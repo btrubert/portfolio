@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Layout from './Layout'
+import PostCard from './PostCard'
 import Dropdown from 'react-bootstrap/Dropdown'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
@@ -19,6 +20,7 @@ import { mdiFormatSize, mdiNumeric1Box , mdiNumeric2Box, mdiNumeric3Box, mdiNume
 import { mdiFormatBold, mdiFormatItalic, mdiCodeTags, mdiFormatQuoteClose } from '@mdi/js'
 import { mdiFormatListBulleted, mdiFormatListNumbered, mdiKeyboardTab } from '@mdi/js'
 import { mdiLink, mdiImageMultipleOutline } from '@mdi/js'
+import { mdiCached } from '@mdi/js'
 
 
 interface Props {
@@ -45,6 +47,7 @@ function Editor (props: Props) {
     const category = props.post.category
     const [showLink, setShowLink] = useState<boolean>(false)
     const [showImage, setShowImage] = useState<boolean>(false)
+    const [showCard, setShowCard] = useState<boolean>(true)
     const [saved, setSaved] = useState<boolean>(true)
     const [submitting, setSubmitting] = useState<boolean>(false)
     const router = useRouter()
@@ -100,24 +103,27 @@ function Editor (props: Props) {
         }
     }
 
-    const verifyMetadata = (content: string): [string, string, string] => {
+    const verifyMetadata = (content: string): [string, string, string, string, string] => {
         const endPosition = content.search(/\n---/)
         let header = content.slice(0, endPosition)
-        header = header.replace(/title:/, "title: ")
-        header = header.replace(/author:/, "author: ")
-        header = header.replace(/locale:/, "locale: ")
+        header = header.replace(/:/g, ": ")
         header = header.replace(/  /g, " ")
-        console.log(header)
         if (textRef.current) {
-            textRef.current.setRangeText(header, 0, endPosition)
+            textRef.current.setRangeText(header, 0, endPosition, "start")
             setContent(textRef.current.value)
         }
         const metadata  = matter(header).data
         const author = metadata.author ? metadata.author : props.post.author
         const title = metadata.title ? metadata.title : props.post.title
         const locale = router.locales?.includes(metadata.locale) ? metadata.locale : props.post.locale
-        console.log([author, title, locale])
-        return [author, title, locale]
+        const description = metadata.description ? metadata.description : props.post.description
+        const cover = metadata.cover ? metadata.cover : props.post.cover
+        props.post.author = author
+        props.post.title = title
+        props.post.locale = locale
+        props.post.description = description
+        props.post.cover = cover
+        return [author, title, locale, description, cover]
     }
 
     const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
@@ -128,12 +134,14 @@ function Editor (props: Props) {
             setSubmitting(false)
             return;
         }
-        const [author, title, locale] = verifyMetadata(textRef.current.value)
+        const [author, title, locale, description, cover] = verifyMetadata(textRef.current.value)
         let formData = new FormData(formRef.current)
         formData.append("_token", props.token)
         formData.append("author", author)
         formData.append("title", title)
         formData.append("locale", locale)
+        formData.append("description", description)
+        formData.append("cover", cover)
         fetch("/smf/admin/blog/edit/" + props.post.id,
         {
             method: 'POST',
@@ -244,6 +252,8 @@ function Editor (props: Props) {
         setShowForm(true)
     }
 
+    const toggleShowCard = () => setShowCard(!showCard)
+
     return <>
         <Row>
             <div className="editButton">
@@ -344,7 +354,10 @@ function Editor (props: Props) {
                     <Icon path={mdiImageMultipleOutline} size={.8} color="white" />
                 </div>
             </OverlayTrigger>
-            <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert>
+            <div className="editButton" onClick={toggleShowCard}>
+                <Icon path={mdiCached} size={.8} color="white" horizontal />
+            </div>
+            <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert> 
         </Row>
         <Form noValidate
             onSubmit={handleSubmit}
@@ -366,7 +379,12 @@ function Editor (props: Props) {
                     </div>
                 </Col>
                 <Col>
+                <div hidden={!showCard}>
+                    <PostCard post={props.post}/>
+                </div>
+                <div hidden={showCard}>
                     <Layout content={content} />
+                </div>
                 </Col>
             </Row>
         </Form>

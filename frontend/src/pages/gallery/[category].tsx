@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Photo from 'components/Photo'
+import Photo from 'components/photo/Photo'
 
 
 function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) {

@@ -51,6 +51,8 @@ interface Post {
     createdAt: DateObject,
     updatedContent: DateObject,
     locale: string,
+    description?: string,
+    cover?: string,
 }
 
 type Item = Category | Photo | User | Post

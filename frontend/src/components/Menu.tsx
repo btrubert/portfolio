@@ -122,7 +122,7 @@ function Menu () {
                                 <Nav.Link>{trans.common._gallery}</Nav.Link>
                             </Link>
                             <Link href="/blog" passHref>
-                                <Nav.Link disabled>{trans.common._blog}</Nav.Link>
+                                <Nav.Link>{trans.common._blog}</Nav.Link>
                             </Link>
                             <Link href="/contact" passHref>
                                 <Nav.Link disabled>{trans.common._contact}</Nav.Link>

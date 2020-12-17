@@ -23,6 +23,43 @@ use App\Controller\PhotoController;
 class BlogPostController extends AbstractController
 {
 
+
+    /**
+     * @Route("/posts", name="api_posts")
+     */
+    public function posts(ObjectEncoder $objectEncoder)
+    {
+        try {
+            $posts = $this->getDoctrine()->getRepository(BlogPost::class)->findPublished();
+            $sposts = $objectEncoder->encodeObjectToJson($posts, ['category', 'updatedAt', 'content', 'published', 'id']);
+            return new JsonResponse(json_decode($sposts));
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @Route("/post/{title}", name="api_post")
+     */
+    public function getPost($title, ObjectEncoder $objectEncoder)
+    {
+        try {
+            $post = $this->getDoctrine()->getRepository(BlogPost::class)->findOneBy(['title' => $title, 'published' => true]);
+            if ($post) {
+                $spost = $objectEncoder->encodeObjectToJson($post, ['updatedAt', 'published', 'id']);
+                return new JsonResponse(json_decode($spost));
+            } else {
+                return new JsonResponse("This category does not exit.", Response::HTTP_NOT_FOUND);
+            }
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * @Route("/admin/posts", name="posts_list")
      */
@@ -30,7 +67,7 @@ class BlogPostController extends AbstractController
     {
         try {
             $posts = $this->getDoctrine()->getRepository(BlogPost::class)->findAll();
-            $sposts = $objectEncoder->encodeObjectToJson($posts, ['category', 'updatedAt', 'content']);
+            $sposts = $objectEncoder->encodeObjectToJson($posts, ['category', 'updatedAt', 'content', 'description', 'cover']);
             return new JsonResponse(json_decode($sposts));
         } catch (ConnectionException $e) {
             return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
@@ -127,7 +164,7 @@ class BlogPostController extends AbstractController
             if ($request->isMethod("GET")) {
                 $token = $csrf_token->getToken("post_item")->getValue();
                 $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
-                $spost = $objectEncoder->encodeObjectToJson($post, ['createdAt', 'updatedAt', 'contentUpdated']);
+                $spost = $objectEncoder->encodeObjectToJson($post, ['updatedAt', 'contentUpdated']);
                 return new JsonResponse(['token' => $token, 'content' => json_decode($spost)]);
             }
 

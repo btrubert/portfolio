@@ -28,11 +28,11 @@ function Layout (props: Props) {
     }
     setContent(content)
     
-    return <>
+    return <div className="postLayout">
     <h2>{data.title}</h2>
     <h4>{data.author}</h4>
     <div dangerouslySetInnerHTML={{ __html: postHtml }}></div>
-    </>
+    </div>
 }
 
 export default Layout

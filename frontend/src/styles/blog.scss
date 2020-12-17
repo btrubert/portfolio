@@ -37,3 +37,32 @@
         max-height: 25em;
     }
 }
+
+.blogCard {
+    margin-bottom: 3em;
+}
+
+.blogCard:hover {
+    border: #28a745 3px solid;
+}
+
+.blogCardLink:hover {
+    text-decoration: none;
+}
+
+.blogCardImage {
+    object-fit: cover;
+}
+
+.blogCardTitle {
+    font-weight: bold;
+}
+
+.blogCardAuthor {
+    font-weight: lighter;
+    margin-bottom: 1em;
+}
+
+.blogCardDescription {
+    font-style: italic;
+}

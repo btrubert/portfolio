@@ -16,7 +16,13 @@ class BlogPostType extends AbstractType
             ->add('author', TextType::class)
             ->add('title', TextType::class)
             ->add('locale', TextType::class)
-            ->add('content', TextType::class);
+            ->add('content', TextType::class)
+            ->add('description', TextType::class, [
+                'required' => false
+            ])
+            ->add('cover', TextType::class, [
+                'required' => false
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
