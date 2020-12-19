@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import PostCard from 'components/blog/PostCard'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Form from 'react-bootstrap/Form'
 
 
 
@@ -16,7 +17,9 @@ function Blog(props: InferGetStaticPropsType<typeof getStaticProps>) {
     const [state, dispatchS] = useSession()
     const posts = props.posts
     const [trans, dispatch] = useTranslation()
+    const t = JSON.parse(props.blogT)
     const router = useRouter()
+    const [filter, setFilter] = useState<string>('')
 
     useEffect(() => {
         if (!trans.commonTrans) {
@@ -32,12 +35,22 @@ function Blog(props: InferGetStaticPropsType<typeof getStaticProps>) {
         return <></>
     } else {
         return <>
-            <Row> {
-                posts.map((p: Post, index: number) => 
+            <h2 className="text-center">Blog</h2>
+            <Row className="justify-content-end">
+                <Form inline className="mb-3">
+                    <Form.Group>
+                        <Form.Label column>{t._search_article} :</Form.Label>
+                        <Form.Control type="text" placeholder={t._title} value={filter}
+                        onChange={(e) => setFilter(e.currentTarget.value)}/>
+                    </Form.Group>
+                </Form>
+            </Row>
+            <Row> {posts && 
+                posts.filter((p: Post) => p.title.toLowerCase().includes(filter.toLowerCase())).map((p: Post, index: number) => 
                 <Col  xs={12}
                     lg={6}
                     key={index} >
-                    <Link href={`/blog/${p.title}`} as={`/blog/${p.title}`} passHref >
+                    <Link href={encodeURI(`/blog/${p.title}`)} as={encodeURI(`/blog/${p.title}`)} passHref >
                     <a className="blogCardLink">
                         <PostCard post={p}/>   
                     </a>  
@@ -57,8 +70,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const defaultLocale = context.defaultLocale ?? 'en'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
+    const blogT = getTranslation('blog', locale)
     return {
-        props: {posts, commonT},
+        props: {posts, commonT, blogT},
         revalidate: 60,
     }
 }

@@ -15,5 +15,6 @@
     "_saved": "Saved !",
     "_error_saved": "Error, not saved !",
     "_leave_without_saving": "Are you sure you want to leave this page ?\n Unsaved modifications will be lost !",
-    "_auto_save": "Auto Save"
+    "_auto_save": "Auto Save",
+    "_search_article": "Search an article"
 }

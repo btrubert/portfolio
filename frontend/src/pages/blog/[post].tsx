@@ -27,7 +27,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
         return <></>
     } else {
         return <>
-                <Layout content={props.post.content} />
+                <Layout content={props.post.content} createdAt={props.post.createdAt}/>
         </>
     }
 }
@@ -37,12 +37,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const defaultLocale = context.defaultLocale ?? 'en'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
-    const response = await fetch(`${process.env.SERVEUR_URL}/smf/post/${context.params?.post}`)
     let post: Post | null = null
-    if (response.ok) {
-        post = await response.json()
-        return {
-            props: {post, commonT},
+    if (typeof(context.params?.post) === 'string') {
+        const response = await fetch(`${process.env.SERVEUR_URL}/smf/post/${encodeURI(context.params.post)}`)
+        if (response.ok) {
+            post = await response.json()
+            return {
+                props: {post, commonT},
+            }
         }
     }
     return {

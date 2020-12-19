@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import Table from 'react-bootstrap/Table'
 import ActionButtons from './ActionButtons'
 import { useRouter } from 'next/router'
+import { timestampToStringCompact } from 'utils/tsToString'
 import Icon from '@mdi/react'
 import { mdiImageFilterTiltShift , mdiFilterVariant } from '@mdi/js'
 
@@ -72,11 +73,6 @@ export default function PostsList (props: Props) {
         }
     }
 
-    const timestampToString = (ts: number) => {
-        let d = new Date(ts*1000)
-        return `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`
-    }
-
     return <Table borderless hover striped responsive="lg" variant="dark">
             <thead>
                 <tr>
@@ -107,7 +103,7 @@ export default function PostsList (props: Props) {
                     <tr key={index}>
                         <th>{p.title}  ({p.locale})</th>
                         <th>{p.author}</th>
-                        <th>{timestampToString(p.createdAt.timestamp)}{p.updatedContent? ` (${timestampToString(p.updatedContent.timestamp)})` : ''}</th>
+                        <th>{timestampToStringCompact(p.createdAt.timestamp)}{p.updatedContent? ` (${timestampToStringCompact(p.updatedContent.timestamp)})` : ''}</th>
                         <th>{p.published? t._published : t._private}</th>
                         <th>
                             <ActionButtons item={p} editClicked={() => editClicked(p)} deleteClicked={() => props.deleteClicked(p)} translation={t} />

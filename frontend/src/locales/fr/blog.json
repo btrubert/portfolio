@@ -15,5 +15,6 @@
     "_saved": "Sauvegarde réussie !",
     "_error_saved": "Erreur lors de la sauvegarde !",
     "_leave_without_saving": "\tEtes-vous sûr de vouloir quitter cette page ?\n Toutes modifications non enregistrées seront perdues !",
-    "_auto_save": "Sauvegarde auto"
+    "_auto_save": "Sauvegarde auto",
+    "_search_article": "Rechercher un article"
 }

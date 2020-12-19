@@ -216,7 +216,7 @@ function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
         return <></>
     } else {
         return <>
-                <h2>{t._dashboard}</h2>
+                <h2 className="text-center">{t._dashboard}</h2>
                 <Navbar expand="md" variant="dark" collapseOnSelect>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">

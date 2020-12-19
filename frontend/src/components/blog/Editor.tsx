@@ -104,6 +104,8 @@ function Editor (props: Props) {
     }
 
     const verifyMetadata = (content: string): [string, string, string, string, string] => {
+        const tmpStartPost = textRef.current ? textRef.current.selectionStart : 0
+        const tmpEndPost = textRef.current ? textRef.current.selectionEnd : 0
         const endPosition = content.search(/\n---/)
         let header = content.slice(0, endPosition)
         header = header.replace(/:/g, ": ")
@@ -111,6 +113,7 @@ function Editor (props: Props) {
         if (textRef.current) {
             textRef.current.setRangeText(header, 0, endPosition, "start")
             setContent(textRef.current.value)
+            textRef.current.setSelectionRange(tmpStartPost, tmpEndPost)
         }
         const metadata  = matter(header).data
         const author = metadata.author ? metadata.author : props.post.author
@@ -135,6 +138,14 @@ function Editor (props: Props) {
             return;
         }
         const [author, title, locale, description, cover] = verifyMetadata(textRef.current.value)
+        if (description.length > 255) {
+            setSubmitting(false)
+            setMessageAlert(`Description : ${description.length}/255`)
+            setVariantAlert("danger")
+            setShowAlert(true)
+            setTimeout(() => setShowAlert(false), 3000)
+            return;
+        }
         let formData = new FormData(formRef.current)
         formData.append("_token", props.token)
         formData.append("author", author)
@@ -383,7 +394,7 @@ function Editor (props: Props) {
                     <PostCard post={props.post}/>
                 </div>
                 <div hidden={showCard}>
-                    <Layout content={content} />
+                    <Layout content={content} createdAt={props.post.createdAt}/>
                 </div>
                 </Col>
             </Row>

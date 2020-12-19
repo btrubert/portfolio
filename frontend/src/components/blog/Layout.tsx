@@ -1,18 +1,21 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import matter from 'gray-matter'
 import markdownToHtml from 'utils/mdToHtml'
+import Card from 'react-bootstrap/Card'
+import Container from 'react-bootstrap/Container'
+import { timestampToStringFull } from 'utils/tsToString'
 
 interface Props {
-    content: string
+    content: string,
+    createdAt: DateObject,
 }
 
 function Layout (props: Props) {
     let data: {[key:string]: any}
     let content: string
     const [postHtml, setPostHtml] = useState<string>('')
-
-    const month = ['jan']
-    const day = ['mon']
+    const router = useRouter()
 
     const setContent = async (s: string) => {
         setPostHtml(await markdownToHtml(s))
@@ -29,8 +32,18 @@ function Layout (props: Props) {
     setContent(content)
     
     return <div className="postLayout">
-    <h2>{data.title}</h2>
-    <h4>{data.author}</h4>
+        <Card className="bg-dark text-white mb-3">
+        <Card.Img className="imageHeaderBlog" src={data.cover} />
+        <Card.ImgOverlay>
+            <Card.Title as="h1">{data.title}</Card.Title>
+            <Card.Text className="blogCardAuthor">
+                {data.author}, {timestampToStringFull(props.createdAt.timestamp, router.locale)}
+            </Card.Text>
+            <Card.Text className="blogCardDescription">
+                {data.description}
+            </Card.Text>
+        </Card.ImgOverlay>
+        </Card>
     <div dangerouslySetInnerHTML={{ __html: postHtml }}></div>
     </div>
 }
