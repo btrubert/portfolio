@@ -11,7 +11,7 @@ interface State {
 }
 
 interface Action {
-  type: 'setSession' | 'setToken',
+  type: 'setSession' | 'setToken' | 'logout',
   payload: State,
 }
 

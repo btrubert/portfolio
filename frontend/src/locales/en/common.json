@@ -16,5 +16,6 @@
     "_remember_me": "Remember me",
     "_loading": "Loading...",
     "_change_language": "Français",
-    "_server_error": "The server is currently unavailable. Some functionality may not be working, please try again later."
+    "_server_error": "The server is currently unavailable. Some functionality may not be working, please try again later.",
+    "_social_media": "Social Media"
 }

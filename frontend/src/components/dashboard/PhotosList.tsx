@@ -117,7 +117,7 @@ export default function PhotosList (props: Props) {
                                 </Popover>
                             }
                             >
-                            <Button variant="success">preview</Button>
+                            <Button variant="success">{t._preview}</Button>
                         </OverlayTrigger>
                             </th>
                         <th>

@@ -291,7 +291,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const dashboardT = getTranslation('dashboard', locale)
     return {
         props: {commonT, dashboardT},
-        revalidate: 60,
     }
 }
 

@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import matter from 'gray-matter'
 import markdownToHtml from 'utils/mdToHtml'
 import Card from 'react-bootstrap/Card'
-import Container from 'react-bootstrap/Container'
 import { timestampToStringFull } from 'utils/tsToString'
 
 interface Props {

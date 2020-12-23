@@ -43,7 +43,7 @@ class BlogPostController extends AbstractController
     /**
      * @Route("/post/{title}", name="api_post")
      */
-    public function getPost($title, ObjectEncoder $objectEncoder)
+    public function post($title, ObjectEncoder $objectEncoder)
     {
         try {
             $post = $this->getDoctrine()->getRepository(BlogPost::class)->findOneBy(['title' => $title, 'published' => true]);

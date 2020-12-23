@@ -1,6 +1,10 @@
 body {
     background-color: #3a3c3f;
     color: whitesmoke;
+    font-family: lato;
+    font-size: large;
+    min-height: 100vh;
+    position: relative;
 }
 
 .navbar-collapse {
@@ -40,6 +44,12 @@ body {
     text-align: center;
 }
 
+.footer {
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+}
+
 /* Category */
 @import 'category';
 
@@ -54,3 +64,41 @@ body {
 
 /* Blog */
 @import 'blog';
+
+/* Font */
+@font-face {
+    font-family: lato;
+    src: url("../fonts/lato/Lato-Regular.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: lato;
+    font-weight: bold;
+    src: url("../fonts/Lato/Lato-Bold.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: lato;
+    font-weight: bold;
+    font-style: italic;
+    src: url("../fonts/Lato/Lato-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: lato;
+    font-style: italic;
+    src: url("../fonts/Lato/Lato-Italic.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: lato;
+    font-weight: lighter;
+    src: url("../fonts/Lato/Lato-Light.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: lato;
+    font-weight: lighter;
+    font-style: italic;
+    src: url("../fonts/Lato/Lato-LightItalic.ttf") format("truetype");
+}
