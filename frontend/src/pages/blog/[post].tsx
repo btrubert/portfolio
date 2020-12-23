@@ -37,11 +37,11 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
         return <>
                 <Layout content={props.post.content} createdAt={props.post.createdAt}/>
             <Row>
-                {photos &&
+                {photos.len > 0 &&
                 <h2 className="mt-5 mb-3">{trans.common._gallery}</h2>
                 }
             </Row>
-            <Row className="mb-5">
+            <Row>
                 {photos &&
                 photos.map((p: Photo, index: number) => 
                     <Col xs={6} sm={4} md={3} key={index}>

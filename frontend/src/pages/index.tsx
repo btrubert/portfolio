@@ -36,7 +36,7 @@ function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
     return <>
       <Row>
         <Col lg={{ span: 6, offset: 3 }}>
-          <h1 className="aboutTitle">Welcome traveller !</h1>
+          <h1 className="text-center">Welcome traveller !</h1>
         </Col>
       </Row>
       <Row>

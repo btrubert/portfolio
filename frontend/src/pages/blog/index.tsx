@@ -35,7 +35,7 @@ function Blog(props: InferGetStaticPropsType<typeof getStaticProps>) {
         return <></>
     } else {
         return <>
-            <h2 className="text-center">Blog</h2>
+            <h1 className="text-center">Blog</h1>
             <Row className="justify-content-end">
                 <Form inline className="mb-3">
                     <Form.Group>

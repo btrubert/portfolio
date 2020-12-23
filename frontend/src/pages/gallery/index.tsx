@@ -48,6 +48,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
         return <></>
     } else {
         return <>
+            <h1 className="text-center">{trans.common._gallery}</h1>
             <Row> {
                 categories.map((c: Category, index: number) => <Col className="category-cards"
                     sm={12}

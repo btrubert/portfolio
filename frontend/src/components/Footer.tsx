@@ -18,17 +18,17 @@ function Footer () {
                 {trans.common._social_media} : 
             </Nav.Item>
             <Nav.Item className="mr-2">
-                <a href="https://twitter.com/benjamintrubert">
+                <a href="https://twitter.com/benjamintrubert" target="_blank">
                     <Icon path={mdiTwitter} size={1} color="white" />
                 </a>
             </Nav.Item>
             <Nav.Item className="mr-2">
-                <a href="https://www.instagram.com/benjamintrubert/">
+                <a href="https://www.instagram.com/benjamintrubert/" target="_blank">
                     <Icon path={mdiInstagram} size={1} color="white" />
                 </a>
             </Nav.Item>
             <Nav.Item className="mr-2">
-                <a href="https://github.com/btrubert/portfolio/">
+                <a href="https://github.com/btrubert/portfolio/" target="_blank">
                     <Icon path={mdiGithub} size={1} color="white" />
                 </a>
             </Nav.Item>
