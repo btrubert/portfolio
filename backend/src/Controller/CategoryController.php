@@ -96,8 +96,7 @@ class CategoryController extends AbstractController
                 $em->persist($category);
                 $em->flush();
 
-                $response = new JSONResponse("The category has been created.", Response::HTTP_CREATED);
-                return $response;
+                return new JSONResponse("The category has been created.", Response::HTTP_CREATED);
             }
 
             return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
@@ -127,22 +126,12 @@ class CategoryController extends AbstractController
                     $em = $this->getDoctrine()->getManager();
                     $category = $form->getData();
                     if ($public != $category->getPublic()) {
-                        [$origin, $destination] = $category->getPublic() ? [$this->getParameter("img_prot_base_dir"), $this->getParameter("img_base_dir")]
-                            : [$this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir")];
-                        foreach ($category->getPhotos() as $photo) {
-                            $path = $photo->getOriginalPath();
-                            if ($path) {
-                                rename($origin . $path, $destination . $path);
-                            }
-                            $path = $photo->getPath();
-                            rename($origin . $path, $destination . $path);
-                        }
+                        $category->changeVisibility($this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir"));
                     }
                     $em->persist($category);
                     $em->flush();
 
-                    $response = new JSONResponse("The category has been edited.", Response::HTTP_OK);
-                    return $response;
+                    return new JSONResponse("The category has been edited.", Response::HTTP_OK);
                 }
                 return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
             }

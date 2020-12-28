@@ -170,8 +170,7 @@ class PhotoController extends AbstractController
                     $em->persist($photo);
                     $em->flush();
 
-                    $response = new JSONResponse("The photo has been edited.", Response::HTTP_OK);
-                    return $response;
+                    return new JSONResponse("The photo has been edited.", Response::HTTP_OK);
                 }
                 return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
             }

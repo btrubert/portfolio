@@ -103,8 +103,7 @@ class BlogPostController extends AbstractController
                 $em->persist($category);
                 $em->flush();
 
-                $response = new JSONResponse("The post has been created.", Response::HTTP_CREATED);
-                return $response;
+                return new JSONResponse("The post has been created.", Response::HTTP_CREATED);
             }
 
             return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
@@ -156,9 +155,9 @@ class BlogPostController extends AbstractController
     }
 
     /**
-     * @Route("/admin/blog/edit/{id}", methods={"GET", "POST"}, name="edit_blog")
+     * @Route("/admin/blog/edit/{id}", methods={"GET", "POST"}, name="edit_post")
      */
-    public function editUser(Request $request, CsrfTokenManagerInterface $csrf_token, ObjectEncoder $objectEncoder, $id)
+    public function editPost(Request $request, CsrfTokenManagerInterface $csrf_token, ObjectEncoder $objectEncoder, $id)
     {
         try {
             if ($request->isMethod("GET")) {
@@ -179,10 +178,48 @@ class BlogPostController extends AbstractController
                     $em->persist($post);
                     $em->flush();
 
-                    $response = new JSONResponse("The post has been edited.", Response::HTTP_CREATED);
-                    return $response;
+                    return new JSONResponse("The post has been edited.", Response::HTTP_OK);
                 }
                 return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
+            }
+            return new JsonResponse("Error while editing the post.", Response::HTTP_NOT_FOUND);
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable".$e, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @Route("/admin/blog/publish/{id}", methods={"POST"}, name="publish_post")
+     */
+    public function publishPost(Request $request, $id)
+    {
+        try {
+            $submittedToken = $request->request->get('_csrf_token');
+            if (!$this->isCsrfTokenValid("post_item", $submittedToken) && $request->request->has("published")) {
+                return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
+            }
+
+            $post = $this->getDoctrine()->getRepository(BlogPost::class)->find($id);
+
+            if ($post) {
+                $published = $request->request->get("published") === "true"? true : false;
+                $em = $this->getDoctrine()->getManager();
+                
+                $post->setPublished($published);
+
+                $category = $post->getCategory();
+                if ($published !== $category->getPublic()) {
+                    $category->setPublic($published);
+                    $category->changeVisibility($this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir"));
+                    $em->persist($category);
+                }
+
+                $em->persist($post);
+                $em->flush();
+
+                return new JSONResponse("The post has been edited.", Response::HTTP_CREATED);
             }
             return new JsonResponse("Error while editing the post.", Response::HTTP_NOT_FOUND);
         } catch (ConnectionException $e) {

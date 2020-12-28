@@ -133,4 +133,19 @@ class Category
 
         return $this;
     }
+
+    public function changeVisibility($publicDir, $protectedDir): self
+    {
+        [$origin, $destination] = $this->getPublic() ? [$protectedDir, $publicDir]
+                            : [$publicDir, $protectedDir];
+        foreach ($this->getPhotos() as $photo) {
+            $path = $photo->getOriginalPath();
+            if ($path) {
+                rename($origin . $path, $destination . $path);
+            }
+            $path = $photo->getPath();
+            rename($origin . $path, $destination . $path);
+        }
+        return $this;
+    }
 }

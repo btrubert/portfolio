@@ -37,7 +37,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
         return <>
                 <Layout content={props.post.content} createdAt={props.post.createdAt}/>
             <Row>
-                {photos.len > 0 &&
+                {photos.length > 0 &&
                 <h2 className="mt-5 mb-3">{trans.common._gallery}</h2>
                 }
             </Row>

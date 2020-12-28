@@ -17,7 +17,7 @@ function MyApp({Component, pageProps}: AppProps) {
             <SessionProvider>
                 <TranslationProvider>
                     <Menu />
-                    <Container className="main-content">
+                    <Container className="mainContent">
                         <Component {...pageProps}/>
                     </Container>
                     <Footer />

@@ -10,6 +10,7 @@ import PostCard from './PostCard'
 import Dropdown from 'react-bootstrap/Dropdown'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Popover from 'react-bootstrap/Popover'
+import Tooltip from 'react-bootstrap/Tooltip'
 import Modal from 'react-bootstrap/Modal'
 import Alert from 'react-bootstrap/Alert'
 import PhotoForm from 'components/dashboard/forms/PhotoForm'
@@ -17,9 +18,9 @@ import Image from 'next/image'
 import Button from 'react-bootstrap/Button'
 import Icon from '@mdi/react'
 import { mdiFormatSize, mdiNumeric1Box , mdiNumeric2Box, mdiNumeric3Box, mdiNumeric4Box } from '@mdi/js'
-import { mdiFormatBold, mdiFormatItalic, mdiCodeTags, mdiFormatQuoteClose } from '@mdi/js'
+import { mdiFormatBold, mdiFormatItalic, mdiCodeTags, mdiFormatQuoteClose, mdiMinus } from '@mdi/js'
 import { mdiFormatListBulleted, mdiFormatListNumbered, mdiKeyboardTab } from '@mdi/js'
-import { mdiLink, mdiImageMultipleOutline } from '@mdi/js'
+import { mdiLink, mdiAt, mdiImageMultipleOutline } from '@mdi/js'
 import { mdiCached } from '@mdi/js'
 
 
@@ -39,13 +40,14 @@ function Editor (props: Props) {
     const [session, dispatch] = useSession()
     const [content, setContent] = useState<string>(props.post.content)
     const t = props.translation
-    const published = props.post.published
+    const [published, setPublished] = useState<boolean>(props.post.published)
     const [showAlert, setShowAlert] = useState<boolean>(false)
     const [variantAlert, setVariantAlert] = useState<'success' | 'danger'>('success')
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [showForm, setShowForm] = useState<boolean>(false)
     const category = props.post.category
     const [showLink, setShowLink] = useState<boolean>(false)
+    const [showEmail, setShowEmail] = useState<boolean>(false)
     const [showImage, setShowImage] = useState<boolean>(false)
     const [showCard, setShowCard] = useState<boolean>(true)
     const [saved, setSaved] = useState<boolean>(true)
@@ -129,7 +131,7 @@ function Editor (props: Props) {
         return [author, title, locale, description, cover]
     }
 
-    const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault()
         setSubmitting(true)
         if (!formRef.current || !textRef.current){
@@ -172,19 +174,61 @@ function Editor (props: Props) {
                 setMessageAlert(t._saved)
                 setVariantAlert("success")
                 setShowAlert(true)
-                setTimeout(() => setShowAlert(false), 3000)
+                setTimeout(() => setShowAlert(false), 1000)
             })
         .catch(error =>  {
             setSubmitting(false)
             setMessageAlert(t._error_saved)
             setVariantAlert("danger")
             setShowAlert(true)
-            setTimeout(() => setShowAlert(false), 3000)
+            setTimeout(() => setShowAlert(false), 1000)
         })
     }
 
-    const handlePublish = () => {
+    const handlePublish = async () => {
+        await handleSubmit()
+        setSubmitting(true)
+        fetch("/api/blog/publish/" + props.post.id,
+        {
+            method: 'POST',
+            headers: {                
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({_csrf_token: props.token, published: !published})
+        }).then(response => {
+            if (response.ok) {
+                return response.text()
+            } else {
+                throw new Error(t._error_form)
+            }
+        }).then(data => {
+            setPublished(!published)
+            setSubmitting(false)
+            setSaved(true)
+            setMessageAlert(published ? t._unpublished : t._published)
+            setVariantAlert("success")
+            setShowAlert(true)
+            setTimeout(() => setShowAlert(false), 1000)
+        })
+        .catch(error =>  {
+            setSubmitting(false)
+            setMessageAlert(t._error_saved)
+            setVariantAlert("danger")
+            setShowAlert(true)
+            setTimeout(() => setShowAlert(false), 1000)
+        })
+    }
 
+    const getIcon = (icon: string, tip: string, rotation: number = 0) => {
+        return <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 250, hide: 0 }}
+                    overlay={<Tooltip id={"button-tooltip"+icon}>
+                            {tip}
+                        </Tooltip>}
+                >
+                    <Icon path={icon} size={.8} color="white" rotate={rotation}/>
+                </OverlayTrigger>
     }
 
     const modifyText = (prefixe: string, suffixe: string='') => {
@@ -215,6 +259,7 @@ function Editor (props: Props) {
 
     const codeClicked = () => {modifyText(" `", "` ")}
     const quoteClicked = () => {modifyText("\n> ","\n")}
+    const separatorClicked = () => {if (textRef.current && textRef.current.selectionStart === textRef.current.selectionEnd) modifyText("\n\n---\n\n")}
     const ulClicked = () => {modifyText("\n* ", "\n* \n")}
     const olClicked = () => {modifyText("\n1. ", "\n2. \n")}
 
@@ -241,9 +286,26 @@ function Editor (props: Props) {
             if (formData.get('url') !== '') {
                 setShowLink(false)
                 const url = formData.get("url")
-                const text = formData.get("text") !== ''? formData.get("text") : formData.get("url")
-                const alt = formData.get("alt") !== ''? `"${formData.get("alt")}"` : ''
-                modifyText(` [${text}](${url} ${alt}) `)
+                if (formData.get("text") === '' && formData.get("alt") === '') {
+                    modifyText(` <${url}> `)
+
+                } else {
+                    const text = formData.get("text") !== ''? formData.get("text") : formData.get("url")
+                    const alt = formData.get("alt") !== ''? `"${formData.get("alt")}"` : ''
+                    modifyText(` [${text}](${url} ${alt}) `)
+                }
+            }
+        }
+    }
+
+    const emailClicked = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        if (textRef.current && textRef.current.selectionStart === textRef.current.selectionEnd) {
+            const formData = new FormData(event.currentTarget)
+            if (formData.get('email') !== '') {
+                setShowEmail(false)
+                const email = formData.get("email")
+                modifyText(` <${email}> `)
             }
         }
     }
@@ -270,7 +332,7 @@ function Editor (props: Props) {
             <div className="editButton">
             <Dropdown>
                 <Dropdown.Toggle variant='Secondary' id="dropdown-title" as="div">
-                    <Icon path={mdiFormatSize} size={.8} color="white" />
+                    {getIcon(mdiFormatSize, t._title)}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     <Dropdown.Item  onClick={() => titleClicked(1)}>
@@ -289,34 +351,37 @@ function Editor (props: Props) {
             </Dropdown>
             </div>
             <div className="editButton" onClick={boldClicked}>
-                <Icon path={mdiFormatBold} size={.8} color="white" />
+            {getIcon(mdiFormatBold, t._bold)}                
             </div>
             <div className="editButton" onClick={italicClicked}>
-                <Icon path={mdiFormatItalic} size={.8} color="white" />
+                {getIcon(mdiFormatItalic, t._italic)}
             </div>
             <div className="editButton" onClick={codeClicked}>
-                <Icon path={mdiCodeTags} size={.8} color="white" />
+                {getIcon(mdiCodeTags, t._code)}
             </div>
             <div className="editButton" onClick={quoteClicked}>
-                <Icon path={mdiFormatQuoteClose} size={.8} color="white" />
+                {getIcon(mdiFormatQuoteClose, t._quote)}
+            </div>
+            <div className="editButton" onClick={separatorClicked}>
+                {getIcon(mdiMinus, t._separator)}
             </div>
             <div className="editButton" onClick={ulClicked}>
-                <Icon path={mdiFormatListBulleted} size={.8} color="white" />
+                {getIcon(mdiFormatListBulleted, t._u_list)}
             </div>
             <div className="editButton" onClick={olClicked}>
-                <Icon path={mdiFormatListNumbered} size={.8} color="white" />
+                {getIcon(mdiFormatListNumbered, t._o_list)}
             </div>
             <div className="editButton" onClick={tabClicked}>
-                <Icon path={mdiKeyboardTab} size={.8} color="white" />
+                {getIcon(mdiKeyboardTab, t._tab)}
             </div>
             <div className="editButton" onClick={untabClicked}>
-                <Icon path={mdiKeyboardTab} size={.8} color="white" horizontal />
+                {getIcon(mdiKeyboardTab, t._tab, 180)}
             </div>
             <OverlayTrigger
                 trigger="click"
                 key="link"
                 show={showLink}
-                onToggle={() => setShowLink(!showLink)}
+                onToggle={() => {setShowLink(!showLink); setShowEmail(false); setShowImage(false)}}
                 placement="bottom"
                 overlay={
                     <Popover id="link">
@@ -332,13 +397,34 @@ function Editor (props: Props) {
                 }
                 >
                 <div className="editButton">
-                    <Icon path={mdiLink} size={.8} color="white" rotate={90} />
+                    {getIcon(mdiLink, t._link, 90)}
+                </div>
+            </OverlayTrigger>
+            <OverlayTrigger
+                trigger="click"
+                key="email"
+                show={showEmail}
+                onToggle={() => {setShowEmail(!showEmail); setShowLink(false); setShowImage(false)}}
+                placement="bottom"
+                overlay={
+                    <Popover id="email">
+                    <Popover.Content>
+                    <Form onSubmit={emailClicked}>
+                        <Form.Control type="text" placeholder={t._email} name="email" className="mr-2" />
+                        <Form.Control type="submit" value={t._insert} />
+                    </Form>
+                    </Popover.Content>
+                    </Popover>
+                }
+                >
+                <div className="editButton">
+                    {getIcon(mdiAt, t._email)}
                 </div>
             </OverlayTrigger>
             <OverlayTrigger
                 trigger="click"
                 show={showImage}
-                onToggle={() => setShowImage(!showImage)}
+                onToggle={() => {setShowImage(!showImage); setShowEmail(false); setShowLink(false)}}
                 key="image"
                 placement="bottom"
                 overlay={
@@ -362,11 +448,11 @@ function Editor (props: Props) {
                 }
                 >
                 <div className="editButton">
-                    <Icon path={mdiImageMultipleOutline} size={.8} color="white" />
+                    {getIcon(mdiImageMultipleOutline, t._photo)}
                 </div>
             </OverlayTrigger>
             <div className="editButton" onClick={toggleShowCard}>
-                <Icon path={mdiCached} size={.8} color="white" horizontal />
+                {getIcon(mdiCached, t._change_layout, 180)}
             </div>
             <Alert show={showAlert} variant={variantAlert}>{messageAlert}</Alert> 
         </Row>

@@ -62,8 +62,7 @@ class UserController extends AbstractController
                 $em->persist($user);
                 $em->flush();
 
-                $response = new JSONResponse("The user has been created.", Response::HTTP_CREATED);
-                return $response;
+                return new JSONResponse("The user has been created.", Response::HTTP_CREATED);
             }
 
             return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
@@ -103,8 +102,7 @@ class UserController extends AbstractController
                     $em->persist($user);
                     $em->flush();
 
-                    $response = new JSONResponse("The user has been edited.", Response::HTTP_CREATED);
-                    return $response;
+                    return new JSONResponse("The user has been edited.", Response::HTTP_CREATED);
                 }
                 return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
             }
