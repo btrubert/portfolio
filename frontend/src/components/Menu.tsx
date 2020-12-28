@@ -111,7 +111,7 @@ function Menu () {
                 <Container>
                     <Link href="/" passHref>
                         <Navbar.Brand as={Nav.Link}>
-                            <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top" alt="logo"/>{' '}
+                            <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top mr-2" alt="logo"/>
                             <Nav.Item className="d-none d-md-inline">{trans.common._title}</Nav.Item>
                         </Navbar.Brand>
                     </Link>

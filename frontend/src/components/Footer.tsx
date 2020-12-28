@@ -10,7 +10,7 @@ function Footer () {
     return <Navbar bg="dark" variant="dark" expand="lg" className="footer">
         <Nav className="mr-auto">
         <Nav.Item>
-            Contact
+            <img src="/Signature.png" className="signature" />
         </Nav.Item>
         </Nav>
         <Nav className="justify-content-end">

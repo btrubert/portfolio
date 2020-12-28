@@ -19,11 +19,12 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        foreach (new DirectoryIterator('./collection') as $cat) {
+        foreach (new DirectoryIterator('../collection') as $cat) {
             if (!$cat->isDot() && $cat->isDir()) {
                 $category = new Category();
                 $category->setName($cat);
                 $category->setPublic(true);
+                $category->setBlog(false);
 
                 $manager->persist($category);
 

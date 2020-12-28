@@ -35,6 +35,7 @@ class FileUploader
             }
             return [$originalFilename, $lowerResFilename, $exifs];
         } catch (Exception $e) {
+            unlink(realpath($directory . $originalFilename));
             $this->logger->critical('Caught exception while uploading a photo : ' .  $e->getMessage());
             return null;
         }
@@ -47,7 +48,7 @@ class FileUploader
     {
         $fileName = uniqid("IMG_", true);
         $originalFilename =  'original/' . $fileName . '.jpg';
-        $directory = $this->targetProtectedDirectory;
+        $directory = $this->targetDirectory;
 
         try {
             copy($file, $directory . $originalFilename);
