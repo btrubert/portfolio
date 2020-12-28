@@ -37,8 +37,8 @@ export default function UserForm (props: Props) {
     const t = props.translation
 
     const schema = yup.object({
-        firstName: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
-        lastName: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
+        firstName: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]?)+$/, t._special_char_error),
+        lastName: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]?)+$/, t._special_char_error),
         email: yup.string().required(t._required).email("Email invalid"),
         username: yup.string().required(t._required).matches(/^[a-zA-Z0-9]+$/, t._only_char_number_error),
         admin: yup.boolean(),

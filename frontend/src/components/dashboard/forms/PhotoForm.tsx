@@ -39,7 +39,7 @@ export default function PhotoForm (props: Props) {
     const categoryChoice = props.categories.length === 1
 
     const schema = yup.object({
-        title: yup.string().required(t._required).matches(/^([a-zA-Z0-9]+[ -_]?)+$/, t._special_char_error),
+        title: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]?)+$/, t._special_char_error),
         description: yup.string(),
         category: yup.number().required().min(0, t._choose_category_error),
         path: yup.mixed().required(t._select_photo_error),

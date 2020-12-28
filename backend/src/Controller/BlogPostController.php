@@ -94,7 +94,7 @@ class BlogPostController extends AbstractController
                 $post->setPublished(false);
 
                 $category = new Category();
-                $category->setName("blog_".$post->getTitle()."_".uniqid());
+                $category->setName("blog : ".$post->getTitle());
                 $category->setPublic(true);
                 $category->setBlog(true);
                 $post->setCategory($category);
@@ -175,6 +175,9 @@ class BlogPostController extends AbstractController
                 if ($form->isSubmitted() && $form->isValid()) {
                     $em = $this->getDoctrine()->getManager();
                     $post = $form->getData();
+                    $category = $post->getCategory();
+                    $category->setName("blog : ".$post->getTitle());
+                    $em->persist($category);
                     $em->persist($post);
                     $em->flush();
 
