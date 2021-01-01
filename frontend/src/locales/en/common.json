@@ -20,8 +20,10 @@
     "_social_media": "Social Media",
     "_404": "An error occured, either the page you are trying to reach does not exist or is currently not available.\nPlease try again later !",
     "_welcome": "Welcome traveller !",
-    "_welcome_message": "",
-    "_gallery_presentation": "",
-    "_about_me": "",
-    "_my_gear": ""
+    "_welcome_message": "I'm Benjamin Trubert, welcome on my portfolio. I'm an amateur photograpger, capturing moments of my hikes in the nature. I focus my work on landscape and wildlife photography.",
+    "_gallery_presentation": "In the Gallery section, you will find some of my photos. Fell free to also follow my work on ",
+    "_about_me": "To know more about my background as a photographer, you can read the article on my blog : ",
+    "_about_me_link": "About me",
+    "_my_gear": "The lenses and camera bodies I'm using are detailled in this article : ",
+    "_my_gear_link": "My gear"
 }

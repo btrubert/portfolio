@@ -93,6 +93,7 @@ class CategoryController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $category = $form->getData();
+                $category->setBlog(false);
                 $em->persist($category);
                 $em->flush();
 

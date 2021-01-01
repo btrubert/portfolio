@@ -28,7 +28,7 @@ class PhotoType extends AbstractType
                 'mapped' => false,
             ])
             ->add('quality', NumberType::class, [
-                'required' => false,
+                'required' => true,
                 'mapped' => false,
             ])
             ->add('category', EntityType::class, [

@@ -34,7 +34,7 @@ class Uploader:
         r = self.session.get(self.domain + DASHBOARD_URL + "category/new", verify=self.verify)
         category_token = r.text
 
-        payload = {'_token': category_token, 'name': name, 'public': 'true', 'blog': 'false'}
+        payload = {'_token': category_token, 'name': name, 'public': 'true'}
         r = self.session.post(self.domain + DASHBOARD_URL + "category/new", data=payload, verify=self.verify)
 
         return r.status_code
@@ -50,7 +50,7 @@ class Uploader:
         photo_token = r.text
 
         file = {'path': open(path, 'rb')}
-        payload = {'_token': photo_token, 'title': title, 'category': catId, 'description': ""}
+        payload = {'_token': photo_token, 'title': title, 'category': catId, 'description': "", "original": "true", "quality": "100"}
         r = self.session.post(self.domain + DASHBOARD_URL + "photo/new", data=payload, files=file, verify=self.verify)
 
         return r.status_code
@@ -103,13 +103,17 @@ if __name__ == '__main__':
             # collection[dir] = []
             catId = uploader.getCategoryId(dir)
             if catId == -1:
-                uploader.createCategory(dir)
+                if uploader.createCategory(dir) >= 400:
+                    print("Error while creating the category : "+dir)
+                    exit(1)
                 catId = uploader.getCategoryId(dir)
             for f in os.listdir(curentDir):
                 currentFile = curentDir+'/'+f
                 if os.path.isfile(currentFile):
                     # collection[dir].append({"name":f, "path": currentFile})
-                    uploader.createPhoto(catId, currentFile, f)
+                    if uploader.createPhoto(catId, currentFile, f) >= 400:
+                        print("Error while creating the photo : "+currentFile)
+                        exit(1)
 
 
 
