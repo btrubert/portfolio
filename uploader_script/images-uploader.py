@@ -11,7 +11,7 @@ class Uploader:
 
     def __init__(self, verify, domain):
         self.session = requests.session()
-        self.verify = verify
+        self.verify = True
         self.domain = domain
 
     def connectionTest(self):
