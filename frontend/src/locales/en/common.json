@@ -17,5 +17,11 @@
     "_loading": "Loading...",
     "_change_language": "Français",
     "_server_error": "The server is currently unavailable. Some functionality may not be working, please try again later.",
-    "_social_media": "Social Media"
+    "_social_media": "Social Media",
+    "_404": "An error occured, either the page you are trying to reach does not exist or is currently not available.\nPlease try again later !",
+    "_welcome": "Welcome traveller !",
+    "_welcome_message": "",
+    "_gallery_presentation": "",
+    "_about_me": "",
+    "_my_gear": ""
 }

@@ -34,7 +34,7 @@ class Uploader:
         r = self.session.get(self.domain + DASHBOARD_URL + "category/new", verify=self.verify)
         category_token = r.text
 
-        payload = {'_token': category_token, 'name': name, 'public': 'true'}
+        payload = {'_token': category_token, 'name': name, 'public': 'true', 'blog': 'false'}
         r = self.session.post(self.domain + DASHBOARD_URL + "category/new", data=payload, verify=self.verify)
 
         return r.status_code

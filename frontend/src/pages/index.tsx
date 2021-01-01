@@ -36,11 +36,14 @@ function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
     return <>
       <Row>
         <Col lg={{ span: 6, offset: 3 }}>
-          <h1 className="text-center">Welcome traveller !</h1>
+          <h1 className="text-center">{trans.common._welcome}</h1>
         </Col>
       </Row>
       <Row>
         <Col lg={{ span: 8, offset: 2 }}>
+          <p className="aboutMe">
+            {trans.common._welcome_message}
+          </p>
           <h3>About me.</h3>
           <p className="aboutMe">
           I am Benjamin Trubert a French photographer from the South of Brittany.

@@ -17,5 +17,11 @@
     "_loading": "Chargement...",
     "_change_language": "English",
     "_server_error": "Le serveur est actuellement indisponible. Certaines fonctionnalités peuvent ne pas fonctionner, veuillez réessayer plus tard.",
-    "_social_media": "Réseaux sociaux"
+    "_social_media": "Réseaux sociaux",
+    "_404": "La page que vous essayez d'atteindre n'est actuellement pas disponible ou n'éxiste pas.\nVeillez ré-esseyer plus tard !",
+    "_welcome": "Bienvenue voyageur.euse !",
+    "_welcome_message": "",
+    "_gallery_presentation": "",
+    "_about_me": "",
+    "_my_gear": ""
 }

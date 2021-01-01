@@ -43,7 +43,7 @@ function Layout (props: Props) {
             </Card.Text>
         </Card.ImgOverlay>
         </Card>
-    <div dangerouslySetInnerHTML={{ __html: postHtml }}></div>
+    <article dangerouslySetInnerHTML={{ __html: postHtml }}></article>
     </div>
 }
 
