@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { useSession } from 'utils/SessionContext'
 import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
@@ -17,9 +18,11 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
     const router = useRouter()
 
     const photos = props.photos 
-    const [show, setShow] = useState<boolean>(false)
-    const [currentIndex, setCurrentIndex] = useState<number>(0)
+    const displayPhoto = typeof(router.query.photo) === 'string' && parseInt(router.query.photo) < photos.length
+    const [show, setShow] = useState<boolean>(displayPhoto)
+    const [currentIndex, setCurrentIndex] = useState<number>(displayPhoto ? parseInt(router.query.photo as string) : 0)
 
+    
     useEffect(() => {
         if (!trans.commonTrans) {
             dispatch({
@@ -34,6 +37,15 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         return <></>
     } else {
         return <>
+        {displayPhoto && 
+            <Head>
+                <meta name="twitter:card" content="summary_large_image" />
+                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].title}`} />
+                    <meta name="twitter:site" content="@benjamintrubert" />
+                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].path}`}
+                    />
+                    <meta name="twitter:creator" content="@benjamintrubert" />
+            </Head>}
                 <Row> {
                     photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
                         md={6}

@@ -101,6 +101,11 @@ function Menu () {
             <>
             <Head>  
                 <title>{trans.common._title}</title>
+                <meta property="og:title" content={trans.common._title} key="title" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" key="viewport" />
+                <meta name="description" content="Benjamin Trubert's portfolio : nature, landscape and wildlife photos." key="description" />
+                <meta name="keywords" content="Portfolio, photography, photographer, nature, landscape, wildlife, photos" key="keywords" />
+                <meta name="author" content="Benjamin Trubert" key="author" />
             </Head>
             <Toast show={showError} onClose={() => setShowError(false)}>
                 <Toast.Body>
