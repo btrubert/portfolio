@@ -11,7 +11,7 @@ class Uploader:
 
     def __init__(self, verify, domain):
         self.session = requests.session()
-        self.verify = True
+        self.verify = verify
         self.domain = domain
 
     def connectionTest(self):
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="Images uploader", description="Upload photos to the website. Every subfolder correspond to a new category, and all photos inside are imported within this category.")
     parser.add_argument("-c", "--collection", required=True, help="The path to the collection folder containing the categories' subfolder.")
     parser.add_argument("-d", "--domain", required=True, help="The Ip address of the domain name of the website. E.g. '192.168.50.122' or 'my-domain.com'")
-    parser.add_argument("-s", "--security-certificate", help="The path to the certificate needed to verify the secured transaction. If not verification is disabled.")
+    parser.add_argument("-s", "--verify-certificate", help="Verify the certificate for a secured transaction.", action="store_true")
     parser.add_argument("-v", "--verbose", action="store_true", help="Display progression of the uploading process.")
     parser.add_argument("-u", "--username", required=True, help="Username of the admin account.")
     parser.add_argument("-p", "--password", required=True, help="Password of the admin account.")
@@ -72,11 +72,8 @@ if __name__ == '__main__':
 
     if verbose: print("starting : Images uploader\n")
 
-    if args.security_certificate:
-        verify = args.security_certificate
-    else:
-        verify=False
-        print("No certificate : no verification of the server's certificate will be done.\n")
+    verify = args.verify_certificate
+    if not verify: print("No certificate : no verification of the server's certificate will be done.\n")
 
     if verbose: print("Starting connection to the webserver https://"+args.domain)
     uploader = Uploader(verify, "https://"+args.domain)

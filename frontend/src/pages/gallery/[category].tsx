@@ -18,9 +18,8 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
     const router = useRouter()
 
     const photos = props.photos 
-    const displayPhoto = typeof(router.query.photo) === 'string' && parseInt(router.query.photo) < photos.length
-    const [show, setShow] = useState<boolean>(displayPhoto)
-    const [currentIndex, setCurrentIndex] = useState<number>(displayPhoto ? parseInt(router.query.photo as string) : 0)
+    const [show, setShow] = useState<boolean>(props.displayPhoto)
+    const [currentIndex, setCurrentIndex] = useState<number>(props.indexPhoto)
 
     
     useEffect(() => {
@@ -37,13 +36,12 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         return <></>
     } else {
         return <>
-        {displayPhoto && 
+        {props.displayPhoto && 
             <Head>
                 <meta name="twitter:card" content="summary_large_image" />
-                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].title}`} />
+                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].title}`} />
                     <meta name="twitter:site" content="@benjamintrubert" />
-                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].path}`}
-                    />
+                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
                     <meta name="twitter:creator" content="@benjamintrubert" />
             </Head>}
                 <Row> {
@@ -72,8 +70,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         photos = await response.json()
         if (photos && photos.length > 0) {
             photos.sort((a, b) => {return (a.exifs.date > b.exifs.date) ? -1 : 1})
+            const displayPhoto = typeof(context.query.photo) === 'string' && parseInt(context.query.photo) < photos.length
+            const indexPhoto = displayPhoto? parseInt(context.query.photo as string) : 0
             return {
-                props: {photos, commonT},
+                props: {photos, commonT, displayPhoto, indexPhoto},
             }
         }
     }
