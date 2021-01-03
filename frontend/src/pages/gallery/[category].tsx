@@ -40,9 +40,9 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         {displayPhoto && 
             <Head>
                 <meta name="twitter:card" content="summary_large_image" />
-                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${props.photo[parseInt(router.query.photo as string)].title}`} />
+                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].title}`} />
                     <meta name="twitter:site" content="@benjamintrubert" />
-                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${props.photo[parseInt(router.query.photo as string)].path}`}
+                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[parseInt(router.query.photo as string)].path}`}
                     />
                     <meta name="twitter:creator" content="@benjamintrubert" />
             </Head>}
