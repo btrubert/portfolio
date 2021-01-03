@@ -25,5 +25,7 @@
     "_about_me": "Pour en savoir plus sur mon parcours, vous pouvez lire cet article de mon blog : ",
     "_about_me_link": "A propos",
     "_my_gear": "Le détail du matériel que j'utilise ce trouve dans cet article : ",
-    "_my_gear_link": "Mon équipement"
+    "_my_gear_link": "Mon équipement",
+    "_show_exifs": "Afficher les Exifs",
+    "_hide_exifs": "Masquer les Exifs"
 }

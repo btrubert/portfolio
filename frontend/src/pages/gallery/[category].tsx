@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { useSession } from 'utils/SessionContext'
 import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
@@ -17,9 +18,10 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
     const router = useRouter()
 
     const photos = props.photos 
-    const [show, setShow] = useState<boolean>(false)
-    const [currentIndex, setCurrentIndex] = useState<number>(0)
+    const [show, setShow] = useState<boolean>(props.displayPhoto)
+    const [currentIndex, setCurrentIndex] = useState<number>(props.indexPhoto)
 
+    
     useEffect(() => {
         if (!trans.commonTrans) {
             dispatch({
@@ -31,9 +33,23 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
 
     
     if (state.loading) {
-        return <></>
+        return <Head>
+                <meta name="twitter:card" content="summary_large_image" />
+                    <meta name="twitter:title" content={photos[props.indexPhoto].title} />
+                    <meta name="twitter:site" content="@benjamintrubert" />
+                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
+                    <meta name="twitter:creator" content="@benjamintrubert" />
+            </Head>
     } else {
         return <>
+        {props.displayPhoto && 
+            <Head>
+                <meta name="twitter:card" content="summary_large_image" />
+                    <meta name="twitter:title" content={photos[props.indexPhoto].title} />
+                    <meta name="twitter:site" content="@benjamintrubert" />
+                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
+                    <meta name="twitter:creator" content="@benjamintrubert" />
+            </Head>}
                 <Row> {
                     photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
                         md={6}
@@ -60,8 +76,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         photos = await response.json()
         if (photos && photos.length > 0) {
             photos.sort((a, b) => {return (a.exifs.date > b.exifs.date) ? -1 : 1})
+            const displayPhoto = typeof(context.query.photo) === 'string' && parseInt(context.query.photo) < photos.length
+            const indexPhoto = displayPhoto? parseInt(context.query.photo as string) : 0
             return {
-                props: {photos, commonT},
+                props: {photos, commonT, displayPhoto, indexPhoto},
             }
         }
     }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'utils/TranslationContext'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Carousel from 'react-bootstrap/Carousel'
@@ -16,19 +17,18 @@ interface Props {
 }
 
 export default function Photo(props: Props) {
-    const [currentPhoto, setCurrentPhoto] = useState<Photo>(props.photos[props.index]);
+    const [currentPhoto, setCurrentPhoto] = useState<Photo>(props.photos[props.index])
+    const [trans, dispatch] = useTranslation()
     // Exifs caption options
-    const [open, setOpen] = useState<boolean>(false);
-    const [show, setShow] = useState<'Show' | 'Hide'>('Show');
+    const [open, setOpen] = useState<boolean>(false)
+    const [show, setShow] = useState<string>(trans.common._show_exifs)
 
     const handleSlide = (selectedIndex: number) => {
-        setCurrentPhoto(props.photos[selectedIndex]);
-    };
+        setCurrentPhoto(props.photos[selectedIndex])
+    }
 
 
-    return (
-
-        <Modal dialogClassName="modal-carousel"
+    return <Modal dialogClassName="modal-carousel"
             show={
                 props.show
             }
@@ -84,18 +84,16 @@ export default function Photo(props: Props) {
                                 onClick={
                                     () => {
                                         setOpen(!open);
-                                        setShow(open ? "Show" : "Hide");
+                                        setShow(open ? trans.common._show_exifs : trans.common._hide_exifs);
                                     }
                                 }
                                 aria-controls="collapse-exifs"
                                 aria-expanded={open}>
                                 {show}
-                                Exifs
                             </Button>
                         </Carousel.Caption>
                     </Carousel.Item>)
                 } </Carousel>
             </Modal.Body>
         </Modal>
-    );
 }

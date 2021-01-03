@@ -25,5 +25,7 @@
     "_about_me": "To know more about my background as a photographer, you can read the article on my blog : ",
     "_about_me_link": "About me",
     "_my_gear": "The lenses and camera bodies I'm using are detailled in this article : ",
-    "_my_gear_link": "My gear"
+    "_my_gear_link": "My gear",
+    "_show_exifs": "Show Exifs",
+    "_hide_exifs": "Hide Exifs"
 }
