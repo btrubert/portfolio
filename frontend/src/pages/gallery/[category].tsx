@@ -39,7 +39,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         {props.displayPhoto && 
             <Head>
                 <meta name="twitter:card" content="summary_large_image" />
-                    <meta name="twitter:title" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].title}`} />
+                    <meta name="twitter:title" content={photos[props.indexPhoto].title} />
                     <meta name="twitter:site" content="@benjamintrubert" />
                     <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
                     <meta name="twitter:creator" content="@benjamintrubert" />
