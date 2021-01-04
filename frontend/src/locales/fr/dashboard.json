@@ -22,7 +22,7 @@
     "_email": "Email",
     "_roles": "Roles",
     "_required": "Obligatoire",
-    "_special_char_error": "Ne peut pas contenir de caractères spécieaux ou de double espaces/tirets",
+    "_max_char_error": "Trop de caractères. Maximim 255.",
     "_select_user": "Sélectionner un utilisateur",
     "_error_form": "Vérifier les informations ou re-essayer plutart",
     "_category_name": "Nom de la catégorie",

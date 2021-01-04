@@ -32,7 +32,7 @@ export default function CategoryForm (props: Props) {
     const t = props.translation
 
     const schema = yup.object({
-        name: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]?)+$/, t._special_char_error),
+        name: yup.string().required(t._required).max(255, t._max_char_error),
         public: yup.boolean(),
         user: yup.number().when('public', {is: false, then:yup.number().required(t._required).min(0, t._select_user), otherwise: yup.number().nullable()}),
     });

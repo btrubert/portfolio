@@ -4,6 +4,8 @@ import matter from 'gray-matter'
 import markdownToHtml from 'utils/mdToHtml'
 import Card from 'react-bootstrap/Card'
 import { timestampToStringFull } from 'utils/tsToString'
+import Icon from '@mdi/react'
+import { mdiTwitter, mdiEmail } from '@mdi/js'
 
 interface Props {
     content: string,
@@ -41,6 +43,14 @@ function Layout (props: Props) {
             <Card.Text className="blogCardDescription">
                 {data.description}
             </Card.Text>
+            <Card.Link target="_blank"
+                href={`https://twitter.com/intent/tweet?size=large&text=${data.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}&via=benjamintrubert`}>
+                <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
+            </Card.Link>
+            <Card.Link target="_blank"
+                href={`mailto:?subject=[blog]${data.title}&body=https://benjamintrubert.fr${encodeURI(router.asPath)}`}>
+                <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
+            </Card.Link>
         </Card.ImgOverlay>
         </Card>
     <article dangerouslySetInnerHTML={{ __html: postHtml }}></article>

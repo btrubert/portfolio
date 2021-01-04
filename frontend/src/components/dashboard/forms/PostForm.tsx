@@ -33,8 +33,8 @@ export default function PostForm (props: Props) {
 
 
     const schema = yup.object({
-        title: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]?)+$/, t._special_char_error),
-        author: yup.string().required(t._required).matches(/^([a-zA-Z0-9àçéèëêùïû]+[ -_]*)+$/, t._required),
+        title: yup.string().required(t._required).max(255, t._max_char_error),
+        author: yup.string().required(t._required).max(255, t._max_char_error),
         locale: yup.string().required(),
     });
 

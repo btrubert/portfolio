@@ -56,6 +56,12 @@ body {
     width: 100%;
 }
 
+svg.shareIcon {
+    & path:hover {
+        fill: white !important;
+    }
+}
+
 .signature {
     max-height: 2em;
 }
