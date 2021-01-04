@@ -31,25 +31,24 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
         }
       }, [router.locale])
 
-    
-    if (state.loading) {
-        return <Head>
+    const headerMeta = <Head>
                 <meta name="twitter:card" content="summary_large_image" />
                     <meta name="twitter:title" content={photos[props.indexPhoto].title} />
+                    <meta name="twitter:description" content={photos[props.indexPhoto].description} />
                     <meta name="twitter:site" content="@benjamintrubert" />
                     <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
                     <meta name="twitter:creator" content="@benjamintrubert" />
+                    <meta name="og:title" content={photos[props.indexPhoto].title} />
+                    <meta name="og:description" content={photos[props.indexPhoto].description} />
+                    <meta name="og:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
             </Head>
+    
+    if (state.loading) {
+        return headerMeta
     } else {
         return <>
         {props.displayPhoto && 
-            <Head>
-                <meta name="twitter:card" content="summary_large_image" />
-                    <meta name="twitter:title" content={photos[props.indexPhoto].title} />
-                    <meta name="twitter:site" content="@benjamintrubert" />
-                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
-                    <meta name="twitter:creator" content="@benjamintrubert" />
-            </Head>}
+            headerMeta}
                 <Row> {
                     photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
                         md={6}
@@ -85,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     return {
         props: {photos, commonT},
-        redirect: { destination: "/gallery", permanent: false }
+        redirect: { destination: "/gallerie", permanent: false }
     }
 }
 

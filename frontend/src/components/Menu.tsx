@@ -123,7 +123,7 @@ function Menu () {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                     <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">
                         <Nav>
-                            <Link href="/gallery" passHref>
+                            <Link href="/gallerie" passHref>
                                 <Nav.Link>{trans.common._gallery}</Nav.Link>
                             </Link>
                             <Link href="/blog" passHref>

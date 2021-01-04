@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { useSession } from 'utils/SessionContext'
 import { useTranslation } from 'utils/TranslationContext'
 import { getTranslation } from 'utils/Translation'
@@ -30,11 +31,24 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
       }, [router.locale])
 
     
+    const headerMeta = <Head>
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={props.post.title} />
+                <meta name="twitter:description" content={props.post.description} />
+                <meta name="twitter:site" content="@benjamintrubert" />
+                <meta name="twitter:image" content={`https://benjamintrubert.fr/${props.post.cover}`} />
+                <meta name="twitter:creator" content="@benjamintrubert" />
+                <meta name="og:title" content={props.post.title} />
+                <meta name="og:description" content={props.post.description} />
+                <meta name="og:image" content={`https://benjamintrubert.fr/${props.post.cover}`} />
+            </Head>
+
     if (state.loading) {
-        return <></>
+        return headerMeta
     } else {
         return <>
-                <Layout content={props.post.content} createdAt={props.post.createdAt}/>
+            {headerMeta}
+            <Layout content={props.post.content} createdAt={props.post.createdAt}/>
             <Row>
                 {photos.length > 0 &&
                 <h2 className="mt-5 mb-3">{trans.common._gallery}</h2>
