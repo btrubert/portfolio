@@ -32,6 +32,7 @@ export default function Photo(props: Props) {
     const handleSlide = (selectedIndex: number) => {
         setCurrentPhoto(props.photos[selectedIndex])
         setIndexCarousel(selectedIndex)
+        router.replace({pathname: router.pathname, query: {category: currentPhoto.category.name, photo: selectedIndex}}, `/gallerie/${router.query.category}?photo=${selectedIndex}`, {shallow: true})
     }
 
 
@@ -49,11 +50,11 @@ export default function Photo(props: Props) {
             <Modal.Header closeButton>
                 {props.gallery && <>
                 <a target="_blank" className="mr-2"
-                href={`https://twitter.com/intent/tweet?size=large&text=${currentPhoto.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}?photo=${indexCarousel}&via=benjamintrubert&hashtags=photo,${currentPhoto.category.name}`}>
+                href={`https://twitter.com/intent/tweet?size=large&text=${currentPhoto.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}&via=benjamintrubert&hashtags=photo,${currentPhoto.category.name}`}>
                     <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
                 </a>
                 <a target="_blank"
-                href={`mailto:?subject=[photo]${currentPhoto.title}&body=https://benjamintrubert.fr${encodeURI(router.asPath)}?photo=${indexCarousel}`}>
+                href={`mailto:?subject=[photo] ${currentPhoto.title}&body=https://benjamintrubert.fr${encodeURIComponent(router.asPath)}`}>
                     <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
                 </a>
                 </>}
