@@ -38,7 +38,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                 <meta name="twitter:site" content="@benjamintrubert" />
                 <meta name="twitter:image" content={`https://benjamintrubert.fr/${props.post.cover}`} />
                 <meta name="twitter:creator" content="@benjamintrubert" />
-                <meta name="og:title" content={props.post.title} />
+                <meta name="og:title" content={props.post.title} key="title"/>
                 <meta name="og:description" content={props.post.description} />
                 <meta name="og:image" content={`https://benjamintrubert.fr/${props.post.cover}`} />
             </Head>
@@ -64,7 +64,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                     </Col>
                 )}
             </Row>
-            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show}/>
+            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={false}/>
             </>
     }
 }

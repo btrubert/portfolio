@@ -129,9 +129,9 @@ function Menu () {
                             <Link href="/blog" passHref>
                                 <Nav.Link>{trans.common._blog}</Nav.Link>
                             </Link>
-                            <Link href="/contact" passHref>
+                            {/* <Link href="/contact" passHref>
                                 <Nav.Link>{trans.common._contact}</Nav.Link>
-                            </Link>
+                            </Link> */}
                         </Nav>
                         <Nav>
                             <NavDropdown title={

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'utils/TranslationContext'
+import { useRouter } from 'next/router'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Carousel from 'react-bootstrap/Carousel'
@@ -8,23 +9,29 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Collapse from 'react-bootstrap/Collapse'
+import Icon from '@mdi/react'
+import { mdiTwitter, mdiEmail } from '@mdi/js'
 
 interface Props {
     photos: Array<Photo>,
     index: number,
     onHide: () => void,
     show: boolean,
+    gallery: boolean,
 }
 
 export default function Photo(props: Props) {
     const [currentPhoto, setCurrentPhoto] = useState<Photo>(props.photos[props.index])
+    const [indexCarousel, setIndexCarousel] = useState<number>(props.index)
     const [trans, dispatch] = useTranslation()
+    const router = useRouter()
     // Exifs caption options
     const [open, setOpen] = useState<boolean>(false)
     const [show, setShow] = useState<string>(trans.common._show_exifs)
 
     const handleSlide = (selectedIndex: number) => {
         setCurrentPhoto(props.photos[selectedIndex])
+        setIndexCarousel(selectedIndex)
     }
 
 
@@ -39,7 +46,18 @@ export default function Photo(props: Props) {
                props.onHide
             }
 	    centered>
-            <Modal.Header closeButton />
+            <Modal.Header closeButton>
+                {props.gallery && <>
+                <a target="_blank" className="mr-2"
+                href={`https://twitter.com/intent/tweet?size=large&text=${currentPhoto.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}?photo=${indexCarousel}&via=benjamintrubert&hashtags=photo,${currentPhoto.category.name}`}>
+                    <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
+                </a>
+                <a target="_blank"
+                href={`mailto:?subject=[photo]${currentPhoto.title}&body=https://benjamintrubert.fr${encodeURI(router.asPath)}?photo=${indexCarousel}`}>
+                    <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
+                </a>
+                </>}
+            </Modal.Header>
             <Modal.Body>
                 <Carousel defaultActiveIndex={
                         props.index

@@ -38,7 +38,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                     <meta name="twitter:site" content="@benjamintrubert" />
                     <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
                     <meta name="twitter:creator" content="@benjamintrubert" />
-                    <meta name="og:title" content={photos[props.indexPhoto].title} />
+                    <meta name="og:title" content={photos[props.indexPhoto].title} key="title"/>
                     <meta name="og:description" content={photos[props.indexPhoto].description} />
                     <meta name="og:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
             </Head>
@@ -59,7 +59,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                             onClick={() => {setCurrentIndex(index); setShow(true)}} />
                     </Col>)
                 } </Row>
-            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show}/>
+            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={true}/>
         </>
     }
 }
