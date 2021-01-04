@@ -55,7 +55,7 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                     md={6}
                     lg={4}
                     key={index}>
-                    <Link href={`/gallery/${encodeURIComponent(c.name)}`} as={`/gallery/${c.name}`} passHref>
+                    <Link href={`/gallerie/${encodeURIComponent(c.name)}`} as={`/gallerie/${c.name}`} passHref>
                         <a>
                         <Card className="text-white category-card"
                             onMouseOver={

@@ -22,7 +22,7 @@
     "_email": "Email",
     "_roles": "Roles",
     "_required": "Required",
-    "_special_char_error": "'Cannot contain special characters, or double space/dash'",
+    "_max_char_error": "Too manu characters. Maximum is 255.",
     "_select_user": "Select a user",
     "_error_form": "Verify your form info or try again later!",
     "_category_name": "Category's name",
