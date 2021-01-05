@@ -59,7 +59,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                 photos.map((p: Photo, index: number) => 
                     <Col xs={6} sm={4} md={3} key={index}>
                         <Image className="gallery-photo" src={`/uploads/${p.path}`}
-                            width="480" height="480" unoptimized
+                            width="480" height="480" unoptimized alt={p.title}
                             onClick={() => {setCurrentIndex(index); setShow(true)}} />
                     </Col>
                 )}

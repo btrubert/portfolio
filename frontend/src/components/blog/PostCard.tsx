@@ -15,7 +15,8 @@ function PostCard (props: Props) {
             className="blogCardImage"
             height="480"
             width="480"
-            unoptimized/>}
+            unoptimized
+            alt="blog image"/>}
         <Card.Title className="blogCardTitle">{props.post.title}</Card.Title>
         <Card.Subtitle className="blogCardAuthor">{props.post.author}, {timestampToStringCompact(props.post.createdAt.timestamp)}</Card.Subtitle>
         <Card.Text className="blogCardDescription">{props.post.description}</Card.Text>

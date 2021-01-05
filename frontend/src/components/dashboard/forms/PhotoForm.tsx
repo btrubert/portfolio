@@ -126,6 +126,7 @@ export default function PhotoForm (props: Props) {
                 onSubmit={handleSubmit} ref={formRef}>
                     <Form.Group controlId="validationFormikTitle" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._photo_title}</Form.Label>
                         <Form.Control name="title" type="text" placeholder={t._photo_title}
                             value={
                                 values.title
@@ -142,6 +143,7 @@ export default function PhotoForm (props: Props) {
                     </Form.Group>
                     <Form.Group controlId="validationFormikDescription" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._description}</Form.Label>
                         <Form.Control name="description" type="text" placeholder={t._description}
                             value={
                                 values.description
@@ -171,6 +173,7 @@ export default function PhotoForm (props: Props) {
                     </Form.Group>
                     <Form.Group controlId="validationFormikOriginal" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._keep_original}</Form.Label>
                         <Form.Check type="switch" name="original" label={t._keep_original}
                             checked={
                                 values.original
@@ -183,6 +186,7 @@ export default function PhotoForm (props: Props) {
                     </Form.Group>
                     <Form.Group controlId="validationFormikChangeQuality" as={Row} hidden={!props.edit}>
                         <Col>
+                        <Form.Label srOnly>{t._change_quality}</Form.Label>
                         <Form.Check type="switch" name="changeQuality" label={t._change_quality}
                             checked={
                                 values.changeQuality
@@ -206,6 +210,7 @@ export default function PhotoForm (props: Props) {
                     </Form.Group>
                     <Form.Group controlId="validationFormikCategory" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._choose_category}</Form.Label>
                         <Form.Control name="category" as="select" custom
                             disabled={categoryChoice}
                             value={

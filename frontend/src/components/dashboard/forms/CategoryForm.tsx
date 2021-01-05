@@ -104,6 +104,7 @@ export default function CategoryForm (props: Props) {
                 ref={formRef}>
                     <Form.Group as={Row} controlId="validationFormikName">
                         <Col>
+                        <Form.Label srOnly>{t._category_name}</Form.Label>
                         <Form.Control required name="name" type="text" placeholder={t._category_name}
                             value={
                                 values.name
@@ -117,6 +118,7 @@ export default function CategoryForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikIsPublic" as={Row}>
                     <Col>
+                    <Form.Label srOnly>{t._public_choice}</Form.Label>
                     <Form.Check type="switch" name="public" label={t._public_choice}
                         checked={
                             values.public
@@ -128,6 +130,7 @@ export default function CategoryForm (props: Props) {
                 </Form.Group>
                 <Form.Group controlId="validationFormikUser" as={Row} hidden={values.public}>
                         <Col>
+                        <Form.Label srOnly>{t._choose_user}</Form.Label>
                         <Form.Control name="user" as="select" custom
                             value={
                                 values.user

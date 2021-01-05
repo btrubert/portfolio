@@ -81,11 +81,11 @@ function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 c.photos.sort((a, b) => {return (a.exifs.date < b.exifs.date) ? -1 : 1})
                                 .map((p, index: number) => <Carousel.Item key={index}>
                                     <Card.Img as={Image} src={"/uploads/" + p.path}
-                                        alt="Card category's images"
                                         className="category-card-img"
                                         height="480"
                                         width="480"
                                         unoptimized
+                                        alt={p.title}
                                         />
                                 </Carousel.Item>)
                             } </Carousel>
