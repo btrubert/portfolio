@@ -35,7 +35,7 @@ function Home(props: InferGetStaticPropsType<typeof getStaticProps>) {
         </Col>
       </Row>
       <Row>
-        <Image src="/front.webp" className="frontImage"/>
+        <Image src="/front.webp" className="frontImage" alt="Photo front page"/>
       </Row>
       <Row>
         <Col lg={{ span: 8, offset: 2 }}>

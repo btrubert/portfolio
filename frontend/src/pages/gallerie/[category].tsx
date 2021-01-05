@@ -55,7 +55,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                         lg={4}
                         key={index}>
                         <Image className="gallery-photo" src={`/uploads/${p.path}`}
-                            width="480" height="480" unoptimized
+                            width="480" height="480" unoptimized alt={p.title}
                             onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: index}}, `/gallerie/${router.query.category}?photo=${index}`, {shallow: true})}} />
                     </Col>)
                 } </Row>

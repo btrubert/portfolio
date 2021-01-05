@@ -112,7 +112,7 @@ export default function PhotosList (props: Props) {
                             overlay={
                                 <Popover id={index+''}>
                                 <Popover.Content>
-                                <Image src={`/smf/img/${p.path}`} loading="lazy" fluid />
+                                <Image src={`/smf/img/${p.path}`} loading="lazy" fluid alt={p.title}/>
                                 </Popover.Content>
                                 </Popover>
                             }

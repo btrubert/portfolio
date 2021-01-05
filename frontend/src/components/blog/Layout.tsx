@@ -34,7 +34,7 @@ function Layout (props: Props) {
     
     return <div className="postLayout">
         <Card className="bg-dark text-white mb-3">
-        <Card.Img className="imageHeaderBlog" src={data.cover} />
+        <Card.Img className="imageHeaderBlog" src={data.cover} alt="blog image"/>
         <Card.ImgOverlay>
             <Card.Title as="h1">{data.title}</Card.Title>
             <Card.Text className="blogCardAuthor">
@@ -48,7 +48,7 @@ function Layout (props: Props) {
                 <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
             </Card.Link>
             <Card.Link target="_blank"
-                href={`mailto:?subject=[blog]${data.title}&body=https://benjamintrubert.fr${encodeURI(router.asPath)}`}>
+                href={`mailto:?subject=[blog] ${data.title}&body=https://benjamintrubert.fr${encodeURI(router.asPath)}`}>
                 <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
             </Card.Link>
         </Card.ImgOverlay>

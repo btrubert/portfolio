@@ -91,6 +91,7 @@ export default function Login() {
                     <Form.Group controlId="validationFormikUsername"
                         as={Row}>
                         <Col>
+                            <Form.Label srOnly>{trans.common._username}</Form.Label>
                             <Form.Control required name="username" type="text" placeholder={trans.common._username} autoComplete="username"
                                 value={
                                     values.username
@@ -110,6 +111,7 @@ export default function Login() {
                     <Form.Group controlId="validationFormikPassword"
                         as={Row}>
                         <Col>
+                            <Form.Label srOnly>{trans.common._password}</Form.Label>
                             <Form.Control required name="password" type="password" placeholder={trans.common._password} autoComplete="password"
                                 value={
                                     values.password
@@ -128,6 +130,7 @@ export default function Login() {
                     </Form.Group>
                     <Form.Row>
                         <Col xs="12">
+                            <Form.Label srOnly>{trans.common._remember_me}</Form.Label>
                             <Form.Check type="checkbox" name="_remember_me" label={trans.common._remember_me}
                                 checked={
                                     values._remember_me

@@ -101,6 +101,7 @@ export default function PostForm (props: Props) {
                 ref={formRef}>
                     <Form.Group as={Row} controlId="validationFormikName">
                         <Col>
+                        <Form.Label srOnly>{t._post_title}</Form.Label>
                         <Form.Control required name="title" type="text" placeholder={t._post_title}
                             value={
                                 values.title
@@ -114,6 +115,7 @@ export default function PostForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikUser" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._post_author}</Form.Label>
                         <Form.Control name="author" as="select" custom
                             value={
                                 values.author

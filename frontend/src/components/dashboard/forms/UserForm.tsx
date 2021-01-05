@@ -120,6 +120,7 @@ export default function UserForm (props: Props) {
                 ref={formRef}>
                 <Form.Row>
                     <Form.Group controlId="validationFormikFirstName" as={Col}>
+                        <Form.Label srOnly>{t._first_name}</Form.Label>
                         <Form.Control required name="firstName" type="text" placeholder={t._first_name}
                             value={
                                 values.firstName
@@ -131,6 +132,7 @@ export default function UserForm (props: Props) {
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="validationFormiklastName" as={Col}>
+                        <Form.Label srOnly>{t._last_name}</Form.Label>
                         <Form.Control required name="lastName" type="text" placeholder={t._last_name}
                             value={
                                 values.lastName
@@ -144,6 +146,7 @@ export default function UserForm (props: Props) {
                 </Form.Row>
                     <Form.Group controlId="validationFormikEmail" as={Row}>
                         <Col>
+                        <Form.Label srOnly>{t._email}</Form.Label>
                         <Form.Control required name="email" type="email" placeholder={t._email}
                             value={
                                 values.email
@@ -157,6 +160,7 @@ export default function UserForm (props: Props) {
                     </Form.Group>
                    <Form.Group controlId="validationFormikUsername" as={Row}>
                        <Col>
+                       <Form.Label srOnly>{t._username}</Form.Label>
                    <InputGroup>
                         <InputGroup.Prepend>
                         <InputGroup.Text>@</InputGroup.Text>
@@ -175,6 +179,7 @@ export default function UserForm (props: Props) {
                     </Form.Group>
                 <Form.Group controlId="validationFormikModifyPassword" as={Row} hidden={!props.edit}>
                     <Col>
+                       <Form.Label srOnly>{t._modify_password}</Form.Label>
                     <Form.Check type="switch" name="modifyPassword" label={t._modify_password}
                         checked={
                             values.modifyPassword
@@ -186,6 +191,7 @@ export default function UserForm (props: Props) {
                 </Form.Group>
                 <Form.Group controlId="validationFormikPassword1" as={Row} hidden={!values.modifyPassword}>
                     <Col>
+                    <Form.Label srOnly>{props.edit? t._new_password : t._password}</Form.Label>
                     <Form.Control required name="password" type="password" placeholder={props.edit? t._new_password : t._password}
                         value={
                             values.password
@@ -199,6 +205,7 @@ export default function UserForm (props: Props) {
                 </Form.Group>
                 <Form.Group controlId="validationFormikPassword2" as={Row} hidden={!values.modifyPassword}>
                     <Col>
+                       <Form.Label srOnly>{t._confirm_password}</Form.Label>
                     <Form.Control required name="passwordConfirmation" type="password" placeholder={t._confirm_password}
                         value={
                             values.passwordConfirmation
@@ -212,6 +219,7 @@ export default function UserForm (props: Props) {
                 </Form.Group>
                 <Form.Group controlId="validationFormikAdmin" as={Row}>
                     <Col>
+                       <Form.Label srOnly>{t._admin_right}</Form.Label>
                     <Form.Check type="switch" name="admin" label={t._admin_right}
                         checked={
                             values.admin
