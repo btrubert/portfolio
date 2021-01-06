@@ -54,7 +54,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                         onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: index}}, `/gallerie/${router.query.category}?photo=${index}`, {shallow: true})}} />
                 </Col>)
             } </Row>
-        <Photo photos={photos} index={currentIndex} onHide={() => {setShow(false); router.replace({pathname: router.pathname, query: {category: router.query.category}}, undefined, {shallow: true})}} show={show} gallery={true}/>
+        <Photo photos={photos} index={currentIndex} onHide={() => {setShow(false); router.replace({pathname: router.pathname, query: {category: router.query.category}}, `/gallerie/${router.query.category}`, {shallow: true})}} show={show} gallery={true}/>
     </>
 }
 

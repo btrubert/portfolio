@@ -1,5 +1,5 @@
 #Dockerfile
-FROM php:fpm-alpine
+FROM php:7.4.13-fpm-alpine
 
 ENV APP_ENV=prod
 

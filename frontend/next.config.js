@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = {
     images: {
-        domains: ["127.0.0.1", "192.168.50.122"],
+        domains: ["benjamintrubert.fr"],
       },
       i18n: {
         locales: ['en', 'fr'],

@@ -99,7 +99,7 @@ function Menu () {
             <meta property="og:title" content="Benjamin Trubert - photographie" key="title" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" key="viewport" />
             <meta name="description" content="Benjamin Trubert, photographe amateur : photos de nature, de paysage et animalière." key="description" />
-            <meta name="keywords" content="Portfolio, photography, photographer, nature, landscape, wildlife, photos" key="keywords" />
+            <meta name="keywords" content="portfolio, photography, photographie, photographer, blog, nature, landscape, wildlife, photos, benjamin, trubert" key="keywords" />
             <meta name="author" content="Benjamin Trubert" key="author" />
         </Head>
         <Toast show={showError} onClose={() => setShowError(false)}>
