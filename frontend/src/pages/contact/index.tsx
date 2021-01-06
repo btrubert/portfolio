@@ -20,11 +20,7 @@ function Contact (props: InferGetStaticPropsType<typeof getStaticProps>) {
         }
     }, [router.locale])
 
-    if (state.loading) {
-        return <></>
-    } else {
-        return <h1 className="text-center">{trans.common._contact}</h1>
-    }
+    return <h1 className="text-center">{trans.common._contact}</h1>
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

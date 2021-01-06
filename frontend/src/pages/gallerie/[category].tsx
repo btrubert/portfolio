@@ -30,38 +30,32 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
             })
         }
       }, [router.locale])
-
-    const headerMeta = <Head>
-                <meta name="twitter:card" content="summary_large_image" />
-                    <meta name="twitter:title" content={photos[props.indexPhoto].title} />
-                    <meta name="twitter:description" content={photos[props.indexPhoto].description} />
-                    <meta name="twitter:site" content="@benjamintrubert" />
-                    <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
-                    <meta name="twitter:creator" content="@benjamintrubert" />
-                    <meta name="og:title" content={photos[props.indexPhoto].title} key="title"/>
-                    <meta name="og:description" content={photos[props.indexPhoto].description} />
-                    <meta name="og:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
-            </Head>
     
-    if (state.loading) {
-        return headerMeta
-    } else {
-        return <>
-        {props.displayPhoto && 
-            headerMeta}
-                <Row> {
-                    photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
-                        md={6}
-                        lg={4}
-                        key={index}>
-                        <Image className="gallery-photo" src={`/uploads/${p.path}`}
-                            width="480" height="480" unoptimized alt={p.title}
-                            onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: index}}, `/gallerie/${router.query.category}?photo=${index}`, {shallow: true})}} />
-                    </Col>)
-                } </Row>
-            <Photo photos={photos} index={currentIndex} onHide={() => {setShow(false); router.replace({pathname: router.pathname, query: {category: router.query.category}}, undefined, {shallow: true})}} show={show} gallery={true}/>
-        </>
-    }
+    return <>
+    {props.displayPhoto && 
+        <Head>
+            <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={photos[props.indexPhoto].title} />
+                <meta name="twitter:description" content={photos[props.indexPhoto].description} />
+                <meta name="twitter:site" content="@benjamintrubert" />
+                <meta name="twitter:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
+                <meta name="twitter:creator" content="@benjamintrubert" />
+                <meta name="og:title" content={photos[props.indexPhoto].title} key="title"/>
+                <meta name="og:description" content={photos[props.indexPhoto].description} />
+                <meta name="og:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
+        </Head>}
+            <Row> {
+                photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
+                    md={6}
+                    lg={4}
+                    key={index}>
+                    <Image className="gallery-photo" src={`/uploads/${p.path}`}
+                        width="480" height="480" unoptimized alt={p.title}
+                        onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: index}}, `/gallerie/${router.query.category}?photo=${index}`, {shallow: true})}} />
+                </Col>)
+            } </Row>
+        <Photo photos={photos} index={currentIndex} onHide={() => {setShow(false); router.replace({pathname: router.pathname, query: {category: router.query.category}}, undefined, {shallow: true})}} show={show} gallery={true}/>
+    </>
 }
 
 

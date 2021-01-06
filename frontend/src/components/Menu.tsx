@@ -93,90 +93,83 @@ function Menu () {
         }
     }
 
-    
-    if (state.loading) {
-        return <></>
-    } else {
-        return (
-            <>
-            <Head>  
-                <title>{trans.common._title}</title>
-                <meta property="og:title" content={trans.common._title} key="title" />
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" key="viewport" />
-                <meta name="description" content="Benjamin Trubert's portfolio : nature, landscape and wildlife photos." key="description" />
-                <meta name="keywords" content="Portfolio, photography, photographer, nature, landscape, wildlife, photos" key="keywords" />
-                <meta name="author" content="Benjamin Trubert" key="author" />
-            </Head>
-            <Toast show={showError} onClose={() => setShowError(false)}>
-                <Toast.Body>
-                    <strong className="mr-auto">{trans.common._server_error}</strong>
-                </Toast.Body>
-            </Toast>
-            <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
-                <Container>
-                    <Link href="/" passHref>
-                        <Navbar.Brand as={Nav.Link}>
-                            <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top mr-2" alt="logo"/>
-                            <Nav.Item className="d-none d-md-inline">{trans.common._title}</Nav.Item>
-                        </Navbar.Brand>
-                    </Link>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
-                    <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">
-                        <Nav>
-                            <Link href="/gallerie" passHref>
-                                <Nav.Link>{trans.common._gallery}</Nav.Link>
-                            </Link>
-                            <Link href="/blog" passHref>
-                                <Nav.Link>{trans.common._blog}</Nav.Link>
-                            </Link>
-                            {/* <Link href="/contact" passHref>
-                                <Nav.Link>{trans.common._contact}</Nav.Link>
-                            </Link> */}
-                        </Nav>
-                        <Nav>
-                            <NavDropdown title={
-                                    state.username != "" ? trans.common._signed_in_as + state.username : trans.common._login
-                                }
-                                id="nav-dropdown"
-                                alignRight>
-                                {
-                                state.admin ? <> {
-                                    state.admin ? <Link href="/admin/dashboard" passHref>
-                                        <NavDropdown.Item>{trans.common._dashboard}</NavDropdown.Item>
-                                    </Link> : <Link href="/profile" passHref>
-                                        <NavDropdown.Item>{trans.common._profile}</NavDropdown.Item>
-                                    </Link>
-                                }
-                                    <NavDropdown.Item onClick={handleLogout}>{trans.common._logout}</NavDropdown.Item>
-                                </> : <NavDropdown.Item eventKey="login"
-                                    onClick={() => setShowLogin(true)}>{trans.common._login}</NavDropdown.Item>
-                            } </NavDropdown>
-                        </Nav>
-                        <Nav>
-                            <OverlayTrigger trigger={['focus', 'hover']}
-                                placement="auto-start"
-                                overlay={
-                                <Tooltip id="language">
-                                    {trans.common._change_language}
-                                </Tooltip>}>
-                                    <div onClick={changeLanguage} className="language">
-                                    <Icon path={mdiEarth} color="white" size={1} />
-                                    </div>
-                            </OverlayTrigger>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-            <Modal size="sm" className="custom-form"
-                show={showLogin}
-                onHide={() => setShowLogin(false)}>
-                <Modal.Body>
-                    <Login />
-                </Modal.Body>
-            </Modal>
-            </>
-        )
-    }
+    return <>
+        <Head>  
+            <title>{trans.common._title}</title>
+            <meta property="og:title" content="Benjamin Trubert - photographie" key="title" />
+            <meta name="viewport" content="initial-scale=1.0, width=device-width" key="viewport" />
+            <meta name="description" content="Benjamin Trubert, photographe amateur : photos de nature, de paysage et animalière." key="description" />
+            <meta name="keywords" content="Portfolio, photography, photographer, nature, landscape, wildlife, photos" key="keywords" />
+            <meta name="author" content="Benjamin Trubert" key="author" />
+        </Head>
+        <Toast show={showError} onClose={() => setShowError(false)}>
+            <Toast.Body>
+                <strong className="mr-auto">{trans.common._server_error}</strong>
+            </Toast.Body>
+        </Toast>
+        <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+            <Container>
+                <Link href="/" passHref>
+                    <Navbar.Brand as={Nav.Link}>
+                        <img src="/logo.svg" width="30" height="30" className="d-inline-block align-top mr-2" alt="logo"/>
+                        <Nav.Item className="d-none d-md-inline">{trans.common._title}</Nav.Item>
+                    </Navbar.Brand>
+                </Link>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
+                <Navbar.Collapse className="justify-content-end" id="responsive-navbar-nav">
+                    <Nav>
+                        <Link href="/gallerie" passHref>
+                            <Nav.Link>{trans.common._gallery}</Nav.Link>
+                        </Link>
+                        <Link href="/blog" passHref>
+                            <Nav.Link>{trans.common._blog}</Nav.Link>
+                        </Link>
+                        {/* <Link href="/contact" passHref>
+                            <Nav.Link>{trans.common._contact}</Nav.Link>
+                        </Link> */}
+                    </Nav>
+                    <Nav>
+                        <NavDropdown title={
+                                state.username != "" ? trans.common._signed_in_as + state.username : trans.common._login
+                            }
+                            id="nav-dropdown"
+                            alignRight>
+                            {
+                            !state.loading ? <> {
+                                state.admin ? <Link href="/admin/dashboard" passHref>
+                                    <NavDropdown.Item>{trans.common._dashboard}</NavDropdown.Item>
+                                </Link> : <Link href="/profile" passHref>
+                                    <NavDropdown.Item>{trans.common._profile}</NavDropdown.Item>
+                                </Link>
+                            }
+                                <NavDropdown.Item onClick={handleLogout}>{trans.common._logout}</NavDropdown.Item>
+                            </> : <NavDropdown.Item eventKey="login"
+                                onClick={() => setShowLogin(true)}>{trans.common._login}</NavDropdown.Item>
+                        } </NavDropdown>
+                    </Nav>
+                    <Nav>
+                        <OverlayTrigger trigger={['focus', 'hover']}
+                            placement="auto-start"
+                            overlay={
+                            <Tooltip id="language">
+                                {trans.common._change_language}
+                            </Tooltip>}>
+                                <div onClick={changeLanguage} className="language">
+                                <Icon path={mdiEarth} color="white" size={1} />
+                                </div>
+                        </OverlayTrigger>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+        <Modal size="sm" className="custom-form"
+            show={showLogin}
+            onHide={() => setShowLogin(false)}>
+            <Modal.Body>
+                <Login />
+            </Modal.Body>
+        </Modal>
+        </>
 }
 
 export default Menu

@@ -33,51 +33,47 @@ function Blog(props: InferGetStaticPropsType<typeof getStaticProps>) {
         }
         setLanguageFilter(router.locale ?? '')
     }, [router.locale])
-    
-    if (state.loading) {
-        return <></>
-    } else {
-        return <>
-            <h1 className="text-center">Blog</h1>
-            <Row>
-                <Col>
-                <Form inline className="mb-3">
+
+    return <>
+        <h1 className="text-center">Blog</h1>
+        <Row>
+            <Col>
+            <Form inline className="mb-3">
+                <Form.Group>
+                        <Form.Label column>{t._filter_language} :</Form.Label>
+                        <Form.Control as="select" value={languageFilter}
+                        onChange={(e) => setLanguageFilter(e.currentTarget.value)}
+                        className="filterBlogInput custom-select-disabled-bg">
+                            <option value={router.locales?.join(" + ")} className="filterBlogChoice">{router.locales?.map((l: string) => capitalize(l)).join(' + ')}</option>
+                            {router.locales?.map((l: string) => <option value={l} className="filterBlogChoice">{capitalize(l)}</option>)}
+                        </Form.Control>
+                    </Form.Group>
+                </Form>
+            </Col>
+            <Col>
+                <Form inline className="mb-3 justify-content-end">
                     <Form.Group>
-                            <Form.Label column>{t._filter_language} :</Form.Label>
-                            <Form.Control as="select" value={languageFilter}
-                            onChange={(e) => setLanguageFilter(e.currentTarget.value)}
-                            className="filterBlogInput custom-select-disabled-bg">
-                                <option value={router.locales?.join(" + ")} className="filterBlogChoice">{router.locales?.map((l: string) => capitalize(l)).join(' + ')}</option>
-                                {router.locales?.map((l: string) => <option value={l} className="filterBlogChoice">{capitalize(l)}</option>)}
-                            </Form.Control>
-                        </Form.Group>
-                    </Form>
-                </Col>
-                <Col>
-                    <Form inline className="mb-3 justify-content-end">
-                        <Form.Group>
-                            <Form.Label column>{t._search_article} :</Form.Label>
-                            <Form.Control type="text" placeholder={t._title} value={titleFilter}
-                            onChange={(e) => setTitleFilter(e.currentTarget.value)}
-                            className="filterBlogInput"/>
-                        </Form.Group>
-                    </Form>
-                </Col>
-            </Row>
-            <Row> {posts && 
-                posts.filter((p: Post) => languageFilter.includes(p.locale)).filter((p: Post) => p.title.toLowerCase().includes(titleFilter.toLowerCase())).map((p: Post, index: number) => 
-                <Col  xs={12}
-                    lg={6}
-                    key={index} >
-                    <Link href={encodeURI(`/blog/${p.title}`)} as={encodeURI(`/blog/${p.title}`)} passHref >
-                    <a className="blogCardLink">
-                        <PostCard post={p}/>   
-                    </a>  
-                    </Link>
-                </Col>)
-            } </Row>
-        </>
-    }
+                        <Form.Label column>{t._search_article} :</Form.Label>
+                        <Form.Control type="text" placeholder={t._title} value={titleFilter}
+                        onChange={(e) => setTitleFilter(e.currentTarget.value)}
+                        className="filterBlogInput"/>
+                    </Form.Group>
+                </Form>
+            </Col>
+        </Row>
+        <Row> {posts && 
+            posts.filter((p: Post) => languageFilter.includes(p.locale)).filter((p: Post) => p.title.toLowerCase().includes(titleFilter.toLowerCase())).map((p: Post, index: number) => 
+            <Col  xs={12}
+                lg={6}
+                key={index} >
+                <Link href={encodeURI(`/blog/${p.title}`)} as={encodeURI(`/blog/${p.title}`)} passHref >
+                <a className="blogCardLink">
+                    <PostCard post={p}/>   
+                </a>  
+                </Link>
+            </Col>)
+        } </Row>
+    </>
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {

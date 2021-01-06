@@ -30,8 +30,8 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
         }
       }, [router.locale])
 
-    
-    const headerMeta = <Head>
+    return <>
+        <Head>
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={props.post.title} />
                 <meta name="twitter:description" content={props.post.description} />
@@ -42,31 +42,24 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
                 <meta name="og:description" content={props.post.description} />
                 <meta name="og:image" content={`https://benjamintrubert.fr/${props.post.cover}`} />
             </Head>
-
-    if (state.loading) {
-        return headerMeta
-    } else {
-        return <>
-            {headerMeta}
-            <Layout content={props.post.content} createdAt={props.post.createdAt}/>
-            <Row>
-                {photos.length > 0 &&
-                <h2 className="mt-5 mb-3">{trans.common._gallery}</h2>
-                }
-            </Row>
-            <Row>
-                {photos &&
-                photos.map((p: Photo, index: number) => 
-                    <Col xs={6} sm={4} md={3} key={index}>
-                        <Image className="gallery-photo" src={`/uploads/${p.path}`}
-                            width="480" height="480" unoptimized alt={p.title}
-                            onClick={() => {setCurrentIndex(index); setShow(true)}} />
-                    </Col>
-                )}
-            </Row>
-            <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={false}/>
-            </>
-    }
+        <Layout content={props.post.content} createdAt={props.post.createdAt}/>
+        <Row>
+            {photos.length > 0 &&
+            <h2 className="mt-5 mb-3">{trans.common._gallery}</h2>
+            }
+        </Row>
+        <Row>
+            {photos &&
+            photos.map((p: Photo, index: number) => 
+                <Col xs={6} sm={4} md={3} key={index}>
+                    <Image className="gallery-photo" src={`/uploads/${p.path}`}
+                        width="480" height="480" unoptimized alt={p.title}
+                        onClick={() => {setCurrentIndex(index); setShow(true)}} />
+                </Col>
+            )}
+        </Row>
+        <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={false}/>
+        </>
 }
 
 
