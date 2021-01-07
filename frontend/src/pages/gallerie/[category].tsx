@@ -30,10 +30,8 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
             })
         }
       }, [router.locale])
-    
-    return <>
-    {props.displayPhoto && 
-        <Head>
+
+      const metaHeader = <Head>
             <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={photos[props.indexPhoto].title} />
                 <meta name="twitter:description" content={photos[props.indexPhoto].description} />
@@ -43,7 +41,14 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                 <meta name="og:title" content={photos[props.indexPhoto].title} key="title"/>
                 <meta name="og:description" content={photos[props.indexPhoto].description} />
                 <meta name="og:image" content={`https://benjamintrubert.fr/uploads/${photos[props.indexPhoto].path}`} />
-        </Head>}
+        </Head>
+    
+    if (state.loading) {
+        return metaHeader
+    }
+    return <>
+    {props.displayPhoto && 
+        metaHeader}
             <Row> {
                 photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
                     md={6}
