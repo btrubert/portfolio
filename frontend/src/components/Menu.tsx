@@ -135,7 +135,7 @@ function Menu () {
                             id="nav-dropdown"
                             alignRight>
                             {
-                            !state.loading ? <> {
+                            !state.loading && state.username != "" ? <> {
                                 state.admin ? <Link href="/admin/dashboard" passHref>
                                     <NavDropdown.Item>{trans.common._dashboard}</NavDropdown.Item>
                                 </Link> : <Link href="/profile" passHref>
