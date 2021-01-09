@@ -26,7 +26,7 @@ function Contact (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter()
     const [submitting, setSubmitting] = useState<boolean>(false)
     const [showAlert, setShowAlert] = useState<boolean>(false)
-    const [variantAlert, setVariantAlert] = useState<'success' | 'danger'>('warning')
+    const [variantAlert, setVariantAlert] = useState<'success' | 'danger'>('success')
     const [messageAlert, setMessageAlert] = useState<string>("")
 
     const max_subject = 64
