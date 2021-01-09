@@ -124,18 +124,18 @@ function Menu () {
                         <Link href="/blog" passHref>
                             <Nav.Link>{trans.common._blog}</Nav.Link>
                         </Link>
-                        {/* <Link href="/contact" passHref>
+                        <Link href="/contact" passHref>
                             <Nav.Link>{trans.common._contact}</Nav.Link>
-                        </Link> */}
+                        </Link>
                     </Nav>
                     <Nav>
-                        <NavDropdown title={
+                        <NavDropdown title={!trans.commonTrans ? '' : // avoid undefined value before loading translation
                                 state.username != "" ? trans.common._signed_in_as + state.username : trans.common._login
                             }
                             id="nav-dropdown"
                             alignRight>
                             {
-                            !state.loading ? <> {
+                            !state.loading && state.username != "" ? <> {
                                 state.admin ? <Link href="/admin/dashboard" passHref>
                                     <NavDropdown.Item>{trans.common._dashboard}</NavDropdown.Item>
                                 </Link> : <Link href="/profile" passHref>

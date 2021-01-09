@@ -109,7 +109,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         categories =  await response.json()
         play = Array(categories.length).fill(null)
     }
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     return {

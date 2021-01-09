@@ -57,7 +57,7 @@ function Home(props : InferGetStaticPropsType < typeof getStaticProps >) {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     return {props: {

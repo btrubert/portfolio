@@ -4,7 +4,7 @@ export function timestampToStringCompact (ts: number) {
 }
 
 
-export function timestampToStringFull (ts: number, loc: string ='en') {
+export function timestampToStringFull (ts: number, loc: string ='fr') {
     let month: Array<string>
     let day: Array<string>
     let d = new Date(ts*1000)

@@ -36,11 +36,13 @@ export default function UserForm (props: Props) {
     const [submitting, setSubmitting] = useState<boolean>(false)
     const t = props.translation
 
+    const max_text = 255
+    const max_username = 180
     const schema = yup.object({
-        firstName: yup.string().required(t._required).max(255, t._max_char_error),
-        lastName: yup.string().required(t._required).max(255, t._max_char_error),
-        email: yup.string().required(t._required).email("Email invalid"),
-        username: yup.string().required(t._required).matches(/^[a-zA-Z0-9]+$/, t._only_char_number_error),
+        firstName: yup.string().required(t._required).max(max_text, t._max_char_error),
+        lastName: yup.string().required(t._required).max(max_text, t._max_char_error),
+        email: yup.string().required(t._required).email(t._invalid_email).max(max_text, t._max_char_error),
+        username: yup.string().required(t._required).matches(/^[a-zA-Z0-9]+$/, t._only_char_number_error).max(max_username, t._max_char_error),
         admin: yup.boolean(),
         modifyPassword: yup.boolean(),
         password: yup.string().when("modifyPassword", {is: true, then : yup.string().required(t._required).min(8, t._min_password_error).max(32, t._max_password_error), otherwise: yup.string().nullable()}),
@@ -126,7 +128,8 @@ export default function UserForm (props: Props) {
                                 values.firstName
                             }
                             isInvalid={!!errors.firstName}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.firstName}
                         </Form.Control.Feedback>
@@ -138,7 +141,8 @@ export default function UserForm (props: Props) {
                                 values.lastName
                             }
                             isInvalid={!!errors.lastName}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.lastName}
                         </Form.Control.Feedback>
@@ -152,7 +156,8 @@ export default function UserForm (props: Props) {
                                 values.email
                             }
                             isInvalid={!!errors.email}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.email}
                         </Form.Control.Feedback>
@@ -170,7 +175,8 @@ export default function UserForm (props: Props) {
                                 values.username
                             }
                             isInvalid={!!errors.lastName}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_username}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.lastName}
                         </Form.Control.Feedback>

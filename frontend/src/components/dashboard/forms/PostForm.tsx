@@ -31,10 +31,10 @@ export default function PostForm (props: Props) {
     const t = props.translation
     const router = useRouter()
 
-
+    const max_text = 255
     const schema = yup.object({
-        title: yup.string().required(t._required).max(255, t._max_char_error),
-        author: yup.string().required(t._required).max(255, t._max_char_error),
+        title: yup.string().required(t._required).max(max_text, t._max_char_error),
+        author: yup.string().required(t._required).max(max_text, t._max_char_error),
         locale: yup.string().required(),
     });
 
@@ -88,7 +88,7 @@ export default function PostForm (props: Props) {
                 {
                     title: "",
                     author: "~author",
-                    locale:  router.locale ?? 'en',
+                    locale:  router.locale ?? 'fr',
                 }
         }>{({
             handleSubmit,
@@ -107,7 +107,8 @@ export default function PostForm (props: Props) {
                                 values.title
                             }
                             isInvalid={!!errors.title}
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         <Form.Control.Feedback type="invalid">
                             {errors.title}
                         </Form.Control.Feedback>
@@ -152,7 +153,7 @@ export default function PostForm (props: Props) {
                                 {
                                 l
                             }</option>)
-                            : <option value={router.locale ?? 'en'}>{router.locale ?? 'en'}</option>
+                            : <option value={router.locale ?? 'fr'}>{router.locale ?? 'fr'}</option>
                         } </Form.Control>
                         </Col>
                     </Form.Group>

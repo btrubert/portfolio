@@ -14,7 +14,7 @@
     "_username": "nom d'utilisateur",
     "_password": "mot de passe",
     "_remember_me": "Se souvenir de moi",
-    "_loading": "Chargement...",
+    "_loading": "Chargement",
     "_change_language": "English",
     "_server_error": "Le serveur est actuellement indisponible. Certaines fonctionnalités peuvent ne pas fonctionner, veuillez réessayer plus tard.",
     "_social_media": "Réseaux sociaux",
@@ -27,5 +27,13 @@
     "_my_gear": "Le détail du matériel que j'utilise ce trouve dans cet article : ",
     "_my_gear_link": "Mon équipement",
     "_show_exifs": "Afficher les Exifs",
-    "_hide_exifs": "Masquer les Exifs"
+    "_hide_exifs": "Masquer les Exifs",
+    "_email_invalid": "Format de l'adresse email invalide.",
+    "_subject": "Sujet",
+    "_email": "Adresse email",
+    "_message_content": "Taper votre message ici.",
+    "_send": "Envoyer",
+    "_reset": "Réinitialiser",
+    "_message_sent": "Le message a été envoyé.",
+    "_error_server": "Erreur serveur : impossible d'envoyer le message."
 }

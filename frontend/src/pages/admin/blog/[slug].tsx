@@ -77,7 +77,7 @@ function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProp
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     const blogT = getTranslation('blog', locale)

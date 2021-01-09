@@ -65,7 +65,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     const response = await fetch(`${process.env.SERVEUR_URL}/smf/gallery/${context.params?.category}`)

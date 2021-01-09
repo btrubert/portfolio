@@ -31,8 +31,9 @@ export default function CategoryForm (props: Props) {
     const [submitting, setSubmitting] = useState<boolean>(false)
     const t = props.translation
 
+    const max_name = 255
     const schema = yup.object({
-        name: yup.string().required(t._required).max(255, t._max_char_error),
+        name: yup.string().required(t._required).max(max_name, t._max_char_error),
         public: yup.boolean(),
         user: yup.number().when('public', {is: false, then:yup.number().required(t._required).min(0, t._select_user), otherwise: yup.number().nullable()}),
     });
@@ -106,6 +107,7 @@ export default function CategoryForm (props: Props) {
                         <Col>
                         <Form.Label srOnly>{t._category_name}</Form.Label>
                         <Form.Control required name="name" type="text" placeholder={t._category_name}
+                            maxLength={max_name}
                             value={
                                 values.name
                             }

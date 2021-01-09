@@ -64,7 +64,7 @@ function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     let post: Post | null = null
