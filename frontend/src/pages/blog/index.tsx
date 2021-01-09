@@ -82,7 +82,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     if (response.ok) {
         posts =  await response.json()
     }
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     const blogT = getTranslation('blog', locale)

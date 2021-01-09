@@ -27,7 +27,7 @@ export default function Error(props: InferGetStaticPropsType<typeof getStaticPro
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-    const defaultLocale = context.defaultLocale ?? 'en'
+    const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
     return {

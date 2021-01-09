@@ -38,9 +38,10 @@ export default function PhotoForm (props: Props) {
     const originalFile = props.photo ? props.photo.originalPath !== "": true
     const categoryChoice = props.categories.length === 1
 
+    const max_text = 255
     const schema = yup.object({
-        title: yup.string().required(t._required).max(255, t._max_char_error),
-        description: yup.string().max(255, t._max_char_error),
+        title: yup.string().required(t._required).max(max_text, t._max_char_error),
+        description: yup.string().max(max_text, t._max_char_error),
         category: yup.number().required().min(0, t._choose_category_error),
         path: yup.mixed().required(t._select_photo_error),
         changeQuality: yup.boolean(),
@@ -134,7 +135,8 @@ export default function PhotoForm (props: Props) {
                             isInvalid={
                                 !!errors.title
                             }
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         <Form.Control.Feedback type="invalid">
                             {
                             errors.title
@@ -148,7 +150,8 @@ export default function PhotoForm (props: Props) {
                             value={
                                 values.description
                             }
-                            onChange={handleChange}/>
+                            onChange={handleChange}
+                            maxLength={max_text}/>
                         </Col>
                     </Form.Group>
                     <Form.Group controlId="validationFormikFile" as={Row}>
