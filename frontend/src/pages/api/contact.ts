@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         to: req.body.email,
         bcc: 'contact@benjamintrubert.fr',
         subject: `[Contact] ${req.body.subject}`,
-        html: `<p>${req.body.message}</p><br/><i>${footerMessage}</i>`,
+        text: `${req.body.message}\n\n${footerMessage}`,
     }, (error, info) => {
         if (error) {
             res.status(401)

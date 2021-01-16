@@ -97,7 +97,7 @@ function Contact (props: InferGetStaticPropsType<typeof getStaticProps>) {
                 }) => <Form noValidate
                         onSubmit={handleSubmit}>
                             <Form.Row>
-                                <Form.Group controlId="validationFormikSubject" as={Col} xs={{ offset: 3, span: 6 }}>
+                                <Form.Group controlId="validationFormikSubject" as={Col} sm={{ offset: 3, span: 6 }}>
                                     <Form.Label srOnly>{trans.common._subject}</Form.Label>
                                     <Form.Control required name="subject" type="text"
                                         maxLength={max_subject}
@@ -111,7 +111,7 @@ function Contact (props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group controlId="validationFormikEmail" as={Col} xs={{ offset: 3, span: 6 }}>
+                                <Form.Group controlId="validationFormikEmail" as={Col} sm={{ offset: 3, span: 6 }}>
                                     <Form.Label srOnly>{trans.common._email}</Form.Label>
                                     <Form.Control required name="email" type="text"
                                         placeholder={trans.common._email}
@@ -124,7 +124,7 @@ function Contact (props: InferGetStaticPropsType<typeof getStaticProps>) {
                                 </Form.Group>
                             </Form.Row>
                             <Form.Row>
-                                <Form.Group controlId="validationFormikMessage" as={Col} xs={{ offset: 3, span: 6 }}>
+                                <Form.Group controlId="validationFormikMessage" as={Col} sm={{ offset: 3, span: 6 }}>
                                     <Form.Label srOnly>{trans.common._message_content}</Form.Label>
                                     <Form.Control required name="message" as="textarea"
                                         placeholder={trans.common._message_content}
