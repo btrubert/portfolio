@@ -12,7 +12,7 @@ import { TranslationProvider } from 'utils/TranslationContext'
 function MyApp({Component, pageProps}: AppProps) {
     return <>
             <Head>
-                <link rel="icon" href="/logo.svg"/>
+                <link rel="shortcut icon" href="/logo.svg"/>
             </Head>
             <SessionProvider>
                 <TranslationProvider>

@@ -25,7 +25,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const footerMessage = req.body.locale === 'en' ? "This email was sent by an automatic email address. Do not respond to this email."
             : "Cet email a été envoyé à partir d'une adresse email automatique. Veuillez ne pas répondre à cet email."
 
-    let info = await transporter.sendMail({
+    transporter.sendMail({
         from: `${addressContact}@benjamintrubert.fr`,
         to: req.body.email,
         bcc: 'contact@benjamintrubert.fr',

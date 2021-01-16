@@ -84,23 +84,25 @@ function Menu () {
     }
 
     const changeLanguage = async () => {
-        if (router.locale === 'en') {
-            dispatchT({type: 'reset'})
-            router.push(router.pathname, router.asPath, {locale: 'fr'})
-        } else {
+        if (router.locale === 'fr') {
             dispatchT({type: 'reset'})
             router.push(router.pathname, router.asPath, {locale: 'en'})
+        } else {
+            dispatchT({type: 'reset'})
+            router.push(router.pathname, router.asPath, {locale: 'fr'})
         }
     }
 
     return <>
         <Head>  
-            <title>{trans.common._title}</title>
+            <title>{trans.common._title ?? 'Benjamin Trubert - photographie'}</title>
             <meta property="og:title" content="Benjamin Trubert - photographie" key="title" />
             <meta name="viewport" content="initial-scale=1.0, width=device-width" key="viewport" />
             <meta name="description" content="Benjamin Trubert, photographe amateur : photos de nature, de paysage et animalière." key="description" />
             <meta name="keywords" content="portfolio, photography, photographie, photographer, blog, nature, landscape, wildlife, photos, benjamin, trubert" key="keywords" />
             <meta name="author" content="Benjamin Trubert" key="author" />
+            <link rel="alternate" hrefLang="fr" href={`https://benjamintrubert.fr${router.asPath}`} />
+            <link rel="alternate" hrefLang="en" href={`https://benjamintrubert.fr/en${router.asPath}`} />
         </Head>
         <Toast show={showError} onClose={() => setShowError(false)}>
             <Toast.Body>
