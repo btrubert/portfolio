@@ -25,7 +25,7 @@ type Entity = 'categories' | 'photos' | 'users' | 'posts'
 
 function Dashboard (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter()
-    const [state, dispatchS] = useSession()
+    const [state, ] = useSession()
     const [trans, dispatch] = useTranslation()
     const t = JSON.parse(props.dashboardT)
 

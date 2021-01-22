@@ -7,7 +7,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Security\Core\Security;
 use App\Service\ObjectEncoder;
 use App\Entity\User;
 use App\Form\UserType;
@@ -138,32 +137,6 @@ class UserController extends AbstractController
             }
 
             return new JsonResponse("Error while deleting the user.", Response::HTTP_EXPECTATION_FAILED);
-        } catch (ConnectionException $e) {
-            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
-        } catch (Exception $e) {
-            return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * @Route("/profile_info", methods={"GET"}, name="profile_info")
-     */
-    public function profileInfo(Security $security, ObjectEncoder $objectEncoder, CsrfTokenManagerInterface $csrf_token): Response
-    {
-        try {
-            $curentUser = $security->getUser();
-            $user = null;
-            $isAdmin = false;
-            $token = "";
-            if (isset($curentUser)) {
-                $isAdmin = in_array("ROLE_ADMIN", $curentUser->getRoles());
-                $user = json_decode($objectEncoder->encodeObjectToJson($curentUser, ['password', 'salt', 'roles', 'categories', 'id']));
-                $token = $csrf_token->getToken("logout")->getValue();
-            } else {
-                $token = $csrf_token->getToken("authenticate")->getValue();
-            }
-
-            return new JsonResponse(['user' => $user, 'admin' => $isAdmin, 'token' => $token]);
         } catch (ConnectionException $e) {
             return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {

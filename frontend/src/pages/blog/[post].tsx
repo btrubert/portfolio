@@ -14,7 +14,6 @@ import Photo from 'components/photo/Photo'
 
 
 function Post (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [state, dispatchS] = useSession()
     const [trans, dispatch] = useTranslation()
     const router = useRouter()
     const [currentIndex, setCurrentIndex] = useState<number>(0)

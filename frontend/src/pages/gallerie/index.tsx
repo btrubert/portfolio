@@ -15,7 +15,6 @@ import Image from 'next/image'
 
 
 function Categories(props: InferGetStaticPropsType<typeof getStaticProps>) {
-    const [state, dispatchS] = useSession()
     const categories = props.categories
     const [play, setPlay] = useState(props.play)
     const [trans, dispatch] = useTranslation()

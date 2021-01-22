@@ -35,5 +35,7 @@
     "_send": "Envoyer",
     "_reset": "Réinitialiser",
     "_message_sent": "Le message a été envoyé.",
-    "_error_server": "Erreur serveur : impossible d'envoyer le message."
+    "_error_server": "Erreur serveur : impossible d'envoyer le message.",
+    "_forgotten_password": "Mot de passe oublié.",
+    "_use_contact": "Si vous n'avez pas reçu d'email, veuillez utiliser le formulaire de contact."
 }

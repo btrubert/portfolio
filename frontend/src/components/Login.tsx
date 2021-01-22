@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSession } from 'utils/SessionContext'
 import { useRouter } from 'next/router'
+import ResetPassword from './ResetPassword'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
@@ -27,9 +28,11 @@ export default function Login() {
     const [variantAlert, setVariantAlert] = useState<string>("warning")
     const [messageAlert, setMessageAlert] = useState<string>("")
     const [submitting, setSubmitting] = useState<boolean>(false)
+    const [passwordForm, setPasswordForm] = useState<boolean>(false)
     const router = useRouter()
 
-    const schema = yup.object({username: yup.string().required(trans.common._required),
+    const schema = yup.object({
+        username: yup.string().required(trans.common._required),
         password: yup.string().required(trans.common._required),
         _remember_me: yup.boolean()})
 
@@ -54,12 +57,12 @@ export default function Login() {
                 throw new Error(trans.common._verify_login)
             }
         }).then(data => {
-            const prefix = router.locale === 'fr'? '/fr': ''
+            const prefix = router.locale === 'en'? '/en': ''
             setSubmitting(false)
             setMessageAlert(trans.common._connected)
             setVariantAlert("success")
             setShowAlert(true)
-            setTimeout(() => {window.location.assign(prefix+data)}, 1000);
+            setTimeout(() => {window.location.assign(prefix+data)}, 1000)
         }).catch(error => {
             setSubmitting(false)
             setVariantAlert("danger")
@@ -69,8 +72,10 @@ export default function Login() {
         })
     }
 
-        return (
-            <Formik validationSchema={schema}
+    if (passwordForm) {
+        return <ResetPassword toggleBack={() => setPasswordForm(false)}/>
+    } else {
+        return <Formik validationSchema={schema}
                 onSubmit={handleSubmitForm}
                 validateOnBlur={false}
                 validateOnChange={false}
@@ -128,6 +133,11 @@ export default function Login() {
                             } </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
+                    <Row>
+                        <Col>
+                            <div className="triggerLink" onClick={() => setPasswordForm(true)}>{trans.common._forgotten_password}</div>
+                        </Col>
+                    </Row>
                     <Form.Row>
                         <Col xs="12">
                             <Form.Label srOnly>{trans.common._remember_me}</Form.Label>
@@ -139,7 +149,7 @@ export default function Login() {
                                     handleChange
                                 }/>
                         </Col>
-                        </Form.Row>
+                    </Form.Row>
                     <Form.Row>
                     <Col sm={4}>
                         <OverlayTrigger
@@ -165,6 +175,5 @@ export default function Login() {
                     </Form.Row>
                 </Form>}
             </Formik>
-        )
-
     }
+}

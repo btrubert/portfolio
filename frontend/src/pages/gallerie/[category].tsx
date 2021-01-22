@@ -13,7 +13,7 @@ import Photo from 'components/photo/Photo'
 
 
 function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    const [state, dispatchS] = useSession()
+    const [state, ] = useSession()
     const [trans, dispatch] = useTranslation()
     const router = useRouter()
 

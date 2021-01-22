@@ -21,6 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         }
     })
 
+    const objet = req.body.reset ? '[Service]' : '[Contact]'
     const addressContact = req.body.locale === 'en' ? "no-reply" : "ne-pas-repondre"
     const footerMessage = req.body.locale === 'en' ? "This email was sent by an automatic email address. Do not respond to this email."
             : "Cet email a été envoyé à partir d'une adresse email automatique. Veuillez ne pas répondre à cet email."
@@ -28,8 +29,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     transporter.sendMail({
         from: `${addressContact}@benjamintrubert.fr`,
         to: req.body.email,
+        replyTo: req.body.email,
         bcc: 'contact@benjamintrubert.fr',
-        subject: `[Contact] ${req.body.subject}`,
+        subject: `${objet} ${req.body.subject}`,
         text: `${req.body.message}\n\n${footerMessage}`,
     }, (error, info) => {
         if (error) {
@@ -37,7 +39,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             res.end()
         } else {
             res.status(200)
-            res.end()
+            res.end('Email sent')
         }
     })
 

@@ -14,7 +14,6 @@ import Form from 'react-bootstrap/Form'
 
 
 function Blog(props: InferGetStaticPropsType<typeof getStaticProps>) {
-    const [state, dispatchS] = useSession()
     const posts = props.posts
     const [trans, dispatch] = useTranslation()
     const t = JSON.parse(props.blogT)

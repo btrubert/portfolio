@@ -35,5 +35,7 @@
     "_send": "Send",
     "_reset": "Reset",
     "_message_sent": "The message has been sent.",
-    "_error_server": "Server error : unable to send the message."
+    "_error_server": "Server error : unable to send the message.",
+    "_forgotten_password": "Reset your password.",
+    "_use_contact": "If you don't receive an email, please use the contact form."
 }

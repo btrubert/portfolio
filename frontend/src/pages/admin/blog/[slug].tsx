@@ -9,7 +9,7 @@ import Editor from 'components/blog/Editor'
  
 function PostEditor (props: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const [trans, dispatch] = useTranslation()
-    const [state, dispatchS] = useSession()
+    const [state, ] = useSession()
     const [post, setPost] = useState<Post>()
     const [token, setToken] = useState<string>('')
     const [addedPhoto, setAddedPhoto] = useState<boolean>(false)

@@ -30,8 +30,17 @@ body {
     margin-top: 2em;
 }
 
-.language {
+.iconCursor {
     cursor: pointer;
+}
+
+.triggerLink {
+    color: blue;
+    cursor: pointer;
+}
+
+.triggerLink:hover {
+    text-decoration: underline;
 }
 
 .alert {
