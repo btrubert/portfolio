@@ -88,7 +88,7 @@ export default function ResetPassword(props: Props) {
                 <Row>
                     <Col>
                     <div className="mb-2 iconCursor" onClick={props.toggleBack}>
-                        <Icon path={mdiArrowLeft} color="black" size={1} />
+                        <Icon path={mdiArrowLeft} color="black" size={1} />{trans.common._back}
                     </div>
                     </Col>
                 </Row>

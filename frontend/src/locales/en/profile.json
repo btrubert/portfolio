@@ -1,0 +1,25 @@
+{
+    "_perso": "Private page",
+    "_photos": "Photos",
+    "_infos": "Information",
+    "_required": "Required",
+    "_max_char_error": "Too many characters.",
+    "_only_char_number_error": "Must contain only letters and numbers.",
+    "_min_password_error": "Must be at least 8 characters long.",
+    "_max_password_error": "Must be at most 32 characters long.",
+    "_matching_password_error": "Passwords must match.",
+    "_error_form": "Error while sending, verify the information or try again later.",
+    "_first_name": "First name",
+    "_last_name": "Last name",
+    "_email": "Email address",
+    "_username": "Username",
+    "_modify_password": "Modify password ?",
+    "_new_password": "New password",
+    "_confirm_password": "Confirm the new password",
+    "_loading": "loading",
+    "_save": "Save",
+    "_reset": "Reset",
+    "_edit": "Edit",
+    "_cancel": "Cancel"
+
+}

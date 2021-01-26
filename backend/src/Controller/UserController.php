@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Doctrine\DBAL\Exception\ConnectionException;
 use Exception;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Route("/smf")
@@ -137,6 +138,47 @@ class UserController extends AbstractController
             }
 
             return new JsonResponse("Error while deleting the user.", Response::HTTP_EXPECTATION_FAILED);
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @Route("/profile/edit/", methods={"GET", "POST"}, name="edit_profile")
+     */
+    public function editProfile(Request $request, UserPasswordEncoderInterface $passwordEncoder, CsrfTokenManagerInterface $csrf_token, Security $security)
+    {
+        try {
+            if ($request->isMethod("GET")) {
+                return new JsonResponse($csrf_token->getToken("user_item")->getValue(), Response::HTTP_OK);
+            }
+
+            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $request->request->get('username')]);
+
+            if ($user && $user === $security->getUser()) {
+                $form = $this->createForm(UserType::class, $user);
+                $form->submit($request->request->all());
+                if ($form->isSubmitted() && $form->isValid()) {
+                    $em = $this->getDoctrine()->getManager();
+                    $user = $form->getData();
+                    if ($request->request->get("admin")) {
+                        $user->setRoles(["ROLE_ADMIN"]);
+                    } else {
+                        $user->setRoles([]);
+                    }
+                    if ($request->request->has("password")) {
+                        $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get("password")));
+                    }
+                    $em->persist($user);
+                    $em->flush();
+
+                    return new JSONResponse("The user has been edited.", Response::HTTP_CREATED);
+                }
+                return new JsonResponse("Incorrect form data.", Response::HTTP_NOT_ACCEPTABLE);
+            }
+            return new JsonResponse("Error while editing the user.", Response::HTTP_NOT_FOUND);
         } catch (ConnectionException $e) {
             return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
         } catch (Exception $e) {

@@ -37,10 +37,22 @@ body {
 .triggerLink {
     color: blue;
     cursor: pointer;
+    font-size: smaller;
+    margin-top: -1em;
+    font-style: italic;
+    text-align: right;
 }
 
 .triggerLink:hover {
     text-decoration: underline;
+}
+
+.form-control-plaintext {
+    color: whitesmoke;
+}
+
+.profileLabel {
+    font-weight: bold;
 }
 
 .alert {
