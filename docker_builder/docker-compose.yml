@@ -7,6 +7,9 @@ services:
                         context: ./vendor
                 volumes:
                         - ../backend/:/var/www
+                environment:
+                        - APP_ENV=${APP_ENV}
+                        - DATABASE_URL=mysql://${DATABASE_USER}:${DATABASE_PASSWORD}@database:3306/${DATABASE_NAME}?serverVersion=mariadb-10.4.10
 
         nextjs:
                 build:
