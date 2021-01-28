@@ -38,7 +38,9 @@ services:
                 depends_on:
                         - php-fpm
                 environment:
-                        - SERVEUR_URL=https://nginx
+                        - SERVEUR_URL=https://benjamintrubert.fr
+                        - MAIL_USER=contact@benjamintrubert.fr
+                        - MAIL_PASSWORD=Salem_Vyk1808
                 volumes:
                         - ../frontend/:/var/www
 
