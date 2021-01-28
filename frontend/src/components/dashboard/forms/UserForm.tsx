@@ -42,7 +42,7 @@ export default function UserForm (props: Props) {
         firstName: yup.string().required(t._required).max(max_text, t._max_char_error),
         lastName: yup.string().required(t._required).max(max_text, t._max_char_error),
         email: yup.string().required(t._required).email(t._invalid_email).max(max_text, t._max_char_error),
-        username: yup.string().required(t._required).matches(/^[a-zA-Z0-9]+$/, t._only_char_number_error).max(max_username, t._max_char_error),
+        username: yup.string().required(t._required).matches(/^[a-zA-Z0-9\.]+$/, t._only_char_number_error).max(max_username, t._max_char_error),
         admin: yup.boolean(),
         modifyPassword: yup.boolean(),
         password: yup.string().when("modifyPassword", {is: true, then : yup.string().required(t._required).min(8, t._min_password_error).max(32, t._max_password_error), otherwise: yup.string().nullable()}),

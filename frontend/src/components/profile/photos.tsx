@@ -34,7 +34,7 @@ function Photos (props: Props) {
                 </Col>
             </Row>
             <Row> {
-                photos.map((p: Photo, index: number) => <Col className="gallery" sm={12}
+                photos.sort((a, b) => {return (a.exifs.date < b.exifs.date) ? 1 : -1}).map((p: Photo, index: number) => <Col className="gallery" sm={12}
                     md={6}
                     lg={4}
                     key={index}>
