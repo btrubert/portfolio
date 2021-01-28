@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Table from 'react-bootstrap/Table'
-import ActionButtons from './ActionButtons'
+import ActionButtons from 'components/dashboard/ActionButtons'
 import { useRouter } from 'next/router'
 import { timestampToStringCompact } from 'utils/tsToString'
 import Icon from '@mdi/react'

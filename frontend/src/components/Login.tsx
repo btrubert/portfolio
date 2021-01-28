@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSession } from 'utils/SessionContext'
 import { useRouter } from 'next/router'
-import ResetPassword from './ResetPassword'
+import ResetPassword from 'components/ResetPassword'
 import Form from 'react-bootstrap/Form'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'

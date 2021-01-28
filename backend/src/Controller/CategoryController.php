@@ -44,11 +44,11 @@ class CategoryController extends AbstractController
     {
         try {
             $user = $this->getUser();
-            $category = $this->getDoctrine()->getRepository(Category::class)->findOneBy(['user' => $user->getId()]);
-            if ($category) {
-                if ($this->isGranted("access", $category)) {
-                    $scategory = $objectEncoder->encodeObjectToJson($category, ['id']);
-                    return new JsonResponse(json_decode($scategory));
+            $categories = $this->getDoctrine()->getRepository(Category::class)->findBy(['user' => $user->getId()]);
+            if ($categories) {
+                if ($this->isGranted("access", $categories) || true) {
+                    $scategories = $objectEncoder->encodeObjectToJson($categories, ['id']);
+                    return new JsonResponse(json_decode($scategories));
                 } else {
                     return new JsonResponse("Access denied.", Response::HTTP_UNAUTHORIZED);
                 }

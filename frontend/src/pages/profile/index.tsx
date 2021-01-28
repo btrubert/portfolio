@@ -35,9 +35,10 @@ function Profile (props: InferGetStaticPropsType<typeof getStaticProps>) {
     }, [state.username, state.loading])
 
     const getTab = () => {
-        return activeTab === 'photos'? <Gallery /> : <Edit translation={t}/>
+        return activeTab === 'photos'? <Gallery translation={t} category={router.query.gallerie as string}/> : <Edit translation={t}/>
     }
 
+    if (state.loading) return <></>
     return <>
         <h1 className="text-center">{t._perso}</h1>
         <Navbar expand="md" variant="dark" collapseOnSelect>

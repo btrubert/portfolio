@@ -18,21 +18,23 @@ interface Props {
     onHide: () => void,
     show: boolean,
     gallery: boolean,
+    rootPath?: string,
 }
 
 export default function Photo(props: Props) {
     const [currentPhoto, setCurrentPhoto] = useState<Photo>(props.photos[props.index])
-    const [indexCarousel, setIndexCarousel] = useState<number>(props.index)
-    const [trans, dispatch] = useTranslation()
+    const [trans, ] = useTranslation()
     const router = useRouter()
+    const rootPath = props.rootPath ?? "/uploads/"
     // Exifs caption options
     const [open, setOpen] = useState<boolean>(false)
     const [show, setShow] = useState<string>(trans.common._show_exifs)
 
     const handleSlide = (selectedIndex: number) => {
         setCurrentPhoto(props.photos[selectedIndex])
-        setIndexCarousel(selectedIndex)
-        router.replace({pathname: router.pathname, query: {category: currentPhoto.category.name, photo: selectedIndex}}, `/gallerie/${router.query.category}?photo=${selectedIndex}`, {shallow: true})
+        if (props.gallery) {
+            router.replace({pathname: router.pathname, query: {category: currentPhoto.category.name, photo: selectedIndex}}, `/gallerie/${router.query.category}?photo=${selectedIndex}`, {shallow: true})
+        }
     }
 
 
@@ -71,7 +73,7 @@ export default function Photo(props: Props) {
                     {
                     props.photos.map((p, index) => <Carousel.Item key={index}>
                         <Image loading="lazy"
-                            src={"/uploads/" + p.path} fluid alt={p.title}/>
+                            src={rootPath + p.path} fluid alt={p.title}/>
                         <Carousel.Caption>
                             <Collapse in={open}>
                                 <Container className="exifs-info" id="collapse-exifs">

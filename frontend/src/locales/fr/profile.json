@@ -20,5 +20,6 @@
     "_save": "Sauvegarder",
     "_reset": "Réinitialiser",
     "_edit": "Editer",
-    "_cancel": "Annuler"
+    "_cancel": "Annuler",
+    "_no_category_available": "Il n'y a pas de photos disponibles sur votre compte pour le moment !"
 }

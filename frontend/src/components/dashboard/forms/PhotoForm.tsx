@@ -4,7 +4,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import FormButtons from './FormButtons'
+import FormButtons from 'components/dashboard/forms/FormButtons'
 import Alert from 'react-bootstrap/Alert'
 
 

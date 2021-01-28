@@ -20,6 +20,7 @@
     "_save": "Save",
     "_reset": "Reset",
     "_edit": "Edit",
-    "_cancel": "Cancel"
+    "_cancel": "Cancel",
+    "_no_category_available": "There is curently no photos available on your account !"
 
 }
