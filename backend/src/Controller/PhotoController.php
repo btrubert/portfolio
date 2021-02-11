@@ -32,7 +32,7 @@ class PhotoController extends AbstractController
             if ($category && ($category->getPublic() || $this->isGranted("access", $category))) {
                 $photos = $category->getPhotos();
 
-                $sphotos = $objectEncoder->encodeObjectToJson($photos, ['originalPath', 'id', 'created_at']);
+                $sphotos = $objectEncoder->encodeObjectToJson($photos, ['originalPath', 'created_at']);
                 return new JsonResponse(json_decode($sphotos));
             } else {
                 return new JsonResponse("This category does not exit.", Response::HTTP_NOT_FOUND);
