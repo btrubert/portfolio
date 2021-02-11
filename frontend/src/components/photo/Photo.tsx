@@ -33,7 +33,7 @@ export default function Photo(props: Props) {
     const handleSlide = (selectedIndex: number) => {
         setCurrentPhoto(props.photos[selectedIndex])
         if (props.gallery) {
-            router.replace({pathname: router.pathname, query: {category: currentPhoto.category.name, photo: selectedIndex}}, `/gallerie/${router.query.category}?photo=${selectedIndex}`, {shallow: true})
+            router.replace({pathname: router.pathname, query: {category: currentPhoto.category.name, photo: props.photos[selectedIndex].id}}, `/gallerie/${router.query.category}?photo=${props.photos[selectedIndex].id}`, {shallow: true})
         }
     }
 

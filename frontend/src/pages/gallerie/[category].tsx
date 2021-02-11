@@ -56,7 +56,7 @@ function Photos (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
                     key={index}>
                     <Image className="gallery-photo" src={`/uploads/${p.path}`}
                         width="480" height="480" unoptimized alt={p.title}
-                        onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: index}}, `/gallerie/${router.query.category}?photo=${index}`, {shallow: true})}} />
+                        onClick={() => {setCurrentIndex(index); setShow(true); router.replace({pathname: router.pathname, query: {category: router.query.category, photo: photos[index].id}}, `/gallerie/${router.query.category}?photo=${photos[index].id}`, {shallow: true})}} />
                 </Col>)
             } </Row>
         <Photo photos={photos} index={currentIndex} onHide={() => {setShow(false); router.replace({pathname: router.pathname, query: {category: router.query.category}}, `/gallerie/${router.query.category}`, {shallow: true})}} show={show} gallery={true}/>
@@ -74,8 +74,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         photos = await response.json()
         if (photos && photos.length > 0) {
             photos.sort((a, b) => {return (a.exifs.date > b.exifs.date) ? -1 : 1})
-            const displayPhoto = typeof(context.query.photo) === 'string' && parseInt(context.query.photo) < photos.length
-            const indexPhoto = displayPhoto? parseInt(context.query.photo as string) : 0
+            const displayPhoto = typeof(context.query.photo) === 'string'
+            let indexPhoto: number = 0
+            if (displayPhoto) {
+                const index = parseInt(context.query.photo as string)
+                for (let i = 0; i < photos.length; i++) {
+                    if (photos[i].id === index) {
+                        indexPhoto = i
+                    }
+                }
+            }
             return {
                 props: {photos, commonT, displayPhoto, indexPhoto},
             }
