@@ -44,6 +44,52 @@ class PhotoController extends AbstractController
         }
     }
 
+    /**
+     * @Route("/photo/{id}", name="api_photo")
+     */
+    public function photo($id, ObjectEncoder $objectEncoder)
+    {
+        try {
+            $photo = $this->getDoctrine()->getRepository(Photo::class)->find($id);
+            if ($photo && $photo->getDownload() && ($photo->getCategory()->getPublic() || $this->isGranted('high_res', $photo))) {
+
+                $sphoto = $objectEncoder->encodeObjectToJson($photo, ['created_at']);
+                return new JsonResponse(json_decode($sphoto));
+            } else {
+                return new JsonResponse("This photo does not exit.", Response::HTTP_NOT_FOUND);
+            }
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @Route("/img/original/{path}", name="show_original")
+     */
+    public function showOriginal($path)
+    {
+        try {
+            $photo = $this->getDoctrine()->getRepository(Photo::class)->findOneBy(['original_path' => 'original/'.$path, 'download' => true]);
+            if ($photo && ($photo->getCategory()->getPublic() || $this->isGranted('high_res', $photo))) {
+                $response = new Response();
+                $base_dir = $photo->getCategory()->getPublic() ? $this->getParameter("img_base_dir") : $this->getParameter("img_prot_base_dir");
+                $path = $base_dir . $photo->getOriginalPath();
+                $response->headers->set("Content-type", mime_content_type($path));
+                $response->headers->set("Content-Length", filesize($path));
+                $response->setContent(readfile($path));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            } else {
+                return new JsonResponse("This photo does not exit.", Response::HTTP_NOT_FOUND);
+            }
+        } catch (ConnectionException $e) {
+            return new JsonResponse("Can't access the requested data.", Response::HTTP_SERVICE_UNAVAILABLE);
+        } catch (Exception $e) {
+            return new JsonResponse("The server is currently unavailable", Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     /**

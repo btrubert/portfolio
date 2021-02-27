@@ -16,10 +16,10 @@
 .addImage {
     cursor: pointer;
     color: blue;
-}
 
-.addImage:hover {
-    text-decoration: underline;
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 .postLayout {
@@ -58,10 +58,10 @@
 
 .blogCard {
     margin-bottom: 3em;
-}
 
-.blogCard:hover {
-    border: #28a745 3px solid;
+    .blogCard:hover {
+        border: #28a745 3px solid;
+    }
 }
 
 .blogCardLink:hover {

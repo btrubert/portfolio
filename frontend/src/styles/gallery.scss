@@ -6,8 +6,12 @@
 
 .gallery-photo {
     object-fit:cover;
+
+    &:hover {
+        cursor: pointer;
+    }
 }
 
-.gallery-photo:hover {
-    cursor: pointer;
+.gallery-photo-selected {
+    max-height: 80vh;
 }

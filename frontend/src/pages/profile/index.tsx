@@ -7,8 +7,6 @@ import { GetStaticProps } from 'next'
 import { InferGetStaticPropsType } from 'next'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 import Gallery from 'components/profile/gallery'
 import Edit from 'components/profile/edit'
 
@@ -17,7 +15,7 @@ function Profile (props: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter()
     const [state, ] = useSession()
     const [trans, dispatch] = useTranslation()
-    const t = JSON.parse(props.dashboardT)
+    const t = JSON.parse(props.profileT)
 
     useEffect(() => {
         if (!trans.commonTrans) {
@@ -68,9 +66,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const defaultLocale = context.defaultLocale ?? 'fr'
     const locale = context.locale ?? defaultLocale
     const commonT = getTranslation('common', locale)
-    const dashboardT = getTranslation('profile', locale)
+    const profileT = getTranslation('profile', locale)
     return {
-        props: {commonT, dashboardT},
+        props: {commonT, profileT},
     }
 }
 

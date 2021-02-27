@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'utils/TranslationContext'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -15,9 +14,7 @@ interface Props {
 }
 
 function Photos (props: Props) {
-    const router = useRouter()
     const [trans, ] = useTranslation()
-
     const photos = props.photos 
     const [show, setShow] = useState<boolean>(false)
     const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -43,7 +40,7 @@ function Photos (props: Props) {
                         onClick={() => {setCurrentIndex(index); setShow(true)}} />
                 </Col>)
             } </Row>
-        <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={false} rootPath={"/smf/img/"}/>
+        <Photo photos={photos} index={currentIndex} onHide={() => setShow(false)} show={show} gallery={false} rootPath={"/smf/img/"} profile={true}/>
     </>
 }
 
