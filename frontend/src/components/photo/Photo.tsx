@@ -55,17 +55,17 @@ export default function Photo(props: Props) {
                 {props.gallery && <>
                 <a target="_blank" className="mr-2"
                 href={`https://twitter.com/intent/tweet?size=large&text=${currentPhoto.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}&via=benjamintrubert&hashtags=photo,${currentPhoto.category.name}`}>
-                    <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
+                    <div className="shareIcon"><Icon path={mdiTwitter} size={1} color="grey" /></div>
                 </a>
                 <a target="_blank" className="mr-2"
                 href={`mailto:?subject=[photo] ${currentPhoto.title}&body=https://benjamintrubert.fr${encodeURIComponent(router.asPath)}`}>
-                    <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
+                    <div className="shareIcon"><Icon path={mdiEmail} size={1} color="grey" /></div>
                 </a>
                 </>}
                 {(props.gallery || props.profile) && currentPhoto.download &&
                 <Link href={props.profile ? `/profile/photo/${currentPhoto.id}` : `/gallerie/photo/${currentPhoto.id}`} passHref>
                     <a>
-                        <Icon path={mdiHighDefinitionBox} size={1} color="grey" className="shareIcon"/>
+                        <div className="shareIcon"><Icon path={mdiHighDefinitionBox} size={1} color="grey"/></div>
                     </a>
                 </Link>
                 }          
