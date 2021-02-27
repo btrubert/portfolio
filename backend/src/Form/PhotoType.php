@@ -27,6 +27,7 @@ class PhotoType extends AbstractType
             ->add('original', CheckboxType::class, [
                 'mapped' => false,
             ])
+            ->add('download', CheckboxType::class)
             ->add('quality', NumberType::class, [
                 'required' => true,
                 'mapped' => false,

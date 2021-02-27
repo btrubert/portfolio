@@ -7,6 +7,16 @@
     background-color: transparent;
     border: none;
     margin-top: 2em;
+
+    &:hover {
+        & .category-card-img {
+            filter: brightness(1);
+        }
+    
+        & .category-card-text {
+            color: transparent;
+        }
+    }
 }
 
 .category-card-img {
@@ -16,14 +26,4 @@
 
 .category-card-text {
     top: 45%;
-}
-
-.category-card:hover {
-    & .category-card-img {
-        filter: brightness(1);
-    }
-
-    & .category-card-text {
-        color: transparent;
-    }
 }

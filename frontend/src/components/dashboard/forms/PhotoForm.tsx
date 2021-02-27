@@ -24,6 +24,7 @@ interface FormValues {
     quality: number,
     changeQuality: boolean,
     original: boolean,
+    download: boolean,
 }
 
 export default function PhotoForm (props: Props) {
@@ -47,6 +48,7 @@ export default function PhotoForm (props: Props) {
         changeQuality: yup.boolean(),
         quality: yup.number().when("changeQuality", {is: true, then: yup.number().required().min(50).max(100), otherwise: yup.number().nullable()}),
         original: yup.boolean().required(),
+        download: yup.boolean().required(),
     })
 
     const handleSubmitForm = async (values: FormValues) => {
@@ -114,6 +116,7 @@ export default function PhotoForm (props: Props) {
                     quality: 100,
                     changeQuality: !props.edit,
                     original: originalFile,
+                    download: props.photo? props.photo.download ?? false : false,
                 }
         }>
             {({
@@ -174,19 +177,30 @@ export default function PhotoForm (props: Props) {
                         } </Form.Control.Feedback>
                         </Col>
                     </Form.Group>
-                    <Form.Group controlId="validationFormikOriginal" as={Row}>
-                        <Col>
-                        <Form.Label srOnly>{t._keep_original}</Form.Label>
-                        <Form.Check type="switch" name="original" label={t._keep_original}
-                            checked={
-                                values.original
-                            }
-                            onChange={
-                                handleChange
-                            }
-                            disabled={props.edit && !originalFile}/>
-                            </Col>
-                    </Form.Group>
+                    <Row>
+                        <Form.Group controlId="validationFormikOriginal" as={Col}>
+                            <Form.Label srOnly>{t._keep_original}</Form.Label>
+                            <Form.Check type="switch" name="original" label={t._keep_original}
+                                checked={
+                                    values.original
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={props.edit && !originalFile}/>
+                        </Form.Group>
+                        <Form.Group controlId="validationFormikDownload" as={Col}>
+                            <Form.Label srOnly>{t._downloadable}</Form.Label>
+                            <Form.Check type="switch" name="download" label={t._downloadable}
+                                checked={
+                                    values.download && values.original
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                disabled={props.edit && !values.original}/>
+                        </Form.Group>
+                    </Row>
                     <Form.Group controlId="validationFormikChangeQuality" as={Row} hidden={!props.edit}>
                         <Col>
                         <Form.Label srOnly>{t._change_quality}</Form.Label>

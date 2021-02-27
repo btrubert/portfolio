@@ -24,6 +24,7 @@ interface Photo {
     path: string,
     exifs: Exifs,
     originalPath?: string,
+    download?: boolean,
 }
 
 interface User {

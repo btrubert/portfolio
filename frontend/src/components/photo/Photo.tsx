@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'utils/TranslationContext'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Carousel from 'react-bootstrap/Carousel'
@@ -10,7 +11,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Collapse from 'react-bootstrap/Collapse'
 import Icon from '@mdi/react'
-import { mdiTwitter, mdiEmail } from '@mdi/js'
+import { mdiTwitter, mdiEmail, mdiHighDefinitionBox } from '@mdi/js'
 
 interface Props {
     photos: Array<Photo>,
@@ -19,6 +20,7 @@ interface Props {
     show: boolean,
     gallery: boolean,
     rootPath?: string,
+    profile?: boolean,
 }
 
 export default function Photo(props: Props) {
@@ -55,11 +57,18 @@ export default function Photo(props: Props) {
                 href={`https://twitter.com/intent/tweet?size=large&text=${currentPhoto.title}&url=https://benjamintrubert.fr${encodeURI(router.asPath)}&via=benjamintrubert&hashtags=photo,${currentPhoto.category.name}`}>
                     <Icon path={mdiTwitter} size={1} color="grey" className="shareIcon"/>
                 </a>
-                <a target="_blank"
+                <a target="_blank" className="mr-2"
                 href={`mailto:?subject=[photo] ${currentPhoto.title}&body=https://benjamintrubert.fr${encodeURIComponent(router.asPath)}`}>
                     <Icon path={mdiEmail} size={1} color="grey" className="shareIcon"/>
                 </a>
                 </>}
+                {(props.gallery || props.profile) && currentPhoto.download &&
+                <Link href={props.profile ? `/profile/photo/${currentPhoto.id}` : `/gallerie/photo/${currentPhoto.id}`} passHref>
+                    <a>
+                        <Icon path={mdiHighDefinitionBox} size={1} color="grey" className="shareIcon"/>
+                    </a>
+                </Link>
+                }          
             </Modal.Header>
             <Modal.Body>
                 <Carousel defaultActiveIndex={
@@ -72,7 +81,7 @@ export default function Photo(props: Props) {
                     wrap={true}>
                     {
                     props.photos.map((p, index) => <Carousel.Item key={index}>
-                        <Image loading="lazy"
+                        <Image loading="lazy" className="gallery-photo-selected"
                             src={rootPath + p.path} fluid alt={p.title}/>
                         <Carousel.Caption>
                             <Collapse in={open}>
