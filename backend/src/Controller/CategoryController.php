@@ -47,7 +47,7 @@ class CategoryController extends AbstractController
             $categories = $this->getDoctrine()->getRepository(Category::class)->findBy(['user' => $user->getId()]);
             if ($categories) {
                 if ($this->isGranted("access", $categories) || true) {
-                    $scategories = $objectEncoder->encodeObjectToJson($categories, ['id']);
+                    $scategories = $objectEncoder->encodeObjectToJson($categories);
                     return new JsonResponse(json_decode($scategories));
                 } else {
                     return new JsonResponse("Access denied.", Response::HTTP_UNAUTHORIZED);
