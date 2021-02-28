@@ -194,10 +194,14 @@ class PhotoController extends AbstractController
 
             $photo =  $this->getDoctrine()->getRepository(Photo::class)->find($id);
             if ($photo) {
+                $public = $photo->getCategory()->getPublic();
                 $form = $this->createForm(PhotoType::class, $photo);
                 $form->submit($request->request->all());
                 if ($form->isSubmitted() && $form->isValid()) {
                     $em = $this->getDoctrine()->getManager();
+                    if ($public != $photo->getCategory()->getPublic()) {
+                        $photo->changeVisibility($this->getParameter("img_base_dir"), $this->getParameter("img_prot_base_dir"));
+                    }
                     $path = $photo->getOriginalPath();
                     if ($request->request->has("quality") && $path) {
                         $quality = $request->request->get("quality");

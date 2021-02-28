@@ -158,4 +158,17 @@ class Photo
 
         return $this;
     }
+
+    public function changeVisibility($publicDir, $protectedDir): self
+    {
+        [$origin, $destination] = $this->getCategory()->getPublic() ? [$protectedDir, $publicDir]
+                            : [$publicDir, $protectedDir];
+        $path = $this->getOriginalPath();
+        if ($path) {
+            rename($origin . $path, $destination . $path);
+        }
+        $path = $this->getPath();
+        rename($origin . $path, $destination . $path);
+        return $this;
+    }
 }
